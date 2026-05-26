@@ -86,7 +86,7 @@ Or edit `compare_providers` / `session_items` in `colab_setup.write_colab_sessio
 |-------|-----|
 | `No module named 'jiwer'` | Re-run the main setup cell (needs `pip install -e .` before imports); pull latest notebook from GitHub |
 | `No authenticated access` / PermissionError | Sign in with a Google account that has bucket access (objectViewer) |
-| `apt-get install gcsfuse` exit 100 | Pull latest repo — installs from Google apt repo |
+| `apt-get install gcsfuse` exit 100 | Stale clone — Runtime → Restart session, delete `/content/ab_prefs_rating`, re-run; notebook now git pulls + installs .deb fallback |
 | gcsfuse mount failed | Colab FUSE limitation — use Vertex Workbench with bucket pre-mounted instead |
 | `transcripts/` not found after mount | Check bucket layout; confirm IAM |
 | Missing ASR json for recording | `gsutil rsync` asr/dd210; demo uses 5 recordings from manifest |

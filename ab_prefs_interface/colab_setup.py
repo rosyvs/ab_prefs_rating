@@ -55,6 +55,8 @@ def verify_gcs_access(bucket: str) -> None:
 def install_gcsfuse() -> None:
     if shutil.which("gcsfuse"):
         return
+    subprocess.run(["apt-get", "update", "-qq"], check=True)
+    subprocess.run(["apt-get", "install", "-qq", "-y", "curl", "fuse", "lsb-release"], check=True)
     keyring = Path("/usr/share/keyrings/cloud.google.asc")
     if not keyring.is_file():
         subprocess.run(
@@ -63,20 +65,25 @@ def install_gcsfuse() -> None:
         )
     codename = subprocess.run(["lsb_release", "-c", "-s"], capture_output=True, text=True, check=True).stdout.strip()
     repos = [f"gcsfuse-{codename}", "gcsfuse-jammy", "gcsfuse-bookworm", "gcsfuse-main"]
-    last_err: subprocess.CalledProcessError | None = None
     for repo_name in repos:
         Path("/etc/apt/sources.list.d/gcsfuse.list").write_text(
             f"deb [signed-by={keyring}] https://packages.cloud.google.com/apt {repo_name} main\n",
             encoding="utf-8",
         )
         subprocess.run(["apt-get", "update", "-qq"], check=True)
-        try:
-            subprocess.run(["apt-get", "install", "-qq", "-y", "fuse", "gcsfuse"], check=True)
+        if subprocess.run(["apt-get", "install", "-qq", "-y", "gcsfuse"], check=False).returncode == 0:
             print(f"Installed gcsfuse from apt repo {repo_name}")
             return
-        except subprocess.CalledProcessError as err:
-            last_err = err
-    raise RuntimeError("Could not install gcsfuse from Google apt repos") from last_err
+    # Colab default apt often has no gcsfuse package — install .deb from GitHub releases
+    version = "3.9.1"
+    deb = Path(f"/tmp/gcsfuse_{version}_amd64.deb")
+    url = f"https://github.com/GoogleCloudPlatform/gcsfuse/releases/download/v{version}/gcsfuse_{version}_amd64.deb"
+    print(f"apt install failed; downloading {url}")
+    subprocess.run(["curl", "-fsSL", "-o", str(deb), url], check=True)
+    subprocess.run(["dpkg", "-i", str(deb)], check=True)
+    if not shutil.which("gcsfuse"):
+        raise RuntimeError("gcsfuse install failed (apt + .deb fallback)")
+    print(f"Installed gcsfuse {version} from GitHub release")
 
 
 def gcsfuse_mount(bucket: str, mount: Path) -> None:
