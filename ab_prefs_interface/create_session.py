@@ -1,16 +1,16 @@
-"""Lead: build session_manifest.json from configs/ab_prefs_demo.session.json."""
+"""Lead: build session_manifest.json from configs/ab_prefs.session.json."""
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-from ab_prefs_demo.launch import DEFAULT_SESSION_CONFIG, load_session_config, namespace_for_rater, setup_repo_path
-from ab_prefs_demo.session_config import compare_provider_names
-from ab_prefs_demo.matching import build_comparison_units
-from ab_prefs_demo.run_demo import load_provider_dirs
-from ab_prefs_demo.sampling import build_session_queue, pair_combinations
-from ab_prefs_demo.scoring import score_units
-from ab_prefs_demo.session_manifest import build_manifest_payload, save_session_manifest
+from ab_prefs_interface.launch import DEFAULT_SESSION_CONFIG, load_session_config, namespace_for_rater, setup_repo_path
+from ab_prefs_interface.session_config import compare_provider_names
+from ab_prefs_interface.matching import build_comparison_units
+from ab_prefs_interface.run_demo import load_provider_dirs
+from ab_prefs_interface.sampling import build_session_queue, pair_combinations
+from ab_prefs_interface.scoring import score_units
+from ab_prefs_interface.session_manifest import build_manifest_payload, save_session_manifest
 
 
 def create_session_manifest(session_config_path: Path, manifest_path: Path | None = None) -> Path:

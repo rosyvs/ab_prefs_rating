@@ -7,12 +7,12 @@ import sys
 from argparse import Namespace
 from pathlib import Path
 
-from ab_prefs_demo.interface_notebook import NotebookPreferenceInterface
-from ab_prefs_demo.run_demo import run_notebook_demo
-from ab_prefs_demo.summarize_preferences import summarize_cli_command
+from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
+from ab_prefs_interface.run_demo import run_notebook_demo
+from ab_prefs_interface.summarize_preferences import summarize_cli_command
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SESSION_CONFIG = REPO_ROOT / "configs" / "ab_prefs_demo.session.json"
+DEFAULT_SESSION_CONFIG = REPO_ROOT / "configs" / "ab_prefs.session.json"
 
 
 def resolve_session_paths(session: dict, config_path: Path) -> dict:

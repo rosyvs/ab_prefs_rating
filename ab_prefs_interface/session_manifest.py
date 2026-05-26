@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ab_prefs_demo.data_model import ComparisonUnit
+from ab_prefs_interface.data_model import ComparisonUnit
 
 
 MANIFEST_VERSION = 1

@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ab-prefs-demo"
+name = "ab-prefs-interface"
 version = "0.1.0"
 description = "Human A/B preference rating for ASR transcripts on ground-truth audio clips"
 readme = "README.md"
@@ -16,9 +16,9 @@ dependencies = [
 ]
 
 [project.scripts]
-ab-prefs-create-session = "ab_prefs_demo.create_session:main"
-ab-prefs-summarize = "ab_prefs_demo.summarize_preferences:main"
+ab-prefs-create-session = "ab_prefs_interface.create_session:main"
+ab-prefs-summarize = "ab_prefs_interface.summarize_preferences:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["ab_prefs_demo*"]
+include = ["ab_prefs_interface*"]

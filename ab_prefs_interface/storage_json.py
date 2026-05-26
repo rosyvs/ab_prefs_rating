@@ -4,7 +4,7 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
-from ab_prefs_demo.data_model import PreferenceRecord
+from ab_prefs_interface.data_model import PreferenceRecord
 
 
 def initialize_store(path: Path) -> None:

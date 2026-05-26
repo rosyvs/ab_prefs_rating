@@ -8,9 +8,9 @@ from uuid import uuid4
 import ipywidgets as widgets
 from IPython.display import display
 
-from ab_prefs_demo.audio_clips import ensure_queue_clips
-from ab_prefs_demo.data_model import ComparisonUnit, PreferenceRecord, ProviderCandidate
-from ab_prefs_demo.storage_json import append_record
+from ab_prefs_interface.audio_clips import ensure_queue_clips
+from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord, ProviderCandidate
+from ab_prefs_interface.storage_json import append_record
 
 demo_style = """
 <style>
@@ -294,7 +294,7 @@ class NotebookPreferenceInterface:
             saved = f"Saved: {choice}"
         self.status_html.value = f'<p style="margin:8px 0;color:#4b5563;">{html.escape(saved)}</p>'
         if self.current_index >= len(self.queue):
-            from ab_prefs_demo.summarize_preferences import summarize_cli_command
+            from ab_prefs_interface.summarize_preferences import summarize_cli_command
 
             summarize_cmd = summarize_cli_command(self.output_json_path, self.ground_truth_name)
             self.item_html.value = (

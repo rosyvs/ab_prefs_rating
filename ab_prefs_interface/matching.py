@@ -7,8 +7,8 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from ab_prefs_demo.data_model import ComparisonUnit, ProviderCandidate, WordToken
-from ab_prefs_demo.unit_cache import (
+from ab_prefs_interface.data_model import ComparisonUnit, ProviderCandidate, WordToken
+from ab_prefs_interface.unit_cache import (
     build_cache_key,
     demo_cache_root,
     load_recording_units,

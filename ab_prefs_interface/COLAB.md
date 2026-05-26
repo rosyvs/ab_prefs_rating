@@ -25,11 +25,11 @@ gsutil -m rsync -r /path/to/transcripts gs://dd_tfx_full_transcripts/transcripts
 gsutil -m rsync -r /path/to/audio gs://dd_tfx_full_transcripts/audio
 ```
 
-Commit `configs/ab_prefs_demo.manifest.json` in git so every rater sees the same items.
+Commit `configs/ab_prefs.manifest.json` in git so every rater sees the same items.
 
 ## Rater: Colab
 
-1. Open `ab_prefs_demo/rate_colab.ipynb` in Colab (Upload from repo or open from GitHub).
+1. Open `ab_prefs_interface/rate_colab.ipynb` in Colab (Upload from repo or open from GitHub).
 2. Set **RATER_ID**.
 3. Run all cells. First run: Google auth + gcsfuse mount (~1 min).
 4. Use **Choose A / B / Tie / Skip**.
@@ -53,10 +53,10 @@ Then run the same cells (mount step becomes a no-op).
 
 ```bash
 cd /content/ab_prefs_rating  # or local clone
-python -m ab_prefs_demo.create_session \
-  --session-config configs/ab_prefs_demo.session.runtime.json \
+python -m ab_prefs_interface.create_session \
+  --session-config configs/ab_prefs.session.runtime.json \
   --rebuild-cache
-git add configs/ab_prefs_demo.manifest.json && git commit ...
+git add configs/ab_prefs.manifest.json && git commit ...
 ```
 
 Or edit `compare_providers` / `session_items` in `colab_setup.write_colab_session_config` defaults before bootstrap.

@@ -7,7 +7,7 @@ from fractions import Fraction
 
 from tqdm import tqdm
 
-from ab_prefs_demo.data_model import ComparisonUnit
+from ab_prefs_interface.data_model import ComparisonUnit
 
 SAMPLING_STRATEGIES = ("random", "max_discrepancy", "max_wer", "most_deletions")
 

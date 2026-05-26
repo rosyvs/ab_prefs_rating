@@ -7,7 +7,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-from ab_prefs_demo.data_model import ComparisonUnit
+from ab_prefs_interface.data_model import ComparisonUnit
 
 
 def clip_path(clip_dir: Path, unit: ComparisonUnit) -> Path:

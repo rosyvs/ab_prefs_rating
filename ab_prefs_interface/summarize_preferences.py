@@ -8,13 +8,13 @@ from pathlib import Path
 
 import pandas as pd
 
-from ab_prefs_demo.sampling import format_exposure_share
+from ab_prefs_interface.sampling import format_exposure_share
 
 
 def summarize_cli_command(output_json: Path | str, ground_truth_name: str = "ground_truth") -> str:
     path = Path(output_json).expanduser().resolve()
     return (
-        f"python -m ab_prefs_demo.summarize_preferences "
+        f"python -m ab_prefs_interface.summarize_preferences "
         f"--input-json {path} --ground-truth-name {ground_truth_name}"
     )
 

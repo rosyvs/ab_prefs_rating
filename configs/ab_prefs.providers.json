@@ -1,0 +1,13 @@
+{
+  "providers": {
+    "aai_up3": "/home/rosy_teachfx_com/asr_eval/results/dd210/aai/universal-3-pro",
+    "aai_up3_v2": "/home/rosy_teachfx_com/asr_eval/results/dd210/aai/universal-3-pro-v2",
+    "aai_up3_extraprompted": "/home/rosy_teachfx_com/asr_eval/results/dd210/aai/universal-3-pro_extraprompted",
+    "azure_fast": "/home/rosy_teachfx_com/asr_eval/results/dd210/azure/fast-transcription",
+    "azure_llm": "/home/rosy_teachfx_com/asr_eval/results/dd210/azure/llm-transcribe",
+    "azure_llm_extraprompted": "/home/rosy_teachfx_com/asr_eval/results/dd210/azure/llm-transcribe_extraprompted",
+    "azure_mai": "/home/rosy_teachfx_com/asr_eval/results/dd210/azure/mai-transcribe-1",
+    "deepgram_nova3": "/home/rosy_teachfx_com/asr_eval/results/dd210/deepgram/nova-3",
+    "gemini_31_pro_extraprompted": "/home/rosy_teachfx_com/asr_eval/results/dd210/gemini/gemini-3.1-pro-preview_extraprompted"
+  }
+}

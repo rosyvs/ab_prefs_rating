@@ -5,7 +5,7 @@ import statistics
 import jiwer
 from tqdm import tqdm
 
-from ab_prefs_demo.data_model import ComparisonUnit
+from ab_prefs_interface.data_model import ComparisonUnit
 
 
 normalize_for_scoring = jiwer.Compose(

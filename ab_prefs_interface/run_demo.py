@@ -4,18 +4,18 @@ import argparse
 import json
 from pathlib import Path
 
-from ab_prefs_demo.interface_notebook import NotebookPreferenceInterface
-from ab_prefs_demo.session_config import compare_provider_names
-from ab_prefs_demo.matching import build_comparison_units
-from ab_prefs_demo.sampling import SAMPLING_STRATEGIES, build_session_queue, filter_queue_with_transcripts
-from ab_prefs_demo.scoring import score_units
-from ab_prefs_demo.session_manifest import (
+from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
+from ab_prefs_interface.session_config import compare_provider_names
+from ab_prefs_interface.matching import build_comparison_units
+from ab_prefs_interface.sampling import SAMPLING_STRATEGIES, build_session_queue, filter_queue_with_transcripts
+from ab_prefs_interface.scoring import score_units
+from ab_prefs_interface.session_manifest import (
     build_manifest_payload,
     load_session_manifest,
     queue_from_manifest,
     save_session_manifest,
 )
-from ab_prefs_demo.storage_json import initialize_store
+from ab_prefs_interface.storage_json import initialize_store
 
 
 def parse_provider_arg(value: str) -> tuple[str, Path]:
@@ -216,7 +216,7 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
         if len(queue) < expected:
             raise ValueError(
                 f"Manifest has only {len(queue)} eligible items but session_items={expected}. "
-                "Regenerate: python -m ab_prefs_demo.create_session --session-config ... --rebuild-cache"
+                "Regenerate: python -m ab_prefs_interface.create_session --session-config ... --rebuild-cache"
             )
     else:
         if verbose:

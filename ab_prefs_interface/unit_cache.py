@@ -4,7 +4,7 @@ import hashlib
 import pickle
 from pathlib import Path
 
-from ab_prefs_demo.data_model import ComparisonUnit
+from ab_prefs_interface.data_model import ComparisonUnit
 
 
 def dir_fingerprint(directory: Path, pattern: str) -> str:

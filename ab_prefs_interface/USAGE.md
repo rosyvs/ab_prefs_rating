@@ -4,9 +4,9 @@ Human preference testing: listen to a GT audio clip, compare two transcripts sid
 
 **Standalone repo:** `ab_prefs_rating/` in this monorepo is the exportable package (`pip install -e .`, minimal deps). Push it to `github.com/rosyvs/ab_prefs_rating` for Colab raters. Refresh from here: `scripts/sync_ab_prefs_rating.sh`.
 
-**Raters:** open `ab_prefs_demo/rate.ipynb` (local) or `ab_prefs_demo/rate_colab.ipynb` (Colab / Workbench), set `RATER_ID`, Run All.
+**Raters:** open `ab_prefs_interface/rate.ipynb` (local) or `ab_prefs_interface/rate_colab.ipynb` (Colab / Workbench), set `RATER_ID`, Run All.
 
-**Colab / GCS:** see `ab_prefs_demo/COLAB.md`.
+**Colab / GCS:** see `ab_prefs_interface/COLAB.md`.
 
 **Lead:** edit configs, regenerate manifest when study setup changes.
 
@@ -16,9 +16,9 @@ Human preference testing: listen to a GT audio clip, compare two transcripts sid
 
 | File | Purpose | Who edits |
 |------|---------|-----------|
-| `ab_prefs_demo.providers.json` | ASR name → folder of `{recording_id}.json` transcripts | Lead (when adding/swapping models) |
-| `ab_prefs_demo.session.json` | Paths, merge rules, sampling, demo size, UI flags | Lead |
-| `ab_prefs_demo.manifest.json` | Fixed list of 30 A/B trials (recording, span, pair) | Lead regenerates; team commits |
+| `ab_prefs.providers.json` | ASR name → folder of `{recording_id}.json` transcripts | Lead (when adding/swapping models) |
+| `ab_prefs.session.json` | Paths, merge rules, sampling, demo size, UI flags | Lead |
+| `ab_prefs.manifest.json` | Fixed list of 30 A/B trials (recording, span, pair) | Lead regenerates; team commits |
 
 **Generated outputs** (`results/ab_prefs/`):
 
@@ -53,18 +53,18 @@ Key fields:
 
 ### 1. Edit study settings
 
-Update `configs/ab_prefs_demo.session.json` (and `providers.json` if models changed).
+Update `configs/ab_prefs.session.json` (and `providers.json` if models changed).
 
 ### 2. Regenerate manifest + unit cache
 
 ```bash
 cd /home/rosy_teachfx_com/asr_eval
-python -m ab_prefs_demo.create_session \
-  --session-config /home/rosy_teachfx_com/asr_eval/configs/ab_prefs_demo.session.json \
+python -m ab_prefs_interface.create_session \
+  --session-config /home/rosy_teachfx_com/asr_eval/configs/ab_prefs.session.json \
   --rebuild-cache
 ```
 
-Writes `configs/ab_prefs_demo.manifest.json` (30 items, balanced ASR exposure).
+Writes `configs/ab_prefs.manifest.json` (30 items, balanced ASR exposure).
 
 Use `--rebuild-cache` when matching/display rules change or cache is stale. To wipe demo cache manually:
 
@@ -82,7 +82,7 @@ Share via git (or bucket): `configs/*.json`, not rater preference files.
 
 ### 1. Open notebook
 
-`ab_prefs_demo/rate.ipynb` in Cursor / Jupyter / Colab / Workbench.
+`ab_prefs_interface/rate.ipynb` in Cursor / Jupyter / Colab / Workbench.
 
 ### 2. Set your id
 
@@ -103,7 +103,7 @@ Choices append to `results/ab_prefs/preferences_Alice.json`.
 Command is printed at launch and when you finish all items:
 
 ```bash
-python -m ab_prefs_demo.summarize_preferences \
+python -m ab_prefs_interface.summarize_preferences \
   --input-json /home/rosy_teachfx_com/asr_eval/results/ab_prefs/preferences_Alice.json \
   --ground-truth-name ground_truth
 ```
@@ -137,7 +137,7 @@ All raters see the same items via `manifest.json`, regardless of strategy name s
 
 | Problem | Fix |
 |---------|-----|
-| `ModuleNotFoundError: ab_prefs_demo` | Notebook cell bootstraps repo path; restart kernel and re-run |
+| `ModuleNotFoundError: ab_prefs_interface` | Notebook cell bootstraps repo path; restart kernel and re-run |
 | Play button dead | Fixed: clips embedded as base64; re-run launch cell |
 | Wrong/old utterances showing | Restart kernel, re-run launch cell (or `--rebuild-cache` after GT/code changes) |
 | Summarize shows old data | Point `--input-json` at your `preferences_{RATER_ID}.json` |
@@ -147,7 +147,7 @@ All raters see the same items via `manifest.json`, regardless of strategy name s
 
 ## Input data
 
-See `ab_prefs_demo/INPUT_SCHEMA.md` for GT JSONL, provider JSON, and audio layout.
+See `ab_prefs_interface/INPUT_SCHEMA.md` for GT JSONL, provider JSON, and audio layout.
 
 ## Module map
 

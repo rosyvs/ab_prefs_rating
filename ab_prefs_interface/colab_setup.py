@@ -1,4 +1,4 @@
-"""Bootstrap ab_prefs_demo on Colab / Vertex Workbench with GCS-hosted GT + audio."""
+"""Bootstrap ab_prefs_interface on Colab / Vertex Workbench with GCS-hosted GT + audio."""
 from __future__ import annotations
 
 import json
@@ -78,7 +78,7 @@ def clone_repo(
     branch: str = "main",
 ) -> Path:
     dest = Path(dest)
-    if (dest / "pyproject.toml").is_file() and (dest / "ab_prefs_demo").is_dir():
+    if (dest / "pyproject.toml").is_file() and (dest / "ab_prefs_interface").is_dir():
         print(f"Repo already at {dest}")
         return dest
     if dest.exists():
@@ -102,8 +102,8 @@ def repo_paths(
         "gt_dir": mount / "transcripts",
         "audio_dir": mount / "audio",
         "asr_root": asr,
-        "config_json": repo / "configs" / "ab_prefs_demo.providers.colab.json",
-        "session_manifest": repo / "configs" / "ab_prefs_demo.manifest.json",
+        "config_json": repo / "configs" / "ab_prefs.providers.colab.json",
+        "session_manifest": repo / "configs" / "ab_prefs.manifest.json",
         "clip_dir": out / "audio_clips",
         "cache_dir": out / "unit_cache",
         "output_dir": out,
@@ -119,7 +119,7 @@ def write_colab_session_config(
     demo_recordings: int = 5,
 ) -> Path:
     """Write runtime session JSON with GCS-backed paths."""
-    dest = Path(dest or paths["notebook_root"] / "configs" / "ab_prefs_demo.session.runtime.json")
+    dest = Path(dest or paths["notebook_root"] / "configs" / "ab_prefs.session.runtime.json")
     payload = {
         "notebook_root": str(paths["notebook_root"]),
         "gt_dir": str(paths["gt_dir"]),

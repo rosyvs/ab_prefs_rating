@@ -10,9 +10,9 @@ Quick start for lead:
 
 ```bash
 cd /home/rosy_teachfx_com/asr_eval
-python -m ab_prefs_demo.create_session \
-  --session-config /home/rosy_teachfx_com/asr_eval/configs/ab_prefs_demo.session.json \
+python -m ab_prefs_interface.create_session \
+  --session-config /home/rosy_teachfx_com/asr_eval/configs/ab_prefs.session.json \
   --rebuild-cache
 ```
 
-Configs live in `configs/ab_prefs_demo.{providers,session,manifest}.json`.
+Configs live in `configs/ab_prefs_interface.{providers,session,manifest}.json`.
