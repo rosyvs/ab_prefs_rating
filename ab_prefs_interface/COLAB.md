@@ -29,9 +29,9 @@ Commit `configs/ab_prefs.manifest.json` in git so every rater sees the same item
 
 ## Rater: Colab
 
-1. Open `ab_prefs_interface/rate_colab.ipynb` in Colab (Upload from repo or open from GitHub).
-2. Set **RATER_ID**.
-3. Run all cells. First run: Google auth + gcsfuse mount (~1 min).
+1. Open in Colab: [rate_colab.ipynb](https://colab.research.google.com/github/rosyvs/ab_prefs_rating/blob/main/ab_prefs_interface/rate_colab.ipynb) (or GitHub → notebook → **Open in Colab**).
+2. Set **RATER_ID** (unique per person).
+3. **Runtime → Run all**. First run: clone repo → `pip install -e .` → Google auth → gcsfuse mount (~1–2 min).
 4. Use **Choose A / B / Tie / Skip**.
 5. Download `preferences_{RATER_ID}.json` from Files, or copy to bucket:
 
@@ -71,6 +71,7 @@ Or edit `compare_providers` / `session_items` in `colab_setup.write_colab_sessio
 
 | Issue | Fix |
 |-------|-----|
+| `No module named 'jiwer'` | Re-run the main setup cell (needs `pip install -e .` before imports); pull latest notebook from GitHub |
 | `transcripts/` not found after mount | Check bucket name; run Colab auth cell |
 | Missing ASR json for recording | `gsutil rsync` asr/dd210; demo uses 5 recordings from manifest |
 | Widget blank | Colab: re-run setup cell (`enable_custom_widget_manager`) |
