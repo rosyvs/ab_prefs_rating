@@ -177,51 +177,67 @@ def repo_paths(
     }
 
 
+def load_repo_session_config(repo_root: Path | str) -> dict:
+    path = Path(repo_root) / "configs" / "ab_prefs.session.json"
+    if not path.is_file():
+        raise FileNotFoundError(f"Missing {path} — set up configs/ab_prefs.session.json in the repo")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def compare_provider_list(session: dict) -> list[str]:
+    raw = session.get("compare_providers", "")
+    if isinstance(raw, list):
+        return [str(p) for p in raw if str(p).strip()]
+    return [p.strip() for p in str(raw).split(",") if p.strip()]
+
+
 def write_colab_session_config(
     paths: dict[str, Path],
     dest: Path | str | None = None,
-    *,
-    compare_providers: str = "aai_up3_v2,azure_fast,deepgram_nova3",
-    session_items: int = 30,
-    demo_recordings: int = 5,
 ) -> Path:
-    """Write runtime session JSON with GCS-backed paths."""
-    dest = Path(dest or paths["notebook_root"] / "configs" / "ab_prefs.session.runtime.json")
-    payload = {
-        "notebook_root": str(paths["notebook_root"]),
-        "gt_dir": str(paths["gt_dir"]),
-        "audio_dir": str(paths["audio_dir"]),
-        "config_json": str(paths["config_json"]),
-        "session_manifest": str(paths["session_manifest"]),
-        "clip_dir": str(paths["clip_dir"]),
-        "cache_dir": str(paths["cache_dir"]),
-        "output_dir": str(paths["output_dir"]),
-        "ground_truth_name": "ground_truth",
-        "include_ground_truth": True,
-        "strategy": "random",
-        "session_items": session_items,
-        "seed": 7,
-        "demo_recordings": demo_recordings,
-        "demo_seed": 7,
-        "min_gt_words": 5,
-        "min_audio_seconds": 3.0,
-        "compare_providers": compare_providers,
-        "show_note": False,
-        "show_providers": False,
-        "verbose": True,
-        "rebuild_cache": False,
-    }
+    """Write runtime session JSON: sampling settings from ab_prefs.session.json, paths from GCS mount."""
+    repo = Path(paths["notebook_root"])
+    payload = dict(load_repo_session_config(repo))
+    payload.update(
+        {
+            "notebook_root": str(paths["notebook_root"]),
+            "gt_dir": str(paths["gt_dir"]),
+            "audio_dir": str(paths["audio_dir"]),
+            "config_json": str(paths["config_json"]),
+            "session_manifest": str(paths["session_manifest"]),
+            "clip_dir": str(paths["clip_dir"]),
+            "cache_dir": str(paths["cache_dir"]),
+            "output_dir": str(paths["output_dir"]),
+        }
+    )
+    manifest_path = Path(payload["session_manifest"])
+    if manifest_path.is_file():
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for key in ("session_items", "demo_recordings", "demo_seed", "compare_providers", "seed", "min_gt_words", "min_audio_seconds"):
+            if key in manifest:
+                payload[key] = manifest[key]
+    dest = Path(dest or repo / "configs" / "ab_prefs.session.runtime.json")
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    print(
+        f"Runtime session: demo_recordings={payload.get('demo_recordings')}, "
+        f"session_items={payload.get('session_items')}, compare={payload.get('compare_providers')}"
+    )
     return dest
 
 
-def patch_providers_colab(asr_root: Path | str, providers_path: Path | str) -> None:
-    """Rewrite providers.colab.json ASR dirs to ``{asr_root}/...`` (idempotent per mount)."""
+def patch_providers_colab(
+    asr_root: Path | str,
+    providers_path: Path | str,
+    provider_names: list[str],
+) -> None:
+    """Rewrite providers.colab.json for compare pool only."""
     asr_root = Path(asr_root)
     path = Path(providers_path)
-    payload = json.loads(path.read_text(encoding="utf-8"))
-    payload["providers"] = {name: str(asr_root / sub) for name, sub in ASR_PROVIDER_SUBDIRS.items()}
+    missing = [n for n in provider_names if n not in ASR_PROVIDER_SUBDIRS]
+    if missing:
+        raise KeyError(f"Unknown compare provider(s): {missing}")
+    payload = {"providers": {name: str(asr_root / ASR_PROVIDER_SUBDIRS[name]) for name in provider_names}}
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
@@ -242,7 +258,9 @@ def bootstrap(
     install_runtime_deps(repo)
     mount = mount_gcs_bucket(bucket, mount_point)
     paths = repo_paths(mount, repo, asr_subdir=asr_subdir)
-    patch_providers_colab(paths["asr_root"], paths["config_json"])
+    base_session = load_repo_session_config(repo)
+    compare = compare_provider_list(base_session)
+    patch_providers_colab(paths["asr_root"], paths["config_json"], compare)
     session_path = write_colab_session_config(paths)
     print(f"GT: {paths['gt_dir']}")
     print(f"Audio: {paths['audio_dir']}")

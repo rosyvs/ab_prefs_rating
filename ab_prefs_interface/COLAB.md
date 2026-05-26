@@ -72,7 +72,7 @@ python -m ab_prefs_interface.create_session \
 git add configs/ab_prefs.manifest.json && git commit ...
 ```
 
-Or edit `compare_providers` / `session_items` in `colab_setup.write_colab_session_config` defaults before bootstrap.
+Sampling settings come from `configs/ab_prefs.session.json` (and `ab_prefs.manifest.json`) in git — Colab only overrides data paths for the GCS mount.
 
 ## Dependencies (installed by notebook)
 
