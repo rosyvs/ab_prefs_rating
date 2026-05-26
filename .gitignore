@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.DS_Store
+results/
+configs/ab_prefs_demo.session.runtime.json
+configs/ab_prefs_demo.session.json
+configs/ab_prefs_demo.providers.json

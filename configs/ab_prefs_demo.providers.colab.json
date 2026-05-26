@@ -1,0 +1,13 @@
+{
+  "providers": {
+    "aai_up3": "/content/dd_tfx/asr/dd210/aai/universal-3-pro",
+    "aai_up3_v2": "/content/dd_tfx/asr/dd210/aai/universal-3-pro-v2",
+    "aai_up3_extraprompted": "/content/dd_tfx/asr/dd210/aai/universal-3-pro_extraprompted",
+    "azure_fast": "/content/dd_tfx/asr/dd210/azure/fast-transcription",
+    "azure_llm": "/content/dd_tfx/asr/dd210/azure/llm-transcribe",
+    "azure_llm_extraprompted": "/content/dd_tfx/asr/dd210/azure/llm-transcribe_extraprompted",
+    "azure_mai": "/content/dd_tfx/asr/dd210/azure/mai-transcribe-1",
+    "deepgram_nova3": "/content/dd_tfx/asr/dd210/deepgram/nova-3",
+    "gemini_31_pro_extraprompted": "/content/dd_tfx/asr/dd210/gemini/gemini-3.1-pro-preview_extraprompted"
+  }
+}

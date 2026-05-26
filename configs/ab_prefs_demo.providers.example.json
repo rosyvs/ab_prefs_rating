@@ -1,0 +1,7 @@
+{
+  "providers": {
+    "aai_up3_v2": "/path/to/asr/dd210/aai/universal-3-pro-v2",
+    "azure_fast": "/path/to/asr/dd210/azure/fast-transcription",
+    "deepgram_nova3": "/path/to/asr/dd210/deepgram/nova-3"
+  }
+}

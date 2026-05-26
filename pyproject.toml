@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ab-prefs-demo"
+version = "0.1.0"
+description = "Human A/B preference rating for ASR transcripts on ground-truth audio clips"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ipywidgets>=8.0",
+    "jiwer>=3.0",
+    "pandas>=2.0",
+    "tqdm>=4.0",
+]
+
+[project.scripts]
+ab-prefs-create-session = "ab_prefs_demo.create_session:main"
+ab-prefs-summarize = "ab_prefs_demo.summarize_preferences:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ab_prefs_demo*"]
