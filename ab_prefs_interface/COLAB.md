@@ -27,6 +27,19 @@ gsutil -m rsync -r /path/to/audio gs://dd_tfx_full_transcripts/audio
 
 Commit `configs/ab_prefs.manifest.json` in git so every rater sees the same items.
 
+## Access control (required)
+
+**Keep the bucket private.** Do not grant `allUsers` or `allAuthenticatedUsers` read access.
+
+Grant each rater's Google account (or a Google Group):
+
+| Role | Purpose |
+|------|---------|
+| `roles/storage.objectViewer` | Read transcripts, audio, ASR JSONs via gcsfuse |
+| `roles/storage.objectCreator` on prefix `ab_prefs/` | Upload their ratings JSON (optional) |
+
+Colab flow: sign in → IAM check (`gsutil ls gs://…/transcripts/`) → **only then** gcsfuse mount. No gsutil copy of audio to disk; unauthorized accounts fail at the IAM check.
+
 ## Rater: Colab
 
 1. Open in Colab: [rate_colab.ipynb](https://colab.research.google.com/github/rosyvs/ab_prefs_rating/blob/main/ab_prefs_interface/rate_colab.ipynb) (or GitHub → notebook → **Open in Colab**).
@@ -72,8 +85,10 @@ Or edit `compare_providers` / `session_items` in `colab_setup.write_colab_sessio
 | Issue | Fix |
 |-------|-----|
 | `No module named 'jiwer'` | Re-run the main setup cell (needs `pip install -e .` before imports); pull latest notebook from GitHub |
-| `apt-get install gcsfuse` exit 100 | Pull latest repo — installs from Google apt repo; if fuse still fails, auto-falls back to gsutil sync |
-| `transcripts/` not found after mount | Check bucket name; re-run auth; confirm bucket IAM |
+| `No authenticated access` / PermissionError | Sign in with an authorized Google account; confirm bucket is private and IAM grants objectViewer |
+| `apt-get install gcsfuse` exit 100 | Pull latest repo — installs from Google apt repo |
+| gcsfuse mount failed | Colab FUSE limitation — use Vertex Workbench with bucket pre-mounted instead |
+| `transcripts/` not found after mount | Check bucket layout; confirm IAM |
 | Missing ASR json for recording | `gsutil rsync` asr/dd210; demo uses 5 recordings from manifest |
 | Widget blank | Colab: re-run setup cell (`enable_custom_widget_manager`) |
 | Different items than colleagues | Pull latest git; same `manifest.json` |

@@ -31,10 +31,26 @@ def in_colab() -> bool:
 
 
 def colab_auth() -> None:
-    if in_colab():
-        from google.colab import auth  # type: ignore
+    if not in_colab():
+        return
+    from google.colab import auth  # type: ignore
 
-        auth.authenticate_user()
+    auth.authenticate_user()
+    print("Google auth OK — gcsfuse/gsutil will use your credentials (not public bucket access)")
+
+
+def verify_gcs_access(bucket: str) -> None:
+    """Fail unless current credentials can read the bucket (blocks anonymous/public-only paths)."""
+    probe = f"gs://{bucket}/transcripts/"
+    result = subprocess.run(["gsutil", "ls", probe], capture_output=True, text=True)
+    if result.returncode != 0:
+        err = (result.stderr or result.stdout or "").strip()
+        raise PermissionError(
+            f"No authenticated access to {probe}. "
+            f"Sign in with a Google account that has storage.objectViewer on gs://{bucket}. "
+            f"Do not make this bucket public.\n{err}"
+        )
+    print(f"Verified IAM access to gs://{bucket}")
 
 
 def install_gcsfuse() -> None:
@@ -64,95 +80,44 @@ def install_gcsfuse() -> None:
     raise RuntimeError("Could not install gcsfuse from Google apt repos") from last_err
 
 
-def try_gcsfuse_mount(bucket: str, mount: Path) -> bool:
+def gcsfuse_mount(bucket: str, mount: Path) -> None:
     if not shutil.which("gcsfuse"):
-        return False
+        raise RuntimeError("gcsfuse not installed")
     mount.mkdir(parents=True, exist_ok=True)
     cmd = ["gcsfuse", "--implicit-dirs", bucket, str(mount)]
     print("Mounting:", " ".join(cmd))
-    try:
-        subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError:
-        return False
-    return (mount / "transcripts").is_dir() and (mount / "audio").is_dir()
+    subprocess.run(cmd, check=True)
+    if not (mount / "transcripts").is_dir() or not (mount / "audio").is_dir():
+        raise FileNotFoundError(f"Expected {mount}/transcripts and {mount}/audio after gcsfuse mount")
 
 
-def recording_ids_from_manifest(manifest_path: Path) -> tuple[set[str], list[str]]:
-    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
-    ids = {str(item["recording_id"]) for item in payload["items"]}
-    providers = [str(p) for p in payload.get("compare_providers", [])]
-    return ids, providers
-
-
-def sync_manifest_gsutil(
-    bucket: str,
-    local_root: Path,
-    manifest_path: Path,
-    *,
-    asr_subdir: str = "asr/dd210",
-) -> None:
-    """Copy only manifest recordings from GCS when gcsfuse is unavailable."""
-    recording_ids, compare_providers = recording_ids_from_manifest(manifest_path)
-    local_root = local_root.expanduser().resolve()
-    (local_root / "transcripts").mkdir(parents=True, exist_ok=True)
-    (local_root / "audio").mkdir(parents=True, exist_ok=True)
-    gs = f"gs://{bucket}"
-    print(f"gsutil: syncing {len(recording_ids)} recordings...")
-    # batch cp: gsutil -m cp src1 src2 ... dest won't work for different dests; loop by type
-    for rid in sorted(recording_ids):
-        subprocess.run(
-            ["gsutil", "-q", "cp", f"{gs}/transcripts/{rid}.jsonl", str(local_root / "transcripts" / f"{rid}.jsonl")],
-            check=True,
-        )
-        subprocess.run(
-            ["gsutil", "-q", "cp", f"{gs}/audio/{rid}.mp3", str(local_root / "audio" / f"{rid}.mp3")],
-            check=True,
-        )
-        for name in compare_providers:
-            sub = ASR_PROVIDER_SUBDIRS[name]
-            dest = local_root / asr_subdir / sub / f"{rid}.json"
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            subprocess.run(["gsutil", "-q", "cp", f"{gs}/{asr_subdir}/{sub}/{rid}.json", str(dest)], check=True)
-    print(f"Synced manifest data → {local_root}")
+def workbench_bucket_path(bucket: str, mount_point: Path) -> Path | None:
+    """Vertex Workbench: bucket already mounted via VM service account."""
+    for candidate in (
+        mount_point,
+        Path(f"/home/jupyter/gcs/{bucket}"),
+        Path(f"/gcs/{bucket}"),
+    ):
+        if (candidate / "transcripts").is_dir() and (candidate / "audio").is_dir():
+            print(f"Using Workbench bucket path: {candidate}")
+            return candidate
+    return None
 
 
 def mount_gcs_bucket(
     bucket: str = DEFAULT_BUCKET,
     mount_point: Path | str = DEFAULT_MOUNT,
-    *,
-    manifest_path: Path | str | None = None,
-    asr_subdir: str = "asr/dd210",
 ) -> Path:
-    """Expose bucket at mount_point via gcsfuse, or gsutil-sync manifest files on Colab."""
+    """Mount bucket with gcsfuse after Google auth + IAM verify. No gsutil copy fallback."""
     mount = Path(mount_point)
-    if (mount / "transcripts").is_dir() and (mount / "audio").is_dir():
-        print(f"Using existing mount: {mount}")
-        return mount
-    for candidate in (
-        mount,
-        Path(f"/home/jupyter/gcs/{bucket}"),
-        Path(f"/gcs/{bucket}"),
-    ):
-        if (candidate / "transcripts").is_dir() and (candidate / "audio").is_dir():
-            print(f"Using bucket path: {candidate}")
-            return candidate
+    wb = workbench_bucket_path(bucket, mount)
+    if wb is not None:
+        return wb
     colab_auth()
-    if in_colab():
-        install_gcsfuse()
-        if try_gcsfuse_mount(bucket, mount):
-            return mount
-        if manifest_path is None:
-            raise RuntimeError("gcsfuse mount failed and no manifest_path for gsutil fallback")
-        print("gcsfuse mount failed; falling back to gsutil cp for manifest recordings")
-        sync_manifest_gsutil(bucket, mount, Path(manifest_path), asr_subdir=asr_subdir)
-        return mount
-    # non-Colab: Workbench should already expose bucket; try fuse if available
-    if shutil.which("gcsfuse") and try_gcsfuse_mount(bucket, mount):
-        return mount
-    if manifest_path is not None:
-        sync_manifest_gsutil(bucket, mount, Path(manifest_path), asr_subdir=asr_subdir)
-        return mount
-    raise FileNotFoundError(f"Expected {mount}/transcripts — mount bucket or pass manifest_path")
+    verify_gcs_access(bucket)
+    install_gcsfuse()
+    gcsfuse_mount(bucket, mount)
+    return mount
 
 
 def install_runtime_deps(repo_root: Path | str | None = None) -> None:
@@ -263,14 +228,13 @@ def bootstrap(
     repo_url: str = DEFAULT_REPO_URL,
     asr_subdir: str = "asr/dd210",
 ) -> tuple[Path, Path]:
-    """Clone repo, install deps, mount/sync GCS data, write runtime session config."""
+    """Clone repo, install deps, auth + gcsfuse mount, write runtime session config."""
     repo = clone_repo(repo_root, repo_url=repo_url)
     os.chdir(repo)
     if str(repo) not in sys.path:
         sys.path.insert(0, str(repo))
     install_runtime_deps(repo)
-    manifest_path = repo / "configs" / "ab_prefs.manifest.json"
-    mount = mount_gcs_bucket(bucket, mount_point, manifest_path=manifest_path, asr_subdir=asr_subdir)
+    mount = mount_gcs_bucket(bucket, mount_point)
     paths = repo_paths(mount, repo, asr_subdir=asr_subdir)
     patch_providers_colab(paths["asr_root"], paths["config_json"])
     session_path = write_colab_session_config(paths)
