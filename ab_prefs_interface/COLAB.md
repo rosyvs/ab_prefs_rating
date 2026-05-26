@@ -27,18 +27,18 @@ gsutil -m rsync -r /path/to/audio gs://dd_tfx_full_transcripts/audio
 
 Commit `configs/ab_prefs.manifest.json` in git so every rater sees the same items.
 
-## Access control (required)
+## Access control
 
-**Keep the bucket private.** Do not grant `allUsers` or `allAuthenticatedUsers` read access.
+**No anonymous access** — do not grant `allUsers` (public read).
 
-Grant each rater's Google account (or a Google Group):
+Authenticated access is fine: e.g. `allAuthenticatedUsers` with `objectViewer`, a Google Group, or named accounts — whatever your team already uses for this bucket.
 
 | Role | Purpose |
 |------|---------|
 | `roles/storage.objectViewer` | Read transcripts, audio, ASR JSONs via gcsfuse |
-| `roles/storage.objectCreator` on prefix `ab_prefs/` | Upload their ratings JSON (optional) |
+| `roles/storage.objectCreator` on prefix `ab_prefs/` | Upload ratings JSON (optional) |
 
-Colab flow: sign in → IAM check (`gsutil ls gs://…/transcripts/`) → **only then** gcsfuse mount. No gsutil copy of audio to disk; unauthorized accounts fail at the IAM check.
+Colab: sign in with Google → IAM check (`gsutil ls gs://…/transcripts/`) → gcsfuse mount. Must be signed in; accounts without bucket IAM fail at the check. Audio is read through the mount, not copied to disk.
 
 ## Rater: Colab
 
@@ -85,7 +85,7 @@ Or edit `compare_providers` / `session_items` in `colab_setup.write_colab_sessio
 | Issue | Fix |
 |-------|-----|
 | `No module named 'jiwer'` | Re-run the main setup cell (needs `pip install -e .` before imports); pull latest notebook from GitHub |
-| `No authenticated access` / PermissionError | Sign in with an authorized Google account; confirm bucket is private and IAM grants objectViewer |
+| `No authenticated access` / PermissionError | Sign in with a Google account that has bucket access (objectViewer) |
 | `apt-get install gcsfuse` exit 100 | Pull latest repo — installs from Google apt repo |
 | gcsfuse mount failed | Colab FUSE limitation — use Vertex Workbench with bucket pre-mounted instead |
 | `transcripts/` not found after mount | Check bucket layout; confirm IAM |

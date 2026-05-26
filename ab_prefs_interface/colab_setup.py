@@ -47,8 +47,7 @@ def verify_gcs_access(bucket: str) -> None:
         err = (result.stderr or result.stdout or "").strip()
         raise PermissionError(
             f"No authenticated access to {probe}. "
-            f"Sign in with a Google account that has storage.objectViewer on gs://{bucket}. "
-            f"Do not make this bucket public.\n{err}"
+            f"Sign in with a Google account that has storage.objectViewer on gs://{bucket}.\n{err}"
         )
     print(f"Verified IAM access to gs://{bucket}")
 
