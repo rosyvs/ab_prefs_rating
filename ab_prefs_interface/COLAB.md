@@ -72,7 +72,8 @@ Or edit `compare_providers` / `session_items` in `colab_setup.write_colab_sessio
 | Issue | Fix |
 |-------|-----|
 | `No module named 'jiwer'` | Re-run the main setup cell (needs `pip install -e .` before imports); pull latest notebook from GitHub |
-| `transcripts/` not found after mount | Check bucket name; run Colab auth cell |
+| `apt-get install gcsfuse` exit 100 | Pull latest repo — installs from Google apt repo; if fuse still fails, auto-falls back to gsutil sync |
+| `transcripts/` not found after mount | Check bucket name; re-run auth; confirm bucket IAM |
 | Missing ASR json for recording | `gsutil rsync` asr/dd210; demo uses 5 recordings from manifest |
 | Widget blank | Colab: re-run setup cell (`enable_custom_widget_manager`) |
 | Different items than colleagues | Pull latest git; same `manifest.json` |
