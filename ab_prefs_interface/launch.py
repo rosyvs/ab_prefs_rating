@@ -7,8 +7,6 @@ import sys
 from argparse import Namespace
 from pathlib import Path
 
-from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
-from ab_prefs_interface.run_rating import run_notebook_rating
 from ab_prefs_interface.summarize_preferences import summarize_cli_command
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -89,8 +87,10 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
 def launch_rating(
     rater_id: str | None = None,
     session_config_path: Path | str | None = None,
-) -> NotebookPreferenceInterface:
+) -> "NotebookPreferenceInterface":
     """Load shared session config, open rating widget. Colleagues only set rater_id."""
+    from ab_prefs_interface.run_rating import run_notebook_rating
+
     rater = (rater_id or os.environ.get("AB_PREFS_RATER_ID", "")).strip()
     config_path = Path(session_config_path or os.environ.get("AB_PREFS_SESSION_CONFIG", DEFAULT_SESSION_CONFIG))
     session = load_session_config(config_path)

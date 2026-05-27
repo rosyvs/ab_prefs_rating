@@ -4,7 +4,6 @@ import argparse
 import json
 from pathlib import Path
 
-from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
 from ab_prefs_interface.session_config import compare_provider_names, session_recording_pool_size
 from ab_prefs_interface.matching import build_comparison_units
 from ab_prefs_interface.sampling import SAMPLING_STRATEGIES, build_session_queue, filter_queue_with_transcripts
@@ -160,7 +159,11 @@ def build_argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run_notebook_rating(args: argparse.Namespace) -> NotebookPreferenceInterface:
+def run_notebook_rating(args: argparse.Namespace) -> "NotebookPreferenceInterface":
+    from ab_prefs_interface.colab_setup import enable_colab_widgets
+    from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
+
+    enable_colab_widgets()
     verbose = bool(getattr(args, "verbose", False))
     provider_dirs = load_provider_dirs(args)
     compare_providers = compare_provider_names(

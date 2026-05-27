@@ -29,7 +29,15 @@ ASR_PROVIDER_SUBDIRS = {
 
 
 def in_colab() -> bool:
-    return "google.colab" in sys.modules
+    if os.environ.get("COLAB_RELEASE_TAG"):
+        return True
+    if "google.colab" in sys.modules:
+        return True
+    try:
+        import google.colab  # noqa: F401
+        return True
+    except ImportError:
+        return False
 
 
 def colab_auth() -> None:
@@ -128,7 +136,17 @@ def mount_gcs_bucket(
     return mount
 
 
+def enable_colab_widgets() -> None:
+    """Call before ipywidgets is imported (Colab otherwise shows blank widgets)."""
+    if not in_colab():
+        return
+    from google.colab import output  # type: ignore
+
+    output.enable_custom_widget_manager()
+
+
 def install_runtime_deps(repo_root: Path | str | None = None) -> None:
+    enable_colab_widgets()
     if repo_root is not None:
         subprocess.run(
             [sys.executable, "-m", "pip", "install", "-q", "-e", str(Path(repo_root).resolve())],
@@ -136,9 +154,6 @@ def install_runtime_deps(repo_root: Path | str | None = None) -> None:
         )
     if in_colab():
         subprocess.run(["apt-get", "install", "-qq", "-y", "ffmpeg"], check=True)
-        from google.colab import output  # type: ignore
-
-        output.enable_custom_widget_manager()
 
 
 def clone_repo(
@@ -267,6 +282,7 @@ def bootstrap(
     runtime_session_config: Path | str = "configs/ab_prefs.session.runtime.json",
 ) -> tuple[Path, Path]:
     """Clone repo, install deps, auth + gcsfuse mount, write runtime session config."""
+    enable_colab_widgets()
     repo = clone_repo(repo_root, repo_url=repo_url)
     os.chdir(repo)
     if str(repo) not in sys.path:
