@@ -17,7 +17,7 @@
   "min_gt_words": 5,
   "min_audio_seconds": 3.0,
   "compare_providers": "aai_up3_v2,azure_fast,deepgram_nova3",
-  "show_note": false,
+  "show_note": true,
   "show_providers": false,
   "verbose": true,
   "rebuild_cache": false

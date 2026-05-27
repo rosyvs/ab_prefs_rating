@@ -114,7 +114,12 @@ def build_argument_parser() -> argparse.ArgumentParser:
         default=0,
         help="Merge consecutive GT lines until at least this many whitespace-separated words (0=off)",
     )
-    parser.add_argument("--show-note", action="store_true", help="Show note textbox by default (else use Add note checkbox)")
+    parser.add_argument(
+        "--show-note",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Show note textbox by default (else use Add note checkbox)",
+    )
     parser.add_argument(
         "--show-providers",
         action="store_true",
@@ -289,7 +294,7 @@ def run_notebook_rating(args: argparse.Namespace):
         output_json_path=output_path,
         strategy=args.strategy,
         session_id=session_id,
-        show_note=bool(getattr(args, "show_note", False)),
+        show_note=bool(getattr(args, "show_note", True)),
         show_providers=bool(getattr(args, "show_providers", False)),
         clip_dir=clip_dir,
         notebook_root=notebook_root,

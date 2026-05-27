@@ -74,7 +74,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         recording_seed=int(session.get("recording_seed", 7)),
         min_gt_words=int(session.get("min_gt_words", 0)),
         min_audio_seconds=float(session.get("min_audio_seconds", 3.0)),
-        show_note=bool(session.get("show_note", False)),
+        show_note=bool(session.get("show_note", True)),
         show_providers=bool(session.get("show_providers", False)),
         clip_dir=Path(session["clip_dir"]),
         notebook_root=notebook_root,

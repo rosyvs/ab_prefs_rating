@@ -23,6 +23,7 @@ class ColabHtmlPreferenceInterface:
         output_json_path: Path,
         strategy: str,
         session_id: str | None = None,
+        show_note: bool = True,
         show_providers: bool = False,
         clip_dir: Path | None = None,
         notebook_root: Path | None = None,
@@ -36,6 +37,7 @@ class ColabHtmlPreferenceInterface:
         self.output_json_path = output_json_path
         self.strategy = strategy
         self.session_id = session_id or uuid4().hex[:12]
+        self.show_note = show_note
         self.show_providers = show_providers
         self.ground_truth_name = ground_truth_name
         self.current_index = 0
@@ -80,7 +82,8 @@ class ColabHtmlPreferenceInterface:
             f'style="margin:4px 8px 4px 0;padding:6px 14px;">{html.escape(label)}</button>'
         )
 
-    def wire_choice_buttons(self) -> None:
+    def wire_page_js(self) -> None:
+        show_note = "true" if self.show_note else "false"
         display(Javascript(f"""
 (function() {{
   if (!google.colab || !google.colab.kernel) {{
@@ -88,9 +91,20 @@ class ColabHtmlPreferenceInterface:
     return;
   }}
   var invoke = google.colab.kernel.invokeFunction;
+  var toggle = document.getElementById("ab-note-toggle");
+  var field = document.getElementById("ab-note-field");
+  if (toggle && field) {{
+    toggle.checked = {show_note};
+    field.style.display = toggle.checked ? "block" : "none";
+    toggle.onchange = function() {{
+      field.style.display = toggle.checked ? "block" : "none";
+      if (!toggle.checked) field.value = "";
+    }};
+  }}
   document.querySelectorAll("[data-ab-choice]").forEach(function(btn) {{
     btn.onclick = async function() {{
-      await invoke("{CALLBACK_NAME}", [btn.getAttribute("data-ab-choice")], {{}});
+      var note = field ? field.value.trim() : "";
+      await invoke("{CALLBACK_NAME}", [btn.getAttribute("data-ab-choice"), note], {{}});
     }};
   }});
 }})();
@@ -126,13 +140,18 @@ class ColabHtmlPreferenceInterface:
             + self.choice_button("Choose B", "B")
             + self.choice_button("Tie", "tie")
             + self.choice_button("Skip", "skip")
+            + '<label style="margin-left:12px;"><input type="checkbox" id="ab-note-toggle"> Add note</label>'
         )
         status = (
             f'<p style="margin:8px 0;color:#4b5563;">{html.escape(self.status_message)}</p>'
             if self.status_message
             else ""
         )
-        return f"{rating_style}{body}{status}<div style=\"margin-top:10px;\">{buttons}</div>"
+        note_field = (
+            '<textarea id="ab-note-field" placeholder="Optional note about why A/B/tie/skip" '
+            'style="display:none;width:100%;max-width:900px;height:70px;margin-top:6px;"></textarea>'
+        )
+        return f'{rating_style}{body}{status}<div style="margin-top:10px;">{buttons}</div>{note_field}'
 
     def render(self, *, placeholder: bool = False) -> None:
         clear_output(wait=True)
@@ -144,9 +163,9 @@ class ColabHtmlPreferenceInterface:
             return
         display(HTML(self.page_html()))
         if self.current_index < len(self.queue):
-            self.wire_choice_buttons()
+            self.wire_page_js()
 
-    def on_choice(self, choice: str) -> None:
+    def on_choice(self, choice: str, note: str = "") -> None:
         if self.current_index >= len(self.queue):
             return
         unit, provider_a, provider_b = self.current_item()
@@ -161,7 +180,7 @@ class ColabHtmlPreferenceInterface:
             provider_a=provider_a,
             provider_b=provider_b,
             choice=choice,
-            note="",
+            note=(note or "").strip(),
             ground_truth_text=unit.ground_truth_text,
             transcript_a=unit.provider_candidates[provider_a].text,
             transcript_b=unit.provider_candidates[provider_b].text,

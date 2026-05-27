@@ -22,8 +22,8 @@
       "segment_index_end": null,
       "start_seconds": 60.90713205525125,
       "end_seconds": 64.926,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "282884:291-292:992.984-997.906",
@@ -42,8 +42,8 @@
       "segment_index_end": 12,
       "start_seconds": 58.266,
       "end_seconds": 63.485,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "291623:121-122:500.683-507.653",
@@ -52,8 +52,8 @@
       "segment_index_end": 122,
       "start_seconds": 500.683,
       "end_seconds": 507.653099437276,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "278670:364-365:737.036-745.564",
@@ -72,8 +72,8 @@
       "segment_index_end": null,
       "start_seconds": 1215.5230000000001,
       "end_seconds": 1222.0364668537175,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "267109:81-83:276.300-280.486",
@@ -92,8 +92,8 @@
       "segment_index_end": 427,
       "start_seconds": 924.4960000000001,
       "end_seconds": 928.1000680272109,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "265326:140-142:341.122-349.385",
@@ -112,8 +112,8 @@
       "segment_index_end": 714,
       "start_seconds": 1217.658,
       "end_seconds": 1221.058,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "267128:86-86:289.780-293.056",
@@ -122,8 +122,8 @@
       "segment_index_end": null,
       "start_seconds": 289.78,
       "end_seconds": 293.055780450135,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "273757:149-153:420.070-424.090",
@@ -132,8 +132,8 @@
       "segment_index_end": 153,
       "start_seconds": 420.07,
       "end_seconds": 424.09,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "263682:364-367:773.383-783.185",
@@ -142,8 +142,8 @@
       "segment_index_end": 367,
       "start_seconds": 773.3828361286829,
       "end_seconds": 783.185,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "271120:319-320:987.047-991.470",
@@ -152,8 +152,8 @@
       "segment_index_end": 320,
       "start_seconds": 987.0473533227407,
       "end_seconds": 991.47,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "275140:208-208:499.250-506.066",
@@ -162,8 +162,8 @@
       "segment_index_end": null,
       "start_seconds": 499.2502017640553,
       "end_seconds": 506.0663038548753,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "278341:56-56:108.372-112.478",
@@ -242,8 +242,8 @@
       "segment_index_end": 678,
       "start_seconds": 1161.5639999999999,
       "end_seconds": 1166.8329631368824,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "282884:90-93:352.837-357.324",
@@ -262,8 +262,8 @@
       "segment_index_end": 501,
       "start_seconds": 1553.2399441630046,
       "end_seconds": 1559.077,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "267105:136-139:430.957-437.696",
@@ -302,8 +302,8 @@
       "segment_index_end": 243,
       "start_seconds": 762.4727993224731,
       "end_seconds": 767.6579610944722,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "278670:323-324:675.868-680.419",
@@ -312,8 +312,8 @@
       "segment_index_end": 324,
       "start_seconds": 675.8676772461808,
       "end_seconds": 680.4188574676821,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "267105:406-407:1161.371-1168.527",
@@ -342,8 +342,8 @@
       "segment_index_end": null,
       "start_seconds": 391.220469867271,
       "end_seconds": 394.25021872003566,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "267105:70-72:205.280-209.121",
@@ -362,8 +362,8 @@
       "segment_index_end": 264,
       "start_seconds": 849.859,
       "end_seconds": 855.2166920103354,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "291623:183-183:966.725-969.853",
@@ -382,8 +382,8 @@
       "segment_index_end": null,
       "start_seconds": 76.26832748044397,
       "end_seconds": 80.345,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "297756:125-125:400.112-404.048",
@@ -392,8 +392,8 @@
       "segment_index_end": null,
       "start_seconds": 400.111962655944,
       "end_seconds": 404.04766053300364,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "275140:473-474:1073.683-1085.519",
@@ -402,8 +402,8 @@
       "segment_index_end": 474,
       "start_seconds": 1073.6833478050391,
       "end_seconds": 1085.5192296667174,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "278670:218-218:460.668-464.222",
@@ -432,8 +432,8 @@
       "segment_index_end": 22,
       "start_seconds": 35.074883855802454,
       "end_seconds": 38.10689342403628,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "279654:311-312:429.249-436.627",
@@ -462,8 +462,8 @@
       "segment_index_end": null,
       "start_seconds": 58.33206834960705,
       "end_seconds": 63.615,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "267105:84-85:251.285-257.910",
@@ -472,8 +472,8 @@
       "segment_index_end": 85,
       "start_seconds": 251.285,
       "end_seconds": 257.91,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "271120:241-241:712.848-716.285",
@@ -482,8 +482,8 @@
       "segment_index_end": null,
       "start_seconds": 712.8481375406709,
       "end_seconds": 716.2850000000001,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "278341:401-405:792.570-796.086",
@@ -492,8 +492,8 @@
       "segment_index_end": 405,
       "start_seconds": 792.5699999999999,
       "end_seconds": 796.0855328798185,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "267128:135-136:543.921-551.075",
@@ -502,8 +502,8 @@
       "segment_index_end": 136,
       "start_seconds": 543.921479121532,
       "end_seconds": 551.075,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "275140:78-80:149.412-159.801",
@@ -522,8 +522,8 @@
       "segment_index_end": null,
       "start_seconds": 1354.1254421768708,
       "end_seconds": 1361.4298185941043,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "282884:77-78:271.724-277.940",
@@ -562,8 +562,8 @@
       "segment_index_end": 15,
       "start_seconds": 46.465,
       "end_seconds": 52.267117919143416,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "278341:286-289:599.480-611.760",
@@ -582,8 +582,8 @@
       "segment_index_end": 23,
       "start_seconds": 63.009213470890735,
       "end_seconds": 78.295,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "278341:241-242:518.070-521.305",
@@ -612,8 +612,8 @@
       "segment_index_end": 14,
       "start_seconds": 51.73796999266656,
       "end_seconds": 55.09,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "267128:166-166:726.085-738.175",
@@ -622,8 +622,8 @@
       "segment_index_end": null,
       "start_seconds": 726.085,
       "end_seconds": 738.175,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "273757:709-711:1635.039-1641.017",
@@ -632,8 +632,8 @@
       "segment_index_end": 711,
       "start_seconds": 1635.039205712652,
       "end_seconds": 1641.0168444376454,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "297756:20-20:60.233-64.016",
@@ -642,8 +642,8 @@
       "segment_index_end": null,
       "start_seconds": 60.23331228016559,
       "end_seconds": 64.01567127889815,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "271120:187-188:545.550-548.830",
@@ -652,8 +652,8 @@
       "segment_index_end": 188,
       "start_seconds": 545.55,
       "end_seconds": 548.83,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "273757:743-743:1713.772-1719.800",
@@ -672,8 +672,8 @@
       "segment_index_end": 564,
       "start_seconds": 1683.533,
       "end_seconds": 1687.2122074001963,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "291623:105-105:428.015-431.887",
@@ -722,8 +722,8 @@
       "segment_index_end": null,
       "start_seconds": 1535.7649999999999,
       "end_seconds": 1545.12,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "282884:440-443:1554.338-1565.330",
@@ -742,8 +742,8 @@
       "segment_index_end": null,
       "start_seconds": 569.725,
       "end_seconds": 580.18,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "279654:54-57:136.188-139.739",
@@ -752,8 +752,8 @@
       "segment_index_end": 57,
       "start_seconds": 136.188284019884,
       "end_seconds": 139.73884353741497,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "267105:310-311:832.835-847.926",
@@ -762,8 +762,8 @@
       "segment_index_end": 311,
       "start_seconds": 832.835,
       "end_seconds": 847.926,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "267105:149-150:452.916-469.320",
@@ -792,8 +792,8 @@
       "segment_index_end": 73,
       "start_seconds": 241.2002025555681,
       "end_seconds": 244.44864193855676,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "297756:439-441:1348.459-1352.910",
@@ -812,8 +812,8 @@
       "segment_index_end": 341,
       "start_seconds": 1004.9571446788664,
       "end_seconds": 1009.5102616736781,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "273757:466-468:1089.196-1092.656",
@@ -832,8 +832,8 @@
       "segment_index_end": 311,
       "start_seconds": 1087.5639999999999,
       "end_seconds": 1110.0279899775558,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "291623:336-337:1646.793-1651.939",
@@ -842,8 +842,8 @@
       "segment_index_end": 337,
       "start_seconds": 1646.793336097473,
       "end_seconds": 1651.939,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "271120:291-292:861.205-864.516",
@@ -862,8 +862,8 @@
       "segment_index_end": null,
       "start_seconds": 801.7251563871863,
       "end_seconds": 806.1167346938776,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "263334:3-4:23.450-28.305",
@@ -872,8 +872,8 @@
       "segment_index_end": 4,
       "start_seconds": 23.45,
       "end_seconds": 28.305,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "282884:532-532:1869.706-1874.512",
@@ -882,8 +882,8 @@
       "segment_index_end": null,
       "start_seconds": 1869.705886416256,
       "end_seconds": 1874.5119591370767,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "297756:126-126:404.405-409.604",
@@ -892,8 +892,8 @@
       "segment_index_end": null,
       "start_seconds": 404.40545124909994,
       "end_seconds": 409.6044533704967,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "276129:371-373:808.700-817.063",
@@ -912,8 +912,8 @@
       "segment_index_end": 325,
       "start_seconds": 1490.06,
       "end_seconds": 1496.116,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "275140:18-19:33.201-37.089",
@@ -922,8 +922,8 @@
       "segment_index_end": 19,
       "start_seconds": 33.20066417286324,
       "end_seconds": 37.08897067925952,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "297756:3-3:9.717-14.164",
@@ -942,8 +942,8 @@
       "segment_index_end": null,
       "start_seconds": 440.5730463295097,
       "end_seconds": 446.12843537414966,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "271120:165-165:473.580-478.240",
@@ -962,8 +962,8 @@
       "segment_index_end": 158,
       "start_seconds": 766.9849999999999,
       "end_seconds": 772.4904166395363,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "265326:94-97:216.375-224.337",
@@ -972,8 +972,8 @@
       "segment_index_end": 97,
       "start_seconds": 216.375,
       "end_seconds": 224.33705898264833,
-      "provider_a": "azure_fast",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
     },
     {
       "span_key": "263682:154-157:332.292-338.072",
@@ -982,8 +982,8 @@
       "segment_index_end": 157,
       "start_seconds": 332.2922503990894,
       "end_seconds": 338.0716831388426,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "306159:7-11:9.984-14.136",
@@ -992,8 +992,8 @@
       "segment_index_end": 11,
       "start_seconds": 9.984463115225392,
       "end_seconds": 14.136113299218032,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "deepgram_nova3"
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "297756:428-430:1323.871-1327.774",
@@ -1002,8 +1002,8 @@
       "segment_index_end": 430,
       "start_seconds": 1323.871,
       "end_seconds": 1327.7743197278912,
-      "provider_a": "aai_up3_v2",
-      "provider_b": "azure_fast"
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
     },
     {
       "span_key": "267109:25-26:102.325-107.845",

@@ -177,7 +177,7 @@ class NotebookPreferenceInterface:
         output_json_path: Path,
         strategy: str,
         session_id: str | None = None,
-        show_note: bool = False,
+        show_note: bool = True,
         show_providers: bool = False,
         clip_dir: Path | None = None,
         notebook_root: Path | None = None,

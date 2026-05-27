@@ -170,6 +170,21 @@ def pick_session_items(
     return chosen[:session_items]
 
 
+def randomize_ab_sides(
+    queue: list[tuple[ComparisonUnit, str, str]],
+    seed: int,
+) -> list[tuple[ComparisonUnit, str, str]]:
+    """Randomly swap which provider is shown as A vs B (seeded, reproducible per manifest)."""
+    rng = random.Random(seed + 7919)
+    out: list[tuple[ComparisonUnit, str, str]] = []
+    for unit, provider_a, provider_b in queue:
+        if rng.random() < 0.5:
+            out.append((unit, provider_b, provider_a))
+        else:
+            out.append((unit, provider_a, provider_b))
+    return out
+
+
 def build_session_queue(
     units: list[ComparisonUnit],
     provider_names: list[str],
@@ -199,6 +214,7 @@ def build_session_queue(
         metric = metric_sort_key(strategy)
         ordered = sorted(eligible, key=lambda item: item[0].features.get(metric, 0.0), reverse=True)
     queue = pick_session_items(ordered, target_items, asr_names, seed, unique_recordings=unique_recordings)
+    queue = randomize_ab_sides(queue, seed)
     if verbose:
         print(f"Session queue: {len(queue)} items ({strategy}, target={target_items})")
         n_unique = len({u.recording_id for u, _, _ in queue})
