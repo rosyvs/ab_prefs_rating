@@ -161,9 +161,9 @@ def build_argument_parser() -> argparse.ArgumentParser:
 
 def run_notebook_rating(args: argparse.Namespace) -> "NotebookPreferenceInterface":
     from ab_prefs_interface.colab_setup import enable_colab_widgets
-    from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
 
     enable_colab_widgets()
+    from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
     verbose = bool(getattr(args, "verbose", False))
     provider_dirs = load_provider_dirs(args)
     compare_providers = compare_provider_names(
@@ -291,7 +291,8 @@ def run_notebook_rating(args: argparse.Namespace) -> "NotebookPreferenceInterfac
         verbose=verbose,
         ground_truth_name=args.ground_truth_name,
     )
-    interface.show()
+    interface.show()  # placeholder widget before clip ffmpeg work
+    interface.load_clips()
     return interface
 
 

@@ -140,6 +140,8 @@ def enable_colab_widgets() -> None:
     """Call before ipywidgets is imported (Colab otherwise shows blank widgets)."""
     if not in_colab():
         return
+    if "ipywidgets" in sys.modules:
+        print("WARNING: ipywidgets already imported — Colab UI may not render. Restart runtime and Run All.")
     from google.colab import output  # type: ignore
 
     output.enable_custom_widget_manager()

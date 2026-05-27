@@ -195,12 +195,10 @@ class NotebookPreferenceInterface:
         self.current_index = 0
         clip_root = clip_dir or Path("results/ab_prefs/audio_clips")
         nb_root = notebook_root or Path.cwd()
-        self.audio_urls = ensure_queue_clips(
-            queue,
-            clip_root,
-            nb_root,
-            verbose=verbose,
-        )
+        self.clip_dir = clip_root
+        self.notebook_root = nb_root
+        self.verbose = verbose
+        self.audio_urls: dict[str, str] = {}
         self.note_widget = widgets.Textarea(
             value="",
             placeholder="Optional note about why A/B/tie/skip",
@@ -227,6 +225,25 @@ class NotebookPreferenceInterface:
             [self.style_html, self.item_html, self.button_row, self.note_widget, self.status_html]
         )
         self.shown = False
+        self.set_placeholder(f"Preparing audio clips ({len(queue)} items)…")
+        self.button_row.layout.display = "none"
+
+    def set_placeholder(self, message: str) -> None:
+        self.item_html.value = f'<p style="margin:8px 0;color:#4b5563;">{html.escape(message)}</p>'
+
+    def load_clips(self) -> None:
+        if self.audio_urls:
+            return
+        self.set_placeholder(f"Preparing audio clips ({len(self.queue)} items)…")
+        self.audio_urls = ensure_queue_clips(
+            self.queue,
+            self.clip_dir,
+            self.notebook_root,
+            verbose=self.verbose,
+        )
+        self.button_row.layout.display = None
+        self.render_current()
+        self.show(force=True)
 
     def current_item(self) -> tuple[ComparisonUnit, str, str]:
         return self.queue[self.current_index]
@@ -240,13 +257,12 @@ class NotebookPreferenceInterface:
             self.note_widget.value = ""
             self.note_widget.layout.display = "none"
 
-    def show(self) -> None:
-        if self.shown:
+    def show(self, *, force: bool = False) -> None:
+        if force or not self.shown:
+            display(self.root)
+            self.shown = True
+        if self.audio_urls:
             self.render_current()
-            return
-        display(self.root)
-        self.shown = True
-        self.render_current()
 
     def item_html_value(self) -> str:
         unit, provider_a, provider_b = self.current_item()
@@ -264,6 +280,8 @@ class NotebookPreferenceInterface:
         )
 
     def render_current(self) -> None:
+        if not self.audio_urls:
+            return
         self.item_html.value = self.item_html_value()
 
     def submit_choice(self, choice: str) -> None:

@@ -90,5 +90,5 @@ Sampling settings come from `configs/ab_prefs.session.json` (and `ab_prefs.manif
 | gcsfuse mount failed | Colab FUSE limitation — use Vertex Workbench with bucket pre-mounted instead |
 | `transcripts/` not found after mount | Check bucket layout; confirm IAM |
 | Missing ASR json for recording | `gsutil rsync` asr/dd210; manifest defines which recording IDs are needed |
-| Widget blank / only object repr | Colab: pull latest (lazy ipywidgets import + `enable_colab_widgets` before UI); Runtime → Restart, delete `/content/ab_prefs_rating`, re-run all |
+| Widget blank / `ipywidgets loaded before enable: True` | Cell 1 must run first (enables widgets before imports). Restart runtime, pull latest, Run All. |
 | Different items than colleagues | Pull latest git; same `manifest.json` |
