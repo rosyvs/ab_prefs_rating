@@ -159,11 +159,14 @@ def build_argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run_notebook_rating(args: argparse.Namespace) -> "NotebookPreferenceInterface":
-    from ab_prefs_interface.colab_setup import enable_colab_widgets
+def run_notebook_rating(args: argparse.Namespace):
+    from ab_prefs_interface.colab_setup import enable_colab_widgets, use_colab_html_ui
 
-    enable_colab_widgets()
-    from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
+    if use_colab_html_ui():
+        from ab_prefs_interface.interface_colab import ColabHtmlPreferenceInterface as PreferenceInterface
+    else:
+        enable_colab_widgets()
+        from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface as PreferenceInterface
     verbose = bool(getattr(args, "verbose", False))
     provider_dirs = load_provider_dirs(args)
     compare_providers = compare_provider_names(
@@ -276,10 +279,12 @@ def run_notebook_rating(args: argparse.Namespace) -> "NotebookPreferenceInterfac
     session_id = rater_id if rater_id else None
     notebook_root = args.notebook_root.expanduser().resolve()
     clip_dir = args.clip_dir.expanduser().resolve()
+    if verbose and use_colab_html_ui():
+        print("Colab HTML rating UI (ipywidgets pre-loaded by Colab kernel)")
     if verbose:
         print(f"Launching UI ({len(queue)} items) → {output_path}")
         print(f"Audio clips cached under {clip_dir}")
-    interface = NotebookPreferenceInterface(
+    interface = PreferenceInterface(
         queue=queue,
         output_json_path=output_path,
         strategy=args.strategy,

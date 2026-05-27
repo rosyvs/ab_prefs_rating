@@ -29,22 +29,19 @@ ASR_PROVIDER_SUBDIRS = {
 
 
 def in_colab() -> bool:
-    if os.environ.get("COLAB_RELEASE_TAG"):
-        return True
-    if "google.colab" in sys.modules:
-        return True
-    try:
-        import google.colab  # noqa: F401
-        return True
-    except ImportError:
-        return False
+    return bool(os.environ.get("COLAB_RELEASE_TAG"))
+
+
+def use_colab_html_ui() -> bool:
+    """Colab pre-imports ipywidgets before user cells; HTML+callbacks work reliably."""
+    return in_colab()
 
 
 def colab_auth() -> None:
-    if not in_colab():
+    try:
+        from google.colab import auth  # type: ignore
+    except ImportError:
         return
-    from google.colab import auth  # type: ignore
-
     auth.authenticate_user()
     print("Google auth OK — gcsfuse/gsutil will use your credentials (not public bucket access)")
 
@@ -137,11 +134,9 @@ def mount_gcs_bucket(
 
 
 def enable_colab_widgets() -> None:
-    """Call before ipywidgets is imported (Colab otherwise shows blank widgets)."""
-    if not in_colab():
+    """Enable ipywidgets on Jupyter/Workbench (not used on Colab — see use_colab_html_ui)."""
+    if use_colab_html_ui() or not in_colab():
         return
-    if "ipywidgets" in sys.modules:
-        print("WARNING: ipywidgets already imported — Colab UI may not render. Restart runtime and Run All.")
     from google.colab import output  # type: ignore
 
     output.enable_custom_widget_manager()
