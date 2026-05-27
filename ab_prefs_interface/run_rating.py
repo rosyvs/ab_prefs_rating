@@ -118,7 +118,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--show-note",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="Show note textbox by default (else use Add note checkbox)",
+        help="Include Add note checkbox (unchecked until rater enables it; use --no-show-note to hide)",
     )
     parser.add_argument(
         "--show-providers",

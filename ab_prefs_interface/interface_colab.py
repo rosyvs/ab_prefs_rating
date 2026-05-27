@@ -83,7 +83,6 @@ class ColabHtmlPreferenceInterface:
         )
 
     def wire_page_js(self) -> None:
-        show_note = "true" if self.show_note else "false"
         display(Javascript(f"""
 (function() {{
   if (!google.colab || !google.colab.kernel) {{
@@ -94,8 +93,8 @@ class ColabHtmlPreferenceInterface:
   var toggle = document.getElementById("ab-note-toggle");
   var field = document.getElementById("ab-note-field");
   if (toggle && field) {{
-    toggle.checked = {show_note};
-    field.style.display = toggle.checked ? "block" : "none";
+    toggle.checked = false;
+    field.style.display = "none";
     toggle.onchange = function() {{
       field.style.display = toggle.checked ? "block" : "none";
       if (!toggle.checked) field.value = "";
@@ -140,17 +139,22 @@ class ColabHtmlPreferenceInterface:
             + self.choice_button("Choose B", "B")
             + self.choice_button("Tie", "tie")
             + self.choice_button("Skip", "skip")
-            + '<label style="margin-left:12px;"><input type="checkbox" id="ab-note-toggle"> Add note</label>'
         )
+        if self.show_note:
+            buttons += (
+                '<label style="margin-left:12px;"><input type="checkbox" id="ab-note-toggle"> Add note</label>'
+            )
         status = (
             f'<p style="margin:8px 0;color:#4b5563;">{html.escape(self.status_message)}</p>'
             if self.status_message
             else ""
         )
-        note_field = (
-            '<textarea id="ab-note-field" placeholder="Optional note about why A/B/tie/skip" '
-            'style="display:none;width:100%;max-width:900px;height:70px;margin-top:6px;"></textarea>'
-        )
+        note_field = ""
+        if self.show_note:
+            note_field = (
+                '<textarea id="ab-note-field" placeholder="Optional note about why A/B/tie/skip" '
+                'style="display:none;width:100%;max-width:900px;height:70px;margin-top:6px;"></textarea>'
+            )
         return f'{rating_style}{body}{status}<div style="margin-top:10px;">{buttons}</div>{note_field}'
 
     def render(self, *, placeholder: bool = False) -> None:

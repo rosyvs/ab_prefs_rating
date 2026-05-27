@@ -199,13 +199,14 @@ class NotebookPreferenceInterface:
         self.notebook_root = nb_root
         self.verbose = verbose
         self.audio_urls: dict[str, str] = {}
+        self.show_note = show_note
         self.note_widget = widgets.Textarea(
             value="",
             placeholder="Optional note about why A/B/tie/skip",
             description="Note:",
-            layout=widgets.Layout(width="900px", height="70px", display="none" if not show_note else None),
+            layout=widgets.Layout(width="900px", height="70px", display="none"),
         )
-        self.note_toggle = widgets.Checkbox(value=show_note, description="Add note")
+        self.note_toggle = widgets.Checkbox(value=False, description="Add note")
         self.note_toggle.observe(self.on_note_toggle, names="value")
         self.style_html = widgets.HTML(value=rating_style)
         self.item_html = widgets.HTML(value="")
@@ -218,12 +219,15 @@ class NotebookPreferenceInterface:
         self.button_b.on_click(lambda _: self.submit_choice("B"))
         self.button_tie.on_click(lambda _: self.submit_choice("tie"))
         self.button_skip.on_click(lambda _: self.submit_choice("skip"))
-        self.button_row = widgets.HBox(
-            [self.button_a, self.button_b, self.button_tie, self.button_skip, self.note_toggle]
-        )
-        self.root = widgets.VBox(
-            [self.style_html, self.item_html, self.button_row, self.note_widget, self.status_html]
-        )
+        choice_buttons = [self.button_a, self.button_b, self.button_tie, self.button_skip]
+        if show_note:
+            choice_buttons.append(self.note_toggle)
+        self.button_row = widgets.HBox(choice_buttons)
+        root_children = [self.style_html, self.item_html, self.button_row]
+        if show_note:
+            root_children.append(self.note_widget)
+        root_children.append(self.status_html)
+        self.root = widgets.VBox(root_children)
         self.shown = False
         self.set_placeholder(f"Preparing audio clips ({len(queue)} items)…")
         self.button_row.layout.display = "none"
@@ -286,7 +290,7 @@ class NotebookPreferenceInterface:
 
     def submit_choice(self, choice: str) -> None:
         unit, provider_a, provider_b = self.current_item()
-        note = self.note_widget.value.strip()
+        note = self.note_widget.value.strip() if self.show_note else ""
         record = PreferenceRecord(
             session_id=self.session_id,
             timestamp_utc=datetime.now(timezone.utc).isoformat(),
