@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 import random
-from collections import Counter
+from collections import Counter, defaultdict
 from fractions import Fraction
 
 from tqdm import tqdm
@@ -89,55 +89,83 @@ def pick_session_items(
     session_items: int,
     asr_names: list[str],
     seed: int,
+    unique_recordings: int | None = None,
 ) -> list[tuple[ComparisonUnit, str, str]]:
-    """Pick exactly session_items from pre-ordered eligible pool; skip ineligible empties."""
+    """Pick session_items trials; optional unique_recordings = min distinct recording IDs in queue."""
+    if unique_recordings is not None and unique_recordings > session_items:
+        raise ValueError(
+            f"unique_recordings ({unique_recordings}) cannot exceed session_items ({session_items})"
+        )
     if len(ordered) < session_items:
         raise ValueError(
-            f"Only {len(ordered)} eligible comparisons (both providers have overlapping transcript); "
-            f"need {session_items}. Add demo_recordings, relax min_gt_words/min_audio_seconds, "
-            f"or lower session_items."
+            f"Only {len(ordered)} eligible comparisons; need {session_items}. "
+            "Increase unique_recordings, relax filters, or lower session_items."
         )
-    balance_cap = asr_balance_target(session_items, len(asr_names)) if asr_names else None
     rng = random.Random(seed)
+    balance_cap = asr_balance_target(session_items, len(asr_names)) if asr_names else None
+    by_recording: dict[str, list[tuple[ComparisonUnit, str, str]]] = defaultdict(list)
+    for item in ordered:
+        by_recording[item[0].recording_id].append(item)
 
-    def try_pick(pool: list[tuple[ComparisonUnit, str, str]], cap: int | None) -> list[tuple[ComparisonUnit, str, str]]:
-        counts: Counter[str] = Counter({name: 0 for name in asr_names})
-        chosen: list[tuple[ComparisonUnit, str, str]] = []
-        used: set[tuple[str, str, str]] = set()
+    if unique_recordings is not None and len(by_recording) < unique_recordings:
+        raise ValueError(
+            f"Only {len(by_recording)} recordings have eligible comparisons; "
+            f"need unique_recordings={unique_recordings}."
+        )
+
+    chosen: list[tuple[ComparisonUnit, str, str]] = []
+    used_keys: set[tuple[str, str, str]] = set()
+    asr_counts: Counter[str] = Counter({name: 0 for name in asr_names})
+
+    def can_add(provider_a: str, provider_b: str) -> bool:
+        if not balance_cap or not asr_names:
+            return True
+        asr_in = [n for n in (provider_a, provider_b) if n in asr_counts]
+        return not any(asr_counts[n] >= balance_cap for n in asr_in)
+
+    def add(item: tuple[ComparisonUnit, str, str]) -> bool:
+        unit, provider_a, provider_b = item
+        key = (unit.span_key, provider_a, provider_b)
+        if key in used_keys or not can_add(provider_a, provider_b):
+            return False
+        used_keys.add(key)
+        chosen.append(item)
+        for n in (provider_a, provider_b):
+            if n in asr_counts:
+                asr_counts[n] += 1
+        return True
+
+    if unique_recordings:
+        rec_ids = list(by_recording.keys())
+        rng.shuffle(rec_ids)
+        for rid in rec_ids[:unique_recordings]:
+            items = by_recording[rid][:]
+            rng.shuffle(items)
+            if not any(add(item) for item in items):
+                raise ValueError(f"No eligible comparison for recording {rid} under ASR balance cap")
+
+    pool = ordered[:]
+    rng.shuffle(pool)
+    for item in pool:
+        if len(chosen) >= session_items:
+            break
+        add(item)
+    if len(chosen) < session_items:
         for item in pool:
             if len(chosen) >= session_items:
                 break
             unit, provider_a, provider_b = item
             key = (unit.span_key, provider_a, provider_b)
-            if key in used:
+            if key in used_keys:
                 continue
-            asr_in = [name for name in (provider_a, provider_b) if name in counts]
-            if cap is not None and asr_in and any(counts[name] >= cap for name in asr_in):
-                continue
+            used_keys.add(key)
             chosen.append(item)
-            used.add(key)
-            for name in asr_in:
-                counts[name] += 1
-        return chosen
-
-    if balance_cap and asr_names:
-        for attempt in range(100):
-            pool = ordered[:]
-            if attempt > 0:
-                rng.shuffle(pool)
-            chosen = try_pick(pool, balance_cap)
-            if len(chosen) == session_items:
-                counts = provider_appearance_counts(chosen, asr_names)
-                if all(counts[name] == balance_cap for name in asr_names):
-                    return chosen
-    chosen = try_pick(ordered[:], balance_cap)
     if len(chosen) < session_items:
-        pool = ordered[:]
-        rng.shuffle(pool)
-        chosen = try_pick(pool, None)
-    if len(chosen) < session_items:
+        raise ValueError(f"Could only pick {len(chosen)} items; need {session_items}.")
+    n_unique = len({u.recording_id for u, _, _ in chosen})
+    if unique_recordings and n_unique < unique_recordings:
         raise ValueError(
-            f"Could only pick {len(chosen)} unique eligible comparisons; need {session_items}."
+            f"Queue has {n_unique} distinct recordings; need unique_recordings={unique_recordings}."
         )
     return chosen[:session_items]
 
@@ -151,6 +179,7 @@ def build_session_queue(
     per_pair_sample_size: int | None = None,
     ground_truth_name: str = "ground_truth",
     verbose: bool = False,
+    unique_recordings: int | None = None,
 ) -> list[tuple[ComparisonUnit, str, str]]:
     if strategy not in SAMPLING_STRATEGIES:
         raise ValueError(f"Unsupported strategy {strategy}. Must be one of {SAMPLING_STRATEGIES}")
@@ -169,9 +198,11 @@ def build_session_queue(
     else:
         metric = metric_sort_key(strategy)
         ordered = sorted(eligible, key=lambda item: item[0].features.get(metric, 0.0), reverse=True)
-    queue = pick_session_items(ordered, target_items, asr_names, seed)
+    queue = pick_session_items(ordered, target_items, asr_names, seed, unique_recordings=unique_recordings)
     if verbose:
         print(f"Session queue: {len(queue)} items ({strategy}, target={target_items})")
+        n_unique = len({u.recording_id for u, _, _ in queue})
+        print(f"Unique recordings in queue: {n_unique}" + (f" (target={unique_recordings})" if unique_recordings else ""))
         if asr_names:
             counts = provider_appearance_counts(queue, asr_names)
             total = sum(counts.values())

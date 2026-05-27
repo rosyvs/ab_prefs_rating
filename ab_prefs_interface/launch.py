@@ -73,6 +73,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         cache_dir=Path(session["cache_dir"]),
         rebuild_cache=bool(session.get("rebuild_cache", False)),
         demo_recordings=int(session.get("demo_recordings", 0)),
+        unique_recordings=int(session["unique_recordings"]) if session.get("unique_recordings") is not None else None,
         demo_seed=int(session.get("demo_seed", 7)),
         min_gt_words=int(session.get("min_gt_words", 0)),
         min_audio_seconds=float(session.get("min_audio_seconds", 3.0)),

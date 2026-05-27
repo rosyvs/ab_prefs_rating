@@ -180,6 +180,8 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
         if verbose:
             print(f"Manifest: {len(manifest['items'])} items, {len(recording_ids)} recordings")
     demo_n = int(getattr(args, "demo_recordings", 0) or 0)
+    unique_n = getattr(args, "unique_recordings", None)
+    pool_n = unique_n if unique_n else (demo_n if demo_n > 0 else None)
     if verbose:
         print("Loading comparison units...")
     cache_dir = args.cache_dir.expanduser().resolve() if str(args.cache_dir).strip() else None
@@ -191,7 +193,7 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
         verbose=verbose,
         cache_dir=cache_dir,
         rebuild_cache=bool(getattr(args, "rebuild_cache", False)),
-        demo_recordings=demo_n if demo_n > 0 and not recording_ids else None,
+        demo_recordings=pool_n if pool_n and not recording_ids else None,
         demo_seed=int(getattr(args, "demo_seed", 7)),
         recording_ids=recording_ids,
         min_gt_words=int(getattr(args, "min_gt_words", 0) or 0),
@@ -240,6 +242,7 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
             per_pair_sample_size=per_pair,
             ground_truth_name=args.ground_truth_name,
             verbose=verbose,
+            unique_recordings=unique_n,
         )
     if not queue:
         raise ValueError("Sampling queue is empty; check provider files and compare provider list.")
@@ -257,7 +260,8 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
                 include_ground_truth=bool(getattr(args, "include_ground_truth", True)),
                 min_gt_words=min_gt_words,
                 min_audio_seconds=min_audio_seconds,
-                demo_recordings=demo_n if demo_n > 0 else None,
+                unique_recordings=unique_n,
+                demo_recordings=pool_n,
                 demo_seed=int(getattr(args, "demo_seed", 7)),
             ),
         )

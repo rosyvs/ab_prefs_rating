@@ -4,6 +4,23 @@ from __future__ import annotations
 from pathlib import Path
 
 
+def session_recording_pool_size(session: dict) -> int | None:
+    """How many recordings to load when building comparison units."""
+    if session.get("unique_recordings") is not None:
+        n = int(session["unique_recordings"] or 0)
+        return n if n > 0 else None
+    n = int(session.get("demo_recordings") or 0)
+    return n if n > 0 else None
+
+
+def session_unique_recordings_target(session: dict) -> int | None:
+    """Min distinct recording IDs required in the manifest queue (unique_recordings field only)."""
+    if session.get("unique_recordings") is None:
+        return None
+    n = int(session["unique_recordings"] or 0)
+    return n if n > 0 else None
+
+
 def compare_provider_names(
     provider_dirs: dict[str, Path],
     *,

@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 
 from ab_prefs_interface.launch import DEFAULT_SESSION_CONFIG, load_session_config, namespace_for_rater, setup_repo_path
-from ab_prefs_interface.session_config import compare_provider_names
+from ab_prefs_interface.session_config import compare_provider_names, session_recording_pool_size, session_unique_recordings_target
 from ab_prefs_interface.matching import build_comparison_units
 from ab_prefs_interface.run_demo import load_provider_dirs
 from ab_prefs_interface.sampling import build_session_queue, pair_combinations
@@ -18,7 +18,8 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
     setup_repo_path(Path(session["notebook_root"]))
     args = namespace_for_rater(session, rater_id="_lead_export_")
     provider_dirs = load_provider_dirs(args)
-    demo_n = int(args.demo_recordings or 0)
+    pool_n = session_recording_pool_size(session)
+    unique_n = session_unique_recordings_target(session)
     units = build_comparison_units(
         gt_dir=args.gt_dir.expanduser().resolve(),
         provider_dirs=provider_dirs,
@@ -27,7 +28,7 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
         verbose=args.verbose,
         cache_dir=args.cache_dir.expanduser().resolve(),
         rebuild_cache=bool(args.rebuild_cache),
-        demo_recordings=demo_n if demo_n > 0 else None,
+        demo_recordings=pool_n,
         demo_seed=int(args.demo_seed),
         min_gt_words=int(args.min_gt_words or 0),
         min_audio_seconds=float(args.min_audio_seconds or 0.0),
@@ -56,6 +57,7 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
         per_pair_sample_size=per_pair,
         ground_truth_name=args.ground_truth_name,
         verbose=args.verbose,
+        unique_recordings=unique_n,
     )
     if len(queue) != expected:
         raise ValueError(f"Session queue has {len(queue)} items, expected {expected}.")
@@ -72,11 +74,13 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
             include_ground_truth=bool(getattr(args, "include_ground_truth", True)),
             min_gt_words=int(args.min_gt_words or 0),
             min_audio_seconds=float(args.min_audio_seconds or 0.0),
-            demo_recordings=demo_n if demo_n > 0 else None,
+            unique_recordings=unique_n,
+            demo_recordings=pool_n,
             demo_seed=int(args.demo_seed),
         ),
     )
-    print(f"Wrote {len(queue)} items → {out.resolve()}")
+    n_unique = len({u.recording_id for u, _, _ in queue})
+    print(f"Wrote {len(queue)} items ({n_unique} unique recordings) → {out.resolve()}")
     return out.resolve()
 
 

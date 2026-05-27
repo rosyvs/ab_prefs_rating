@@ -34,6 +34,7 @@ def build_manifest_payload(
     include_ground_truth: bool,
     min_gt_words: int,
     min_audio_seconds: float,
+    unique_recordings: int | None = None,
     demo_recordings: int | None = None,
     demo_seed: int | None = None,
 ) -> dict:
@@ -47,6 +48,7 @@ def build_manifest_payload(
         "compare_providers": compare_providers,
         "min_gt_words": min_gt_words,
         "min_audio_seconds": min_audio_seconds,
+        "unique_recordings": unique_recordings,
         "demo_recordings": demo_recordings,
         "demo_seed": demo_seed,
         "items": [queue_item_dict(unit, provider_a, provider_b) for unit, provider_a, provider_b in queue],
