@@ -12,7 +12,7 @@ from ab_prefs_interface.audio_clips import ensure_queue_clips
 from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord, ProviderCandidate
 from ab_prefs_interface.storage_json import append_record
 
-demo_style = """
+rating_style = """
 <style>
 .ab-wrap{margin:10px 0 18px 0;}
 .ab-cols{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;width:100%;}
@@ -209,7 +209,7 @@ class NotebookPreferenceInterface:
         )
         self.note_toggle = widgets.Checkbox(value=show_note, description="Add note")
         self.note_toggle.observe(self.on_note_toggle, names="value")
-        self.style_html = widgets.HTML(value=demo_style)
+        self.style_html = widgets.HTML(value=rating_style)
         self.item_html = widgets.HTML(value="")
         self.status_html = widgets.HTML(value="")
         self.button_a = widgets.Button(description="Choose A", button_style="success")

@@ -1,4 +1,4 @@
-# A/B Preference Demo Input Schema
+# A/B Preference Rating Input Schema
 
 This module builds comparison units from three sources: ground-truth JSONL transcripts, provider JSON files, and local audio files.
 
@@ -33,7 +33,7 @@ Start/end may be in milliseconds or seconds. The loader infers milliseconds if m
 
 ### 3) Audio directory
 - Directory containing `{recording_id}.mp3`
-- The demo embeds the full file and seeks to GT segment start/end for each item.
+- Short mp3 clips are extracted per GT span for playback (see `audio_clips.py`).
 
 ## Built Comparison Unit
 

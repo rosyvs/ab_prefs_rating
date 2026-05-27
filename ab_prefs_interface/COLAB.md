@@ -89,6 +89,6 @@ Sampling settings come from `configs/ab_prefs.session.json` (and `ab_prefs.manif
 | `apt-get install gcsfuse` exit 100 | Stale clone — Runtime → Restart session, delete `/content/ab_prefs_rating`, re-run; notebook now git pulls + installs .deb fallback |
 | gcsfuse mount failed | Colab FUSE limitation — use Vertex Workbench with bucket pre-mounted instead |
 | `transcripts/` not found after mount | Check bucket layout; confirm IAM |
-| Missing ASR json for recording | `gsutil rsync` asr/dd210; demo uses 5 recordings from manifest |
+| Missing ASR json for recording | `gsutil rsync` asr/dd210; manifest defines which recording IDs are needed |
 | Widget blank | Colab: re-run setup cell (`enable_custom_widget_manager`) |
 | Different items than colleagues | Pull latest git; same `manifest.json` |

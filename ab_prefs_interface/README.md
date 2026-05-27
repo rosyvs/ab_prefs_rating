@@ -1,4 +1,4 @@
-# A/B ASR preference demo
+# A/B ASR preference rating
 
 Python notebook workflow for human preference testing between ASR transcripts on matched GT audio spans.
 
@@ -9,10 +9,10 @@ Quick start for raters: open `rate.ipynb`, set `RATER_ID`, Run All.
 Quick start for lead:
 
 ```bash
-cd /home/rosy_teachfx_com/asr_eval
+cd ab_prefs_rating
 python -m ab_prefs_interface.create_session \
-  --session-config /home/rosy_teachfx_com/asr_eval/configs/ab_prefs.session.json \
+  --session-config configs/ab_prefs.session.json \
   --rebuild-cache
 ```
 
-Configs live in `configs/ab_prefs_interface.{providers,session,manifest}.json`.
+Configs live in `configs/ab_prefs.{providers,session,manifest}.json`.

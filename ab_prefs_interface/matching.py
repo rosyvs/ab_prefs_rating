@@ -10,7 +10,7 @@ from tqdm import tqdm
 from ab_prefs_interface.data_model import ComparisonUnit, ProviderCandidate, WordToken
 from ab_prefs_interface.unit_cache import (
     build_cache_key,
-    demo_cache_root,
+    subset_cache_root,
     load_recording_units,
     recording_cache_path,
     save_recording_units,
@@ -101,7 +101,7 @@ def merge_gt_segments(
     return merged
 
 
-def select_demo_recording_ids(transcripts: dict[str, list[dict]], n: int, seed: int) -> list[str]:
+def sample_recording_ids(transcripts: dict[str, list[dict]], n: int, seed: int) -> list[str]:
     recording_ids = sorted(transcripts.keys())
     if n >= len(recording_ids):
         return recording_ids
@@ -523,8 +523,8 @@ def build_comparison_units(
     verbose: bool = False,
     cache_dir: Path | None = None,
     rebuild_cache: bool = False,
-    demo_recordings: int | None = None,
-    demo_seed: int = 7,
+    recording_pool_size: int | None = None,
+    recording_seed: int = 7,
     recording_ids: list[str] | None = None,
     min_gt_words: int = 0,
     min_audio_seconds: float = 3.0,
@@ -542,13 +542,13 @@ def build_comparison_units(
         transcripts = {rid: transcripts[rid] for rid in sorted(id_set)}
         if verbose:
             print(f"Manifest mode: {len(transcripts)} / {all_recording_count} recordings")
-    elif demo_recordings is not None and demo_recordings > 0:
-        picked = select_demo_recording_ids(transcripts, demo_recordings, demo_seed)
+    elif recording_pool_size is not None and recording_pool_size > 0:
+        picked = sample_recording_ids(transcripts, recording_pool_size, recording_seed)
         transcripts = {recording_id: transcripts[recording_id] for recording_id in picked}
         if verbose:
             print(
-                f"Demo mode: {len(picked)} / {all_recording_count} recordings "
-                f"(seed={demo_seed}): {picked}"
+                f"Recording pool: {len(picked)} / {all_recording_count} recordings "
+                f"(seed={recording_seed}): {picked}"
             )
     if verbose:
         print(f"GT recordings: {len(transcripts)} · providers: {len(provider_dirs)}")
@@ -560,16 +560,16 @@ def build_comparison_units(
         print(f"~{est_segments} raw GT lines → fewer units after merge (load JSON + word overlap per unit×provider)")
     effective_cache_dir = None
     if cache_dir:
-        use_demo_cache = demo_recordings and not recording_ids
-        effective_cache_dir = demo_cache_root(cache_dir) if use_demo_cache else cache_dir.expanduser().resolve()
+        use_subset_cache = recording_pool_size and not recording_ids
+        effective_cache_dir = subset_cache_root(cache_dir) if use_subset_cache else cache_dir.expanduser().resolve()
     cache_key = (
         build_cache_key(
             gt_dir,
             provider_dirs,
             audio_dir,
             ground_truth_name,
-            demo_recordings=demo_recordings if demo_recordings and not recording_ids else None,
-            demo_seed=demo_seed if demo_recordings and not recording_ids else None,
+            recording_pool_size=recording_pool_size if recording_pool_size and not recording_ids else None,
+            recording_seed=recording_seed if recording_pool_size and not recording_ids else None,
             recording_ids=recording_ids,
             min_gt_words=min_gt_words,
             min_audio_seconds=min_audio_seconds,
@@ -578,7 +578,7 @@ def build_comparison_units(
         else None
     )
     if verbose and cache_key:
-        label = "demo cache" if demo_recordings and not recording_ids else "unit cache"
+        label = "subset cache" if recording_pool_size and not recording_ids else "unit cache"
         print(f"{label} key {cache_key} under {effective_cache_dir}")
     units: list[ComparisonUnit] = []
     rec_iter = tqdm(transcripts.items(), desc="build units (recordings)", disable=not verbose)

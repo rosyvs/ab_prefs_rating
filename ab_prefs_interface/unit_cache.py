@@ -23,8 +23,8 @@ def build_cache_key(
     audio_dir: Path,
     ground_truth_name: str,
     *,
-    demo_recordings: int | None = None,
-    demo_seed: int | None = None,
+    recording_pool_size: int | None = None,
+    recording_seed: int | None = None,
     recording_ids: list[str] | None = None,
     min_gt_words: int = 0,
     min_audio_seconds: float = 0.0,
@@ -40,15 +40,15 @@ def build_cache_key(
         parts.append(f"{name}:{dir_fingerprint(provider_dirs[name], '*.json')}")
     if recording_ids is not None:
         parts.append("manifest_rec=" + ",".join(sorted(recording_ids)))
-    elif demo_recordings is not None:
-        parts.append(f"demo_n={demo_recordings}|demo_seed={demo_seed}")
+    elif recording_pool_size is not None:
+        parts.append(f"pool_n={recording_pool_size}|recording_seed={recording_seed}")
     digest = hashlib.sha256("\n".join(parts).encode("utf-8")).hexdigest()
     return digest[:16]
 
 
-def demo_cache_root(cache_dir: Path) -> Path:
-    """Separate tree from full unit cache so demo builds never overwrite full-cache pickles."""
-    return cache_dir.expanduser().resolve() / "demo"
+def subset_cache_root(cache_dir: Path) -> Path:
+    """Separate tree from full unit cache so subset builds never overwrite full-cache pickles."""
+    return cache_dir.expanduser().resolve() / "subset"
 
 
 def cache_bucket_dir(cache_dir: Path, cache_key: str) -> Path:

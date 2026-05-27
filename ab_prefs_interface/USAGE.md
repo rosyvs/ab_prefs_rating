@@ -17,7 +17,7 @@ Human preference testing: listen to a GT audio clip, compare two transcripts sid
 | File | Purpose | Who edits |
 |------|---------|-----------|
 | `ab_prefs.providers.json` | ASR name → folder of `{recording_id}.json` transcripts | Lead (when adding/swapping models) |
-| `ab_prefs.session.json` | Paths, merge rules, sampling, demo size, UI flags | Lead |
+| `ab_prefs.session.json` | Paths, merge rules, sampling, recording pool size, UI flags | Lead |
 | `ab_prefs.manifest.json` | Fixed list of 30 A/B trials (recording, span, pair) | Lead regenerates; team commits |
 
 **Generated outputs** (`results/ab_prefs/`):
@@ -39,7 +39,8 @@ Key fields:
 - `gt_dir`, `audio_dir` — ground truth JSONL + `{id}.mp3` audio
 - `config_json` — points at `providers.json`
 - `session_manifest` — points at `manifest.json`
-- `demo_recordings` — `5` for pilot; `0` omitted for full DD210
+- `unique_recordings` — cap on distinct recording IDs in pool/manifest (e.g. `5` pilot; omit/`null` for full DD210)
+- `recording_seed` — RNG seed when sampling the recording pool
 - `min_gt_words`, `min_audio_seconds` — merge consecutive GT lines until both met
 - `session_items`, `seed`, `strategy` — used when **creating** manifest
 - `include_ground_truth` — `true`: GT included in pair pool (with empty `compare_providers`); `false`: ASR-vs-ASR only
@@ -66,10 +67,10 @@ python -m ab_prefs_interface.create_session \
 
 Writes `configs/ab_prefs.manifest.json` (30 items, balanced ASR exposure).
 
-Use `--rebuild-cache` when matching/display rules change or cache is stale. To wipe demo cache manually:
+Use `--rebuild-cache` when matching/display rules change or cache is stale. To wipe subset cache manually:
 
 ```bash
-rm -rf /home/rosy_teachfx_com/asr_eval/results/ab_prefs/unit_cache/demo
+rm -rf /home/rosy_teachfx_com/asr_eval/results/ab_prefs/unit_cache/subset
 ```
 
 ### 3. Commit for team

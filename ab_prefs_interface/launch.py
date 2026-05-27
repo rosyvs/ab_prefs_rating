@@ -8,7 +8,7 @@ from argparse import Namespace
 from pathlib import Path
 
 from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
-from ab_prefs_interface.run_demo import run_notebook_demo
+from ab_prefs_interface.run_rating import run_notebook_rating
 from ab_prefs_interface.summarize_preferences import summarize_cli_command
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -72,9 +72,8 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         verbose=bool(session.get("verbose", True)),
         cache_dir=Path(session["cache_dir"]),
         rebuild_cache=bool(session.get("rebuild_cache", False)),
-        demo_recordings=int(session.get("demo_recordings", 0)),
         unique_recordings=int(session["unique_recordings"]) if session.get("unique_recordings") is not None else None,
-        demo_seed=int(session.get("demo_seed", 7)),
+        recording_seed=int(session.get("recording_seed", 7)),
         min_gt_words=int(session.get("min_gt_words", 0)),
         min_audio_seconds=float(session.get("min_audio_seconds", 3.0)),
         show_note=bool(session.get("show_note", False)),
@@ -102,7 +101,7 @@ def launch_rating(
     if args.session_manifest:
         print(f"Items from: {args.session_manifest.resolve()}")
     print(f"\nSummarize after rating (separate, optional):\n{summarize_cli_command(args.output_json, args.ground_truth_name)}")
-    return run_notebook_demo(args)
+    return run_notebook_rating(args)
 
 
 def main() -> None:

@@ -35,8 +35,7 @@ def build_manifest_payload(
     min_gt_words: int,
     min_audio_seconds: float,
     unique_recordings: int | None = None,
-    demo_recordings: int | None = None,
-    demo_seed: int | None = None,
+    recording_seed: int | None = None,
 ) -> dict:
     return {
         "version": MANIFEST_VERSION,
@@ -49,8 +48,7 @@ def build_manifest_payload(
         "min_gt_words": min_gt_words,
         "min_audio_seconds": min_audio_seconds,
         "unique_recordings": unique_recordings,
-        "demo_recordings": demo_recordings,
-        "demo_seed": demo_seed,
+        "recording_seed": recording_seed,
         "items": [queue_item_dict(unit, provider_a, provider_b) for unit, provider_a, provider_b in queue],
     }
 
@@ -90,7 +88,7 @@ def queue_from_manifest(
         if unit is None:
             raise KeyError(
                 f"Manifest item not found in built units: {item['span_key']}. "
-                "Rebuild units with the same GT/provider/demo settings as the manifest."
+                "Rebuild units with the same GT/provider/session settings as the manifest."
             )
         queue.append((unit, item["provider_a"], item["provider_b"]))
     return queue

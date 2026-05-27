@@ -224,7 +224,7 @@ def write_colab_session_config(
     manifest_path = Path(payload["session_manifest"])
     if manifest_path.is_file():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        for key in ("session_items", "unique_recordings", "demo_recordings", "demo_seed", "compare_providers", "seed", "min_gt_words", "min_audio_seconds"):
+        for key in ("session_items", "unique_recordings", "recording_seed", "compare_providers", "seed", "min_gt_words", "min_audio_seconds"):
             if key in manifest:
                 payload[key] = manifest[key]
     dest = Path(dest or repo / "configs" / "ab_prefs.session.runtime.json")

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from ab_prefs_interface.interface_notebook import NotebookPreferenceInterface
-from ab_prefs_interface.session_config import compare_provider_names
+from ab_prefs_interface.session_config import compare_provider_names, session_recording_pool_size
 from ab_prefs_interface.matching import build_comparison_units
 from ab_prefs_interface.sampling import SAMPLING_STRATEGIES, build_session_queue, filter_queue_with_transcripts
 from ab_prefs_interface.scoring import score_units
@@ -46,7 +46,7 @@ def load_provider_dirs(args: argparse.Namespace) -> dict[str, Path]:
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Python-only A/B ASR preference demo")
+    parser = argparse.ArgumentParser(description="A/B ASR preference rating session")
     parser.add_argument("--gt-dir", type=Path, required=True, help="Directory with GT {recording_id}.jsonl files")
     parser.add_argument("--audio-dir", type=Path, required=True, help="Directory with audio {recording_id}.mp3 files")
     parser.add_argument(
@@ -91,7 +91,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--output-json",
         type=Path,
-        default=Path("results/ab_prefs/preferences_demo.json"),
+        default=Path("results/ab_prefs/preferences.json"),
         help="Output JSON path for saved preferences",
     )
     parser.add_argument("--verbose", action="store_true", help="tqdm progress + stage printouts")
@@ -103,12 +103,12 @@ def build_argument_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--rebuild-cache", action="store_true", help="Ignore existing unit cache and rebuild")
     parser.add_argument(
-        "--demo-recordings",
+        "--unique-recordings",
         type=int,
         default=0,
-        help="If >0, build only this many random recordings; uses results/.../unit_cache/demo/ (never full cache)",
+        help="Random recording pool size when building units (uses unit_cache/subset/)",
     )
-    parser.add_argument("--demo-seed", type=int, default=7, help="RNG seed for --demo-recordings selection")
+    parser.add_argument("--recording-seed", type=int, default=7, help="RNG seed for recording pool sampling")
     parser.add_argument(
         "--min-gt-words",
         type=int,
@@ -160,7 +160,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
+def run_notebook_rating(args: argparse.Namespace) -> NotebookPreferenceInterface:
     verbose = bool(getattr(args, "verbose", False))
     provider_dirs = load_provider_dirs(args)
     compare_providers = compare_provider_names(
@@ -179,9 +179,9 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
         recording_ids = manifest_recording_ids(manifest)
         if verbose:
             print(f"Manifest: {len(manifest['items'])} items, {len(recording_ids)} recordings")
-    demo_n = int(getattr(args, "demo_recordings", 0) or 0)
-    unique_n = getattr(args, "unique_recordings", None)
-    pool_n = unique_n if unique_n else (demo_n if demo_n > 0 else None)
+    raw_unique = getattr(args, "unique_recordings", None)
+    unique_n = int(raw_unique) if raw_unique is not None and int(raw_unique) > 0 else None
+    pool_n = unique_n
     if verbose:
         print("Loading comparison units...")
     cache_dir = args.cache_dir.expanduser().resolve() if str(args.cache_dir).strip() else None
@@ -193,8 +193,8 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
         verbose=verbose,
         cache_dir=cache_dir,
         rebuild_cache=bool(getattr(args, "rebuild_cache", False)),
-        demo_recordings=pool_n if pool_n and not recording_ids else None,
-        demo_seed=int(getattr(args, "demo_seed", 7)),
+        recording_pool_size=pool_n if pool_n and not recording_ids else None,
+        recording_seed=int(getattr(args, "recording_seed", 7)),
         recording_ids=recording_ids,
         min_gt_words=int(getattr(args, "min_gt_words", 0) or 0),
         min_audio_seconds=float(getattr(args, "min_audio_seconds", 3.0) or 0.0),
@@ -216,6 +216,7 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
     session_items = int(getattr(args, "session_items", 30))
     min_gt_words = int(getattr(args, "min_gt_words", 0) or 0)
     min_audio_seconds = float(getattr(args, "min_audio_seconds", 3.0) or 0.0)
+    unique_target = unique_n
     if manifest:
         if verbose:
             print(f"Loading session queue from {manifest_path}...")
@@ -242,7 +243,7 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
             per_pair_sample_size=per_pair,
             ground_truth_name=args.ground_truth_name,
             verbose=verbose,
-            unique_recordings=unique_n,
+            unique_recordings=unique_target,
         )
     if not queue:
         raise ValueError("Sampling queue is empty; check provider files and compare provider list.")
@@ -260,9 +261,8 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
                 include_ground_truth=bool(getattr(args, "include_ground_truth", True)),
                 min_gt_words=min_gt_words,
                 min_audio_seconds=min_audio_seconds,
-                unique_recordings=unique_n,
-                demo_recordings=pool_n,
-                demo_seed=int(getattr(args, "demo_seed", 7)),
+                unique_recordings=unique_target,
+                recording_seed=int(getattr(args, "recording_seed", 7)),
             ),
         )
         if verbose:
@@ -295,7 +295,7 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
 def main() -> None:
     parser = build_argument_parser()
     args = parser.parse_args()
-    run_notebook_demo(args)
+    run_notebook_rating(args)
 
 
 if __name__ == "__main__":

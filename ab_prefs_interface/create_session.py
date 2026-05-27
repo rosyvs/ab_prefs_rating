@@ -7,16 +7,18 @@ from pathlib import Path
 from ab_prefs_interface.launch import DEFAULT_SESSION_CONFIG, load_session_config, namespace_for_rater, setup_repo_path
 from ab_prefs_interface.session_config import compare_provider_names, session_recording_pool_size, session_unique_recordings_target
 from ab_prefs_interface.matching import build_comparison_units
-from ab_prefs_interface.run_demo import load_provider_dirs
+from ab_prefs_interface.run_rating import load_provider_dirs
 from ab_prefs_interface.sampling import build_session_queue, pair_combinations
 from ab_prefs_interface.scoring import score_units
 from ab_prefs_interface.session_manifest import build_manifest_payload, save_session_manifest
 
 
-def create_session_manifest(session_config_path: Path, manifest_path: Path | None = None) -> Path:
+def create_session_manifest(session_config_path: Path, manifest_path: Path | None = None, *, rebuild_cache: bool = False) -> Path:
     session = load_session_config(session_config_path)
     setup_repo_path(Path(session["notebook_root"]))
     args = namespace_for_rater(session, rater_id="_lead_export_")
+    if rebuild_cache:
+        args.rebuild_cache = True
     provider_dirs = load_provider_dirs(args)
     pool_n = session_recording_pool_size(session)
     unique_n = session_unique_recordings_target(session)
@@ -28,8 +30,8 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
         verbose=args.verbose,
         cache_dir=args.cache_dir.expanduser().resolve(),
         rebuild_cache=bool(args.rebuild_cache),
-        demo_recordings=pool_n,
-        demo_seed=int(args.demo_seed),
+        recording_pool_size=pool_n,
+        recording_seed=int(args.recording_seed),
         min_gt_words=int(args.min_gt_words or 0),
         min_audio_seconds=float(args.min_audio_seconds or 0.0),
     )
@@ -75,8 +77,7 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
             min_gt_words=int(args.min_gt_words or 0),
             min_audio_seconds=float(args.min_audio_seconds or 0.0),
             unique_recordings=unique_n,
-            demo_recordings=pool_n,
-            demo_seed=int(args.demo_seed),
+            recording_seed=int(args.recording_seed),
         ),
     )
     n_unique = len({u.recording_id for u, _, _ in queue})
@@ -95,7 +96,7 @@ def main() -> None:
     )
     parser.add_argument("--rebuild-cache", action="store_true", help="Ignore cached unit pickles and rebuild")
     args = parser.parse_args()
-    create_session_manifest(args.session_config, args.manifest_path)
+    create_session_manifest(args.session_config, args.manifest_path, rebuild_cache=args.rebuild_cache)
 
 
 if __name__ == "__main__":
