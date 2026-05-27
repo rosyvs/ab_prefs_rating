@@ -177,10 +177,20 @@ def repo_paths(
     }
 
 
-def load_repo_session_config(repo_root: Path | str) -> dict:
-    path = Path(repo_root) / "configs" / "ab_prefs.session.json"
+def resolve_session_config_path(repo_root: Path | str, path: Path | str) -> Path:
+    p = Path(path).expanduser()
+    if not p.is_absolute():
+        p = Path(repo_root) / p
+    return p.resolve()
+
+
+def load_repo_session_config(repo_root: Path | str, session_config: Path | str | None = None) -> dict:
+    path = resolve_session_config_path(
+        repo_root,
+        session_config or "configs/ab_prefs.session.json",
+    )
     if not path.is_file():
-        raise FileNotFoundError(f"Missing {path} — set up configs/ab_prefs.session.json in the repo")
+        raise FileNotFoundError(f"Missing session config: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
@@ -193,11 +203,12 @@ def compare_provider_list(session: dict) -> list[str]:
 
 def write_colab_session_config(
     paths: dict[str, Path],
+    session_config: Path | str,
     dest: Path | str | None = None,
 ) -> Path:
-    """Write runtime session JSON: sampling settings from ab_prefs.session.json, paths from GCS mount."""
+    """Write runtime session JSON: settings from session_config, GCS paths from mount."""
     repo = Path(paths["notebook_root"])
-    payload = dict(load_repo_session_config(repo))
+    payload = dict(load_repo_session_config(repo, session_config))
     payload.update(
         {
             "notebook_root": str(paths["notebook_root"]),
@@ -217,10 +228,14 @@ def write_colab_session_config(
             if key in manifest:
                 payload[key] = manifest[key]
     dest = Path(dest or repo / "configs" / "ab_prefs.session.runtime.json")
+    if not dest.is_absolute():
+        dest = (repo / dest).resolve()
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    print(f"Session config: {resolve_session_config_path(repo, session_config)}")
+    print(f"Runtime config: {dest}")
     print(
-        f"Runtime session: demo_recordings={payload.get('demo_recordings')}, "
+        f"  demo_recordings={payload.get('demo_recordings')}, "
         f"session_items={payload.get('session_items')}, compare={payload.get('compare_providers')}"
     )
     return dest
@@ -249,6 +264,8 @@ def bootstrap(
     repo_root: Path | str = DEFAULT_REPO,
     repo_url: str = DEFAULT_REPO_URL,
     asr_subdir: str = "asr/dd210",
+    session_config: Path | str = "configs/ab_prefs.session.json",
+    runtime_session_config: Path | str = "configs/ab_prefs.session.runtime.json",
 ) -> tuple[Path, Path]:
     """Clone repo, install deps, auth + gcsfuse mount, write runtime session config."""
     repo = clone_repo(repo_root, repo_url=repo_url)
@@ -258,10 +275,10 @@ def bootstrap(
     install_runtime_deps(repo)
     mount = mount_gcs_bucket(bucket, mount_point)
     paths = repo_paths(mount, repo, asr_subdir=asr_subdir)
-    base_session = load_repo_session_config(repo)
+    base_session = load_repo_session_config(repo, session_config)
     compare = compare_provider_list(base_session)
     patch_providers_colab(paths["asr_root"], paths["config_json"], compare)
-    session_path = write_colab_session_config(paths)
+    session_path = write_colab_session_config(paths, session_config, dest=runtime_session_config)
     print(f"GT: {paths['gt_dir']}")
     print(f"Audio: {paths['audio_dir']}")
     print(f"ASR: {paths['asr_root']}")
