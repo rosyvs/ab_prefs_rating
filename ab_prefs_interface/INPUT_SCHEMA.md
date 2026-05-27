@@ -12,6 +12,7 @@ This module builds comparison units from three sources: ground-truth JSONL trans
   - `orthographic_text` (str)
 - Optional fields retained in metadata:
   - `tier`, `should_scrub`, and any other keys
+- Session creation (`exclude_gt_markers`, default true) drops GT lines with annotation placeholders before merge: `should_scrub`, `XXX`, `<SCRUB>` / all-caps `SCRUB`, `<crosstalk>`. Fixed manifests already in use are unchanged.
 
 ### 2) Provider outputs
 - Configured as a mapping: `provider_name -> provider_json_directory`

@@ -34,10 +34,17 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
         recording_seed=int(args.recording_seed),
         min_gt_words=int(args.min_gt_words or 0),
         min_audio_seconds=float(args.min_audio_seconds or 0.0),
+        exclude_gt_markers=bool(getattr(args, "exclude_gt_markers", True)),
     )
+    asr_eval_root = getattr(args, "asr_eval_root", None)
+    if not asr_eval_root:
+        raise ValueError("session config must set asr_eval_root (path to asr_eval repo for DD210 WER sampling)")
     score_units(
         units=units,
         provider_names=sorted(provider_dirs.keys()),
+        gt_dir=args.gt_dir.expanduser().resolve(),
+        provider_dirs=provider_dirs,
+        asr_eval_root=Path(asr_eval_root).expanduser().resolve(),
         ground_truth_name=args.ground_truth_name,
         verbose=args.verbose,
     )
@@ -76,6 +83,7 @@ def create_session_manifest(session_config_path: Path, manifest_path: Path | Non
             include_ground_truth=bool(getattr(args, "include_ground_truth", True)),
             min_gt_words=int(args.min_gt_words or 0),
             min_audio_seconds=float(args.min_audio_seconds or 0.0),
+            exclude_gt_markers=bool(getattr(args, "exclude_gt_markers", True)),
             unique_recordings=unique_n,
             recording_seed=int(args.recording_seed),
         ),

@@ -196,6 +196,8 @@ def run_notebook_rating(args: argparse.Namespace):
     if verbose:
         print("Loading comparison units...")
     cache_dir = args.cache_dir.expanduser().resolve() if str(args.cache_dir).strip() else None
+    # Keep all GT lines when loading a fixed manifest (existing sessions may include annotation markers).
+    exclude_gt_markers = bool(getattr(args, "exclude_gt_markers", True)) and not recording_ids
     units = build_comparison_units(
         gt_dir=args.gt_dir.expanduser().resolve(),
         provider_dirs=provider_dirs,
@@ -209,15 +211,26 @@ def run_notebook_rating(args: argparse.Namespace):
         recording_ids=recording_ids,
         min_gt_words=int(getattr(args, "min_gt_words", 0) or 0),
         min_audio_seconds=float(getattr(args, "min_audio_seconds", 3.0) or 0.0),
+        exclude_gt_markers=exclude_gt_markers,
     )
     if verbose:
         print("Scoring units vs ground truth...")
-    score_units(
-        units=units,
-        provider_names=sorted(provider_dirs.keys()),
-        ground_truth_name=args.ground_truth_name,
-        verbose=verbose,
-    )
+    asr_eval_root = getattr(args, "asr_eval_root", None)
+    if manifest_path:
+        if verbose:
+            print("Fixed manifest: skip DD210 WER scoring (not used for rating queue)")
+    else:
+        if not asr_eval_root:
+            raise ValueError("session config must set asr_eval_root (path to asr_eval repo for DD210 WER sampling)")
+        score_units(
+            units=units,
+            provider_names=sorted(provider_dirs.keys()),
+            gt_dir=args.gt_dir.expanduser().resolve(),
+            provider_dirs=provider_dirs,
+            asr_eval_root=Path(asr_eval_root).expanduser().resolve(),
+            ground_truth_name=args.ground_truth_name,
+            verbose=verbose,
+        )
     if verbose:
         gt_note = "with ground_truth" if args.ground_truth_name in compare_providers else "ASR only"
         print(f"Compare pool ({gt_note}): {compare_providers}")
@@ -272,6 +285,7 @@ def run_notebook_rating(args: argparse.Namespace):
                 include_ground_truth=bool(getattr(args, "include_ground_truth", True)),
                 min_gt_words=min_gt_words,
                 min_audio_seconds=min_audio_seconds,
+                exclude_gt_markers=bool(getattr(args, "exclude_gt_markers", True)),
                 unique_recordings=unique_target,
                 recording_seed=int(getattr(args, "recording_seed", 7)),
             ),

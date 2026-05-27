@@ -16,6 +16,8 @@
   "recording_seed": 7,
   "min_gt_words": 5,
   "min_audio_seconds": 3.0,
+  "exclude_gt_markers": true,
+  "asr_eval_root": "/path/to/asr_eval",
   "compare_providers": "aai_up3_v2,azure_fast,deepgram_nova3",
   "show_note": true,
   "show_providers": false,

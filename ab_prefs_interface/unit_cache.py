@@ -28,6 +28,7 @@ def build_cache_key(
     recording_ids: list[str] | None = None,
     min_gt_words: int = 0,
     min_audio_seconds: float = 0.0,
+    exclude_gt_markers: bool = True,
 ) -> str:
     parts = [
         dir_fingerprint(gt_dir, "*.jsonl"),
@@ -35,6 +36,7 @@ def build_cache_key(
         ground_truth_name,
         f"min_gt_words={min_gt_words}",
         f"min_audio_seconds={min_audio_seconds}",
+        f"exclude_gt_markers={exclude_gt_markers}",
     ]
     for name in sorted(provider_dirs):
         parts.append(f"{name}:{dir_fingerprint(provider_dirs[name], '*.json')}")

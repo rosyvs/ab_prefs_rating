@@ -42,6 +42,8 @@ Key fields:
 - `unique_recordings` — cap on distinct recording IDs in pool/manifest (e.g. `5` pilot; omit/`null` for full DD210)
 - `recording_seed` — RNG seed when sampling the recording pool
 - `min_gt_words`, `min_audio_seconds` — merge consecutive GT lines until both met
+- `exclude_gt_markers` — default `true`: drop GT lines with `should_scrub`, `XXX`, `SCRUB`/`<SCRUB>`, `<crosstalk>` when **creating** a new manifest (not when loading an existing one)
+- `asr_eval_root` — path to `asr_eval` repo; sampling WER uses `analyze_multiple_asr` + provider JSON under `results/dd210/` (via `providers.json`)
 - `session_items`, `seed`, `strategy` — used when **creating** manifest
 - `include_ground_truth` — `true`: GT included in pair pool (with empty `compare_providers`); `false`: ASR-vs-ASR only
 - `compare_providers` — `""` = all names from `providers.json` (+ GT if `include_ground_truth`); or comma list to restrict
@@ -97,7 +99,7 @@ Widget appears: audio player, two transcript columns, **Choose A / B / Tie / Ski
 
 Choices append to `results/ab_prefs/preferences_Alice.json`.
 
-**Note:** "Computed WER features for…" on startup is automatic text scoring for sampling — not your ratings.
+**Note:** "Computed WER features for…" on startup runs **DD210 lexical WER** (`analyze_multiple_asr` on ASR JSON from `results/dd210/`) for item sampling — not human ratings.
 
 ### 4. Summarize (optional)
 

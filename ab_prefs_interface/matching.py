@@ -3,6 +3,7 @@ from __future__ import annotations
 import bisect
 import json
 import random
+import re
 from pathlib import Path
 
 from tqdm import tqdm
@@ -49,6 +50,38 @@ def words_aai_from_stored_deepgram_raw(raw: dict) -> list[dict]:
 
 def gt_word_count(orthographic_text: str) -> int:
     return len((orthographic_text or "").split())
+
+
+# DD210 GT annotation markers — not readable transcript; exclude from A/B clips (see analyze_multiple_asr.py).
+GT_XXX_RX = re.compile(r"\bXXX\b")
+GT_SCRUB_TAG_RX = re.compile(r"(?i)<\s*SCRUB\s*>")
+GT_SCRUB_WORD_RX = re.compile(r"\bSCRUB\b")  # legacy all-caps PII placeholder; lowercase "scrub" kept
+GT_CROSSTALK_RX = re.compile(r"(?i)<\s*crosstalk\s*>")
+
+
+def gt_text_has_annotation_markers(text: str) -> bool:
+    if not text:
+        return False
+    return bool(
+        GT_XXX_RX.search(text)
+        or GT_SCRUB_TAG_RX.search(text)
+        or GT_SCRUB_WORD_RX.search(text)
+        or GT_CROSSTALK_RX.search(text)
+    )
+
+
+def gt_segment_excluded_for_rating(segment: dict) -> bool:
+    """True if this GT line should not appear in preference-rating sessions."""
+    if segment.get("should_scrub"):
+        return True
+    text = str(segment.get("orthographic_text") or "").strip()
+    if text in ("SCRUB", "[SCRUB]"):
+        return True
+    return gt_text_has_annotation_markers(text)
+
+
+def filter_gt_segments_for_rating(segments: list[dict]) -> list[dict]:
+    return [segment for segment in segments if not gt_segment_excluded_for_rating(segment)]
 
 
 def chunk_span_seconds(chunk: list[dict]) -> float:
@@ -453,8 +486,11 @@ def build_units_for_recording(
     verbose: bool,
     min_gt_words: int = 0,
     min_audio_seconds: float = 0.0,
+    exclude_gt_markers: bool = True,
 ) -> list[ComparisonUnit]:
     """One recording: load ~N provider JSON files, align each GT span to provider text/words."""
+    if exclude_gt_markers:
+        segments = filter_gt_segments_for_rating(segments)
     if min_gt_words > 1 or min_audio_seconds > 0:
         segments = merge_gt_segments(
             segments, min_gt_words=min_gt_words, min_audio_seconds=min_audio_seconds
@@ -528,6 +564,7 @@ def build_comparison_units(
     recording_ids: list[str] | None = None,
     min_gt_words: int = 0,
     min_audio_seconds: float = 3.0,
+    exclude_gt_markers: bool = True,
 ) -> list[ComparisonUnit]:
     gt_dir = gt_dir.expanduser().resolve()
     audio_dir = audio_dir.expanduser().resolve()
@@ -556,6 +593,8 @@ def build_comparison_units(
             print(
                 f"merge rules: min_gt_words={min_gt_words}, min_audio_seconds={min_audio_seconds}"
             )
+        if exclude_gt_markers:
+            print("GT filter: exclude should_scrub, XXX, SCRUB/<SCRUB>, <crosstalk>")
         est_segments = sum(len(segs) for segs in transcripts.values())
         print(f"~{est_segments} raw GT lines → fewer units after merge (load JSON + word overlap per unit×provider)")
     effective_cache_dir = None
@@ -573,6 +612,7 @@ def build_comparison_units(
             recording_ids=recording_ids,
             min_gt_words=min_gt_words,
             min_audio_seconds=min_audio_seconds,
+            exclude_gt_markers=exclude_gt_markers,
         )
         if effective_cache_dir
         else None
@@ -604,6 +644,7 @@ def build_comparison_units(
             verbose=verbose,
             min_gt_words=min_gt_words,
             min_audio_seconds=min_audio_seconds,
+            exclude_gt_markers=exclude_gt_markers,
         )
         if cache_path:
             save_recording_units(cache_path, recording_units)
