@@ -525,6 +525,7 @@ def build_comparison_units(
     rebuild_cache: bool = False,
     demo_recordings: int | None = None,
     demo_seed: int = 7,
+    recording_ids: list[str] | None = None,
     min_gt_words: int = 0,
     min_audio_seconds: float = 3.0,
 ) -> list[ComparisonUnit]:
@@ -533,7 +534,15 @@ def build_comparison_units(
     provider_dirs = {name: path.expanduser().resolve() for name, path in provider_dirs.items()}
     transcripts = load_ground_truth_transcripts(gt_dir)
     all_recording_count = len(transcripts)
-    if demo_recordings is not None and demo_recordings > 0:
+    if recording_ids is not None:
+        id_set = set(recording_ids)
+        missing = sorted(id_set - set(transcripts.keys()))
+        if missing:
+            raise FileNotFoundError(f"GT missing for manifest recordings: {missing[:5]}{'...' if len(missing) > 5 else ''}")
+        transcripts = {rid: transcripts[rid] for rid in sorted(id_set)}
+        if verbose:
+            print(f"Manifest mode: {len(transcripts)} / {all_recording_count} recordings")
+    elif demo_recordings is not None and demo_recordings > 0:
         picked = select_demo_recording_ids(transcripts, demo_recordings, demo_seed)
         transcripts = {recording_id: transcripts[recording_id] for recording_id in picked}
         if verbose:
@@ -551,15 +560,17 @@ def build_comparison_units(
         print(f"~{est_segments} raw GT lines → fewer units after merge (load JSON + word overlap per unit×provider)")
     effective_cache_dir = None
     if cache_dir:
-        effective_cache_dir = demo_cache_root(cache_dir) if demo_recordings else cache_dir.expanduser().resolve()
+        use_demo_cache = demo_recordings and not recording_ids
+        effective_cache_dir = demo_cache_root(cache_dir) if use_demo_cache else cache_dir.expanduser().resolve()
     cache_key = (
         build_cache_key(
             gt_dir,
             provider_dirs,
             audio_dir,
             ground_truth_name,
-            demo_recordings=demo_recordings if demo_recordings else None,
-            demo_seed=demo_seed if demo_recordings else None,
+            demo_recordings=demo_recordings if demo_recordings and not recording_ids else None,
+            demo_seed=demo_seed if demo_recordings and not recording_ids else None,
+            recording_ids=recording_ids,
             min_gt_words=min_gt_words,
             min_audio_seconds=min_audio_seconds,
         )
@@ -567,7 +578,7 @@ def build_comparison_units(
         else None
     )
     if verbose and cache_key:
-        label = "demo cache" if demo_recordings else "unit cache"
+        label = "demo cache" if demo_recordings and not recording_ids else "unit cache"
         print(f"{label} key {cache_key} under {effective_cache_dir}")
     units: list[ComparisonUnit] = []
     rec_iter = tqdm(transcripts.items(), desc="build units (recordings)", disable=not verbose)

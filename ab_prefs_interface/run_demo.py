@@ -12,6 +12,7 @@ from ab_prefs_interface.scoring import score_units
 from ab_prefs_interface.session_manifest import (
     build_manifest_payload,
     load_session_manifest,
+    manifest_recording_ids,
     queue_from_manifest,
     save_session_manifest,
 )
@@ -162,10 +163,26 @@ def build_argument_parser() -> argparse.ArgumentParser:
 def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
     verbose = bool(getattr(args, "verbose", False))
     provider_dirs = load_provider_dirs(args)
+    compare_providers = compare_provider_names(
+        provider_dirs,
+        ground_truth_name=args.ground_truth_name,
+        compare_providers=args.compare_providers,
+        include_ground_truth=bool(getattr(args, "include_ground_truth", True)),
+    )
+    asr_names = [n for n in compare_providers if n != args.ground_truth_name]
+    provider_dirs = {n: provider_dirs[n] for n in asr_names}
+    manifest_path = getattr(args, "session_manifest", None)
+    manifest = None
+    recording_ids = None
+    if manifest_path:
+        manifest = load_session_manifest(manifest_path)
+        recording_ids = manifest_recording_ids(manifest)
+        if verbose:
+            print(f"Manifest: {len(manifest['items'])} items, {len(recording_ids)} recordings")
+    demo_n = int(getattr(args, "demo_recordings", 0) or 0)
     if verbose:
         print("Loading comparison units...")
     cache_dir = args.cache_dir.expanduser().resolve() if str(args.cache_dir).strip() else None
-    demo_n = int(getattr(args, "demo_recordings", 0) or 0)
     units = build_comparison_units(
         gt_dir=args.gt_dir.expanduser().resolve(),
         provider_dirs=provider_dirs,
@@ -174,8 +191,9 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
         verbose=verbose,
         cache_dir=cache_dir,
         rebuild_cache=bool(getattr(args, "rebuild_cache", False)),
-        demo_recordings=demo_n if demo_n > 0 else None,
+        demo_recordings=demo_n if demo_n > 0 and not recording_ids else None,
         demo_seed=int(getattr(args, "demo_seed", 7)),
+        recording_ids=recording_ids,
         min_gt_words=int(getattr(args, "min_gt_words", 0) or 0),
         min_audio_seconds=float(getattr(args, "min_audio_seconds", 3.0) or 0.0),
     )
@@ -187,12 +205,6 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
         ground_truth_name=args.ground_truth_name,
         verbose=verbose,
     )
-    compare_providers = compare_provider_names(
-        provider_dirs,
-        ground_truth_name=args.ground_truth_name,
-        compare_providers=args.compare_providers,
-        include_ground_truth=bool(getattr(args, "include_ground_truth", True)),
-    )
     if verbose:
         gt_note = "with ground_truth" if args.ground_truth_name in compare_providers else "ASR only"
         print(f"Compare pool ({gt_note}): {compare_providers}")
@@ -202,11 +214,9 @@ def run_notebook_demo(args: argparse.Namespace) -> NotebookPreferenceInterface:
     session_items = int(getattr(args, "session_items", 30))
     min_gt_words = int(getattr(args, "min_gt_words", 0) or 0)
     min_audio_seconds = float(getattr(args, "min_audio_seconds", 3.0) or 0.0)
-    manifest_path = getattr(args, "session_manifest", None)
-    if manifest_path:
+    if manifest:
         if verbose:
             print(f"Loading session queue from {manifest_path}...")
-        manifest = load_session_manifest(manifest_path)
         queue = queue_from_manifest(manifest, units)
         before = len(queue)
         queue = filter_queue_with_transcripts(queue)

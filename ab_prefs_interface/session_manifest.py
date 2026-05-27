@@ -73,6 +73,10 @@ def index_units(units: list[ComparisonUnit]) -> dict[str, ComparisonUnit]:
     return by_key
 
 
+def manifest_recording_ids(manifest: dict) -> list[str]:
+    return sorted({str(item["recording_id"]) for item in manifest["items"]})
+
+
 def queue_from_manifest(
     manifest: dict,
     units: list[ComparisonUnit],

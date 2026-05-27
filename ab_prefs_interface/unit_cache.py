@@ -25,6 +25,7 @@ def build_cache_key(
     *,
     demo_recordings: int | None = None,
     demo_seed: int | None = None,
+    recording_ids: list[str] | None = None,
     min_gt_words: int = 0,
     min_audio_seconds: float = 0.0,
 ) -> str:
@@ -37,7 +38,9 @@ def build_cache_key(
     ]
     for name in sorted(provider_dirs):
         parts.append(f"{name}:{dir_fingerprint(provider_dirs[name], '*.json')}")
-    if demo_recordings is not None:
+    if recording_ids is not None:
+        parts.append("manifest_rec=" + ",".join(sorted(recording_ids)))
+    elif demo_recordings is not None:
         parts.append(f"demo_n={demo_recordings}|demo_seed={demo_seed}")
     digest = hashlib.sha256("\n".join(parts).encode("utf-8")).hexdigest()
     return digest[:16]
