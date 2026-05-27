@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 import html
-import json
 from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
-from IPython.display import HTML, clear_output, display
+from IPython.display import HTML, Javascript, clear_output, display
 
 from ab_prefs_interface.audio_clips import ensure_queue_clips
 from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord
@@ -75,12 +74,27 @@ class ColabHtmlPreferenceInterface:
         self.render()
 
     def choice_button(self, label: str, choice: str) -> str:
-        args = json.dumps([choice])
+        # no onclick — Colab sanitizes it from display(HTML); wired in wire_choice_buttons()
         return (
-            f'<button style="margin:4px 8px 4px 0;padding:6px 14px;" '
-            f"onclick=\"google.colab.kernel.invokeFunction('{CALLBACK_NAME}', {args}, {{}})\">"
-            f"{html.escape(label)}</button>"
+            f'<button type="button" data-ab-choice="{html.escape(choice)}" '
+            f'style="margin:4px 8px 4px 0;padding:6px 14px;">{html.escape(label)}</button>'
         )
+
+    def wire_choice_buttons(self) -> None:
+        display(Javascript(f"""
+(function() {{
+  if (!google.colab || !google.colab.kernel) {{
+    console.error("google.colab.kernel not available");
+    return;
+  }}
+  var invoke = google.colab.kernel.invokeFunction;
+  document.querySelectorAll("[data-ab-choice]").forEach(function(btn) {{
+    btn.onclick = async function() {{
+      await invoke("{CALLBACK_NAME}", [btn.getAttribute("data-ab-choice")], {{}});
+    }};
+  }});
+}})();
+"""))
 
     def page_html(self) -> str:
         if self.current_index >= len(self.queue):
@@ -129,6 +143,8 @@ class ColabHtmlPreferenceInterface:
             ))
             return
         display(HTML(self.page_html()))
+        if self.current_index < len(self.queue):
+            self.wire_choice_buttons()
 
     def on_choice(self, choice: str) -> None:
         if self.current_index >= len(self.queue):
