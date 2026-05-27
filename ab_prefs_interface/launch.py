@@ -61,7 +61,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         audio_dir=Path(session["audio_dir"]),
         provider=[],
         config_json=Path(session["config_json"]),
-        compare_providers=str(session.get("compare_providers", "")),
+        compare_providers=session.get("compare_providers", ""),
         ground_truth_name=str(session.get("ground_truth_name", "ground_truth")),
         include_ground_truth=bool(session.get("include_ground_truth", True)),
         strategy=str(session.get("strategy", "random")),

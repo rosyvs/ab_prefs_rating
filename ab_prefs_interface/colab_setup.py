@@ -8,6 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from ab_prefs_interface.session_config import parse_compare_providers
+
 DEFAULT_BUCKET = "dd_tfx_full_transcripts"
 DEFAULT_MOUNT = Path("/content/dd_tfx")
 DEFAULT_REPO = Path("/content/ab_prefs_rating")
@@ -195,10 +197,7 @@ def load_repo_session_config(repo_root: Path | str, session_config: Path | str |
 
 
 def compare_provider_list(session: dict) -> list[str]:
-    raw = session.get("compare_providers", "")
-    if isinstance(raw, list):
-        return [str(p) for p in raw if str(p).strip()]
-    return [p.strip() for p in str(raw).split(",") if p.strip()]
+    return parse_compare_providers(session.get("compare_providers", ""))
 
 
 def write_colab_session_config(

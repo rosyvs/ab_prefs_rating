@@ -17,22 +17,31 @@ def session_unique_recordings_target(session: dict) -> int | None:
     return session_recording_pool_size(session)
 
 
+def parse_compare_providers(raw: str | list | None) -> list[str]:
+    """Normalize compare_providers from session JSON (comma string) or manifest (list)."""
+    if raw is None:
+        return []
+    if isinstance(raw, list):
+        return [str(p).strip() for p in raw if str(p).strip()]
+    return [p.strip() for p in str(raw).split(",") if p.strip()]
+
+
 def compare_provider_names(
     provider_dirs: dict[str, Path],
     *,
     ground_truth_name: str,
-    compare_providers: str,
+    compare_providers: str | list | None,
     include_ground_truth: bool,
 ) -> list[str]:
     """Names used for A/B pair generation. Empty compare_providers → all ASRs (+ GT if enabled)."""
     asr_names = sorted(provider_dirs.keys())
     valid = set(asr_names) | {ground_truth_name}
-    if compare_providers.strip():
-        names = [name.strip() for name in compare_providers.split(",") if name.strip()]
-    elif include_ground_truth:
-        names = [ground_truth_name] + asr_names
-    else:
-        names = list(asr_names)
+    names = parse_compare_providers(compare_providers)
+    if not names:
+        if include_ground_truth:
+            names = [ground_truth_name] + asr_names
+        else:
+            names = list(asr_names)
     missing = [name for name in names if name not in valid]
     if missing:
         raise ValueError(f"Unknown compare_providers names: {missing}. Available: {sorted(valid)}")
