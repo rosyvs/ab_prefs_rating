@@ -68,3 +68,7 @@ class PreferenceRecord:
     ground_truth_text: str
     transcript_a: str
     transcript_b: str
+    rating_mode: str = "overall"  # "overall" | "multi_dimension"
+    choice_text: str = ""
+    choice_timing: str = ""
+    choice_diarization: str = ""

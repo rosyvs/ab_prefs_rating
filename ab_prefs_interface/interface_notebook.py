@@ -10,6 +10,14 @@ from IPython.display import display
 
 from ab_prefs_interface.audio_clips import ensure_queue_clips
 from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord, ProviderCandidate
+from ab_prefs_interface.dimension_ui import (
+    DIMENSION_CHOICES,
+    DIMENSION_LABELS,
+    DIMENSIONS,
+    all_dimensions_selected,
+    dimension_button_label,
+    empty_dimension_picks,
+)
 from ab_prefs_interface.storage_json import append_record
 
 rating_style = """
@@ -183,6 +191,7 @@ class NotebookPreferenceInterface:
         notebook_root: Path | None = None,
         verbose: bool = False,
         ground_truth_name: str = "ground_truth",
+        rating_mode: str = "overall",
     ) -> None:
         if not queue:
             raise ValueError("Queue is empty; nothing to review.")
@@ -192,6 +201,8 @@ class NotebookPreferenceInterface:
         self.session_id = session_id or uuid4().hex[:12]
         self.show_providers = show_providers
         self.ground_truth_name = ground_truth_name
+        self.rating_mode = rating_mode
+        self.dimension_picks = empty_dimension_picks()
         self.current_index = 0
         clip_root = clip_dir or Path("results/ab_prefs/audio_clips")
         nb_root = notebook_root or Path.cwd()
@@ -211,18 +222,34 @@ class NotebookPreferenceInterface:
         self.style_html = widgets.HTML(value=rating_style)
         self.item_html = widgets.HTML(value="")
         self.status_html = widgets.HTML(value="")
-        self.button_a = widgets.Button(description="Choose A", button_style="success")
-        self.button_b = widgets.Button(description="Choose B", button_style="success")
-        self.button_tie = widgets.Button(description="Tie")
-        self.button_skip = widgets.Button(description="Skip")
-        self.button_a.on_click(lambda _: self.submit_choice("A"))
-        self.button_b.on_click(lambda _: self.submit_choice("B"))
-        self.button_tie.on_click(lambda _: self.submit_choice("tie"))
-        self.button_skip.on_click(lambda _: self.submit_choice("skip"))
-        choice_buttons = [self.button_a, self.button_b, self.button_tie, self.button_skip]
+        if rating_mode == "multi_dimension":
+            self.dimension_buttons: dict[str, dict[str, widgets.Button]] = {}
+            dimension_rows: list[widgets.Widget] = []
+            for dim in DIMENSIONS:
+                row_buttons: list[widgets.Widget] = [widgets.HTML(value=f"<strong>{DIMENSION_LABELS[dim]}</strong>")]
+                self.dimension_buttons[dim] = {}
+                for choice in DIMENSION_CHOICES:
+                    btn = widgets.Button(description=dimension_button_label(choice))
+                    btn.on_click(lambda _, d=dim, c=choice: self.set_dimension_pick(d, c))
+                    row_buttons.append(btn)
+                    self.dimension_buttons[dim][choice] = btn
+                dimension_rows.append(widgets.HBox(row_buttons))
+            self.button_next = widgets.Button(description="Next item", disabled=True, button_style="primary")
+            self.button_next.on_click(lambda _: self.submit_dimension_record())
+            choice_buttons: list[widgets.Widget] = dimension_rows + [self.button_next]
+        else:
+            self.button_a = widgets.Button(description="Choose A", button_style="success")
+            self.button_b = widgets.Button(description="Choose B", button_style="success")
+            self.button_tie = widgets.Button(description="Tie")
+            self.button_skip = widgets.Button(description="Skip")
+            self.button_a.on_click(lambda _: self.submit_choice("A"))
+            self.button_b.on_click(lambda _: self.submit_choice("B"))
+            self.button_tie.on_click(lambda _: self.submit_choice("tie"))
+            self.button_skip.on_click(lambda _: self.submit_choice("skip"))
+            choice_buttons = [self.button_a, self.button_b, self.button_tie, self.button_skip]
         if show_note:
             choice_buttons.append(self.note_toggle)
-        self.button_row = widgets.HBox(choice_buttons)
+        self.button_row = widgets.VBox(choice_buttons) if rating_mode == "multi_dimension" else widgets.HBox(choice_buttons)
         root_children = [self.style_html, self.item_html, self.button_row]
         if show_note:
             root_children.append(self.note_widget)
@@ -246,6 +273,8 @@ class NotebookPreferenceInterface:
             verbose=self.verbose,
         )
         self.button_row.layout.display = None
+        if self.rating_mode == "multi_dimension":
+            self.reset_dimension_picks()
         self.render_current()
         self.show(force=True)
 
@@ -288,6 +317,68 @@ class NotebookPreferenceInterface:
             return
         self.item_html.value = self.item_html_value()
 
+    def reset_dimension_picks(self) -> None:
+        self.dimension_picks = empty_dimension_picks()
+        if self.rating_mode != "multi_dimension":
+            return
+        for dim in DIMENSIONS:
+            for btn in self.dimension_buttons[dim].values():
+                btn.button_style = ""
+        self.button_next.disabled = True
+
+    def set_dimension_pick(self, dimension: str, choice: str) -> None:
+        self.dimension_picks[dimension] = choice
+        for c, btn in self.dimension_buttons[dimension].items():
+            btn.button_style = "success" if c == choice else ""
+        self.button_next.disabled = not all_dimensions_selected(self.dimension_picks)
+
+    def show_complete(self) -> None:
+        from ab_prefs_interface.summarize_preferences import summarize_completion_html
+
+        self.item_html.value = summarize_completion_html(
+            self.output_json_path, self.ground_truth_name, self.rating_mode
+        )
+        self.button_row.layout.display = "none"
+
+    def submit_dimension_record(self) -> None:
+        if not all_dimensions_selected(self.dimension_picks):
+            return
+        unit, provider_a, provider_b = self.current_item()
+        note = self.note_widget.value.strip() if self.show_note else ""
+        record = PreferenceRecord(
+            session_id=self.session_id,
+            timestamp_utc=datetime.now(timezone.utc).isoformat(),
+            strategy=self.strategy,
+            recording_id=unit.recording_id,
+            segment_index=unit.segment_index,
+            start_seconds=unit.start_seconds,
+            end_seconds=unit.end_seconds,
+            provider_a=provider_a,
+            provider_b=provider_b,
+            choice="",
+            note=note,
+            ground_truth_text=unit.ground_truth_text,
+            transcript_a=unit.provider_candidates[provider_a].text,
+            transcript_b=unit.provider_candidates[provider_b].text,
+            rating_mode="multi_dimension",
+            choice_text=str(self.dimension_picks["text"]),
+            choice_timing=str(self.dimension_picks["timing"]),
+            choice_diarization=str(self.dimension_picks["diarization"]),
+        )
+        append_record(self.output_json_path, record)
+        self.note_widget.value = ""
+        self.current_index += 1
+        saved = (
+            f"Saved: text={self.dimension_picks['text']}, timing={self.dimension_picks['timing']}, "
+            f"diarization={self.dimension_picks['diarization']}"
+        )
+        self.status_html.value = f'<p style="margin:8px 0;color:#4b5563;">{html.escape(saved)}</p>'
+        if self.current_index >= len(self.queue):
+            self.show_complete()
+            return
+        self.reset_dimension_picks()
+        self.render_current()
+
     def submit_choice(self, choice: str) -> None:
         unit, provider_a, provider_b = self.current_item()
         note = self.note_widget.value.strip() if self.show_note else ""
@@ -316,16 +407,8 @@ class NotebookPreferenceInterface:
             saved = f"Saved: {choice}"
         self.status_html.value = f'<p style="margin:8px 0;color:#4b5563;">{html.escape(saved)}</p>'
         if self.current_index >= len(self.queue):
-            from ab_prefs_interface.summarize_preferences import summarize_cli_command
-
-            summarize_cmd = summarize_cli_command(self.output_json_path, self.ground_truth_name)
-            self.item_html.value = (
-                f"<h3>Review complete</h3>"
-                f"<p>Saved responses to <code>{html.escape(str(self.output_json_path))}</code></p>"
-                f"<p><strong>Summarize after rating (separate, optional):</strong></p>"
-                f"<pre>{html.escape(summarize_cmd)}</pre>"
-            )
-            self.button_row.layout.display = "none"
-            print(f"\nSummarize after rating (separate, optional):\n{summarize_cmd}")
+            self.show_complete()
             return
+        if self.rating_mode == "multi_dimension":
+            self.reset_dimension_picks()
         self.render_current()

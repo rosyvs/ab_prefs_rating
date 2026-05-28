@@ -48,6 +48,7 @@ Key fields:
 - `include_ground_truth` — `true`: GT included in pair pool (with empty `compare_providers`); `false`: ASR-vs-ASR only
 - `compare_providers` — `""` = all names from `providers.json` (+ GT if `include_ground_truth`); or comma list to restrict
 - `show_providers` — `false` = blind A/B labels; `true` = debug (shows model names)
+- `rating_mode` — `overall` (default): one A/B/tie/skip per item; `multi_dimension`: rate **Text**, **Timing**, and **Diarization** separately (A/B/tie each, no skip); completion screen shows per-dimension win rates
 - `rebuild_cache` — set `true` once after code/GT changes, then back to `false`
 
 ---
@@ -95,7 +96,7 @@ RATER_ID = "Alice"
 
 ### 3. Run All
 
-Widget appears: audio player, two transcript columns, **Choose A / B / Tie / Skip**.
+Widget appears: audio player, two transcript columns, **Choose A / B / Tie / Skip** (overall mode) or three dimension rows with **A / B / Tie** plus **Next item** (multi-dimension mode).
 
 Choices append to `results/ab_prefs/preferences_Alice.json`.
 
@@ -103,12 +104,15 @@ Choices append to `results/ab_prefs/preferences_Alice.json`.
 
 ### 4. Summarize (optional)
 
-Command is printed at launch and when you finish all items:
+Overall mode: command is printed at launch and when you finish all items.
+
+Multi-dimension mode: per-dimension win rates print automatically when you finish the last item.
 
 ```bash
 python -m ab_prefs_interface.summarize_preferences \
   --input-json /home/rosy_teachfx_com/asr_eval/results/ab_prefs/preferences_Alice.json \
-  --ground-truth-name ground_truth
+  --ground-truth-name ground_truth \
+  --rating-mode auto --dimension all
 ```
 
 Win rates shown as ratios (e.g. `0.500`), not raw counts.

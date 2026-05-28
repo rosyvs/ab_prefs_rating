@@ -1,0 +1,799 @@
+{
+  "version": 1,
+  "strategy": "random",
+  "seed": 7,
+  "session_items": 75,
+  "ground_truth_name": "ground_truth",
+  "include_ground_truth": true,
+  "compare_providers": [
+    "aai_up3_v2",
+    "azure_fast",
+    "deepgram_nova3"
+  ],
+  "min_gt_words": 5,
+  "min_audio_seconds": 3.0,
+  "unique_recordings": 20,
+  "recording_seed": 7,
+  "items": [
+    {
+      "span_key": "269830:26-26:60.907-64.926",
+      "recording_id": "269830",
+      "segment_index": 26,
+      "segment_index_end": null,
+      "start_seconds": 60.90713205525125,
+      "end_seconds": 64.926,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "264907:11-12:58.266-63.485",
+      "recording_id": "264907",
+      "segment_index": 11,
+      "segment_index_end": 12,
+      "start_seconds": 58.266,
+      "end_seconds": 63.485,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "291623:121-122:500.683-507.653",
+      "recording_id": "291623",
+      "segment_index": 121,
+      "segment_index_end": 122,
+      "start_seconds": 500.683,
+      "end_seconds": 507.653099437276,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "278670:364-365:737.036-745.564",
+      "recording_id": "278670",
+      "segment_index": 364,
+      "segment_index_end": 365,
+      "start_seconds": 737.0364357504552,
+      "end_seconds": 745.5640000000001,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "297756:401-401:1215.523-1222.036",
+      "recording_id": "297756",
+      "segment_index": 401,
+      "segment_index_end": null,
+      "start_seconds": 1215.5230000000001,
+      "end_seconds": 1222.0364668537175,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "276129:425-427:924.496-928.100",
+      "recording_id": "276129",
+      "segment_index": 425,
+      "segment_index_end": 427,
+      "start_seconds": 924.4960000000001,
+      "end_seconds": 928.1000680272109,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "265326:140-142:341.122-349.385",
+      "recording_id": "265326",
+      "segment_index": 140,
+      "segment_index_end": 142,
+      "start_seconds": 341.12226121425095,
+      "end_seconds": 349.385,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "279654:713-714:1217.658-1221.058",
+      "recording_id": "279654",
+      "segment_index": 713,
+      "segment_index_end": 714,
+      "start_seconds": 1217.658,
+      "end_seconds": 1221.058,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "267128:86-86:289.780-293.056",
+      "recording_id": "267128",
+      "segment_index": 86,
+      "segment_index_end": null,
+      "start_seconds": 289.78,
+      "end_seconds": 293.055780450135,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "273757:149-153:420.070-424.090",
+      "recording_id": "273757",
+      "segment_index": 149,
+      "segment_index_end": 153,
+      "start_seconds": 420.07,
+      "end_seconds": 424.09,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "263682:364-367:773.383-783.185",
+      "recording_id": "263682",
+      "segment_index": 364,
+      "segment_index_end": 367,
+      "start_seconds": 773.3828361286829,
+      "end_seconds": 783.185,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "271120:319-320:987.047-991.470",
+      "recording_id": "271120",
+      "segment_index": 319,
+      "segment_index_end": 320,
+      "start_seconds": 987.0473533227407,
+      "end_seconds": 991.47,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "275140:208-208:499.250-506.066",
+      "recording_id": "275140",
+      "segment_index": 208,
+      "segment_index_end": null,
+      "start_seconds": 499.2502017640553,
+      "end_seconds": 506.0663038548753,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "278341:56-56:108.372-112.478",
+      "recording_id": "278341",
+      "segment_index": 56,
+      "segment_index_end": null,
+      "start_seconds": 108.372,
+      "end_seconds": 112.478,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "267105:151-152:469.320-477.450",
+      "recording_id": "267105",
+      "segment_index": 151,
+      "segment_index_end": 152,
+      "start_seconds": 469.31979051577616,
+      "end_seconds": 477.45,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "265208:370-372:1098.804-1105.065",
+      "recording_id": "265208",
+      "segment_index": 370,
+      "segment_index_end": 372,
+      "start_seconds": 1098.8044031985555,
+      "end_seconds": 1105.065,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "263334:218-218:1070.723-1075.165",
+      "recording_id": "263334",
+      "segment_index": 218,
+      "segment_index_end": null,
+      "start_seconds": 1070.7227926407172,
+      "end_seconds": 1075.165288417278,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "297756:565-566:1687.212-1692.345",
+      "recording_id": "297756",
+      "segment_index": 565,
+      "segment_index_end": 566,
+      "start_seconds": 1687.2122074001963,
+      "end_seconds": 1692.345,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "282884:90-93:352.837-357.324",
+      "recording_id": "282884",
+      "segment_index": 90,
+      "segment_index_end": 93,
+      "start_seconds": 352.8370861554367,
+      "end_seconds": 357.324,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "297756:499-501:1553.240-1559.077",
+      "recording_id": "297756",
+      "segment_index": 499,
+      "segment_index_end": 501,
+      "start_seconds": 1553.2399441630046,
+      "end_seconds": 1559.077,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "269830:117-118:369.745-375.788",
+      "recording_id": "269830",
+      "segment_index": 117,
+      "segment_index_end": 118,
+      "start_seconds": 369.745,
+      "end_seconds": 375.7875868063825,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "297756:242-243:762.473-767.658",
+      "recording_id": "297756",
+      "segment_index": 242,
+      "segment_index_end": 243,
+      "start_seconds": 762.4727993224731,
+      "end_seconds": 767.6579610944722,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "278670:323-324:675.868-680.419",
+      "recording_id": "278670",
+      "segment_index": 323,
+      "segment_index_end": 324,
+      "start_seconds": 675.8676772461808,
+      "end_seconds": 680.4188574676821,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "267105:406-407:1161.371-1168.527",
+      "recording_id": "267105",
+      "segment_index": 406,
+      "segment_index_end": 407,
+      "start_seconds": 1161.371,
+      "end_seconds": 1168.5268584718708,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "279654:278-278:391.220-394.250",
+      "recording_id": "279654",
+      "segment_index": 278,
+      "segment_index_end": null,
+      "start_seconds": 391.220469867271,
+      "end_seconds": 394.25021872003566,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "291623:183-183:966.725-969.853",
+      "recording_id": "291623",
+      "segment_index": 183,
+      "segment_index_end": null,
+      "start_seconds": 966.725,
+      "end_seconds": 969.8530000000001,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "267105:22-22:76.268-80.345",
+      "recording_id": "267105",
+      "segment_index": 22,
+      "segment_index_end": null,
+      "start_seconds": 76.26832748044397,
+      "end_seconds": 80.345,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297756:125-125:400.112-404.048",
+      "recording_id": "297756",
+      "segment_index": 125,
+      "segment_index_end": null,
+      "start_seconds": 400.111962655944,
+      "end_seconds": 404.04766053300364,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "275140:473-474:1073.683-1085.519",
+      "recording_id": "275140",
+      "segment_index": 473,
+      "segment_index_end": 474,
+      "start_seconds": 1073.6833478050391,
+      "end_seconds": 1085.5192296667174,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "278670:218-218:460.668-464.222",
+      "recording_id": "278670",
+      "segment_index": 218,
+      "segment_index_end": null,
+      "start_seconds": 460.668,
+      "end_seconds": 464.22169355693114,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "265326:195-197:525.004-530.450",
+      "recording_id": "265326",
+      "segment_index": 195,
+      "segment_index_end": 197,
+      "start_seconds": 525.0035064839324,
+      "end_seconds": 530.45,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "282884:532-532:1869.706-1874.512",
+      "recording_id": "282884",
+      "segment_index": 532,
+      "segment_index_end": null,
+      "start_seconds": 1869.705886416256,
+      "end_seconds": 1874.5119591370767,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "271120:18-18:58.332-63.615",
+      "recording_id": "271120",
+      "segment_index": 18,
+      "segment_index_end": null,
+      "start_seconds": 58.33206834960705,
+      "end_seconds": 63.615,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "267105:84-85:251.285-257.910",
+      "recording_id": "267105",
+      "segment_index": 84,
+      "segment_index_end": 85,
+      "start_seconds": 251.285,
+      "end_seconds": 257.91,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "271120:241-241:712.848-716.285",
+      "recording_id": "271120",
+      "segment_index": 241,
+      "segment_index_end": null,
+      "start_seconds": 712.8481375406709,
+      "end_seconds": 716.2850000000001,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "278341:401-405:792.570-796.086",
+      "recording_id": "278341",
+      "segment_index": 401,
+      "segment_index_end": 405,
+      "start_seconds": 792.5699999999999,
+      "end_seconds": 796.0855328798185,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "267128:135-136:543.921-551.075",
+      "recording_id": "267128",
+      "segment_index": 135,
+      "segment_index_end": 136,
+      "start_seconds": 543.921479121532,
+      "end_seconds": 551.075,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "267105:495-495:1354.125-1361.430",
+      "recording_id": "267105",
+      "segment_index": 495,
+      "segment_index_end": null,
+      "start_seconds": 1354.1254421768708,
+      "end_seconds": 1361.4298185941043,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "263334:163-164:797.267-801.341",
+      "recording_id": "263334",
+      "segment_index": 163,
+      "segment_index_end": 164,
+      "start_seconds": 797.2665719015174,
+      "end_seconds": 801.3410799368211,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "264907:0-1:4.960-17.090",
+      "recording_id": "264907",
+      "segment_index": 0,
+      "segment_index_end": 1,
+      "start_seconds": 4.96,
+      "end_seconds": 17.09,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "267128:22-23:63.009-78.295",
+      "recording_id": "267128",
+      "segment_index": 22,
+      "segment_index_end": 23,
+      "start_seconds": 63.009213470890735,
+      "end_seconds": 78.295,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "278341:241-242:518.070-521.305",
+      "recording_id": "278341",
+      "segment_index": 241,
+      "segment_index_end": 242,
+      "start_seconds": 518.07,
+      "end_seconds": 521.3047608116619,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "271120:157-159:444.877-452.335",
+      "recording_id": "271120",
+      "segment_index": 157,
+      "segment_index_end": 159,
+      "start_seconds": 444.87717879282525,
+      "end_seconds": 452.335,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "267109:12-14:51.738-55.090",
+      "recording_id": "267109",
+      "segment_index": 12,
+      "segment_index_end": 14,
+      "start_seconds": 51.73796999266656,
+      "end_seconds": 55.09,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "267128:166-166:726.085-738.175",
+      "recording_id": "267128",
+      "segment_index": 166,
+      "segment_index_end": null,
+      "start_seconds": 726.085,
+      "end_seconds": 738.175,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "273757:709-711:1635.039-1641.017",
+      "recording_id": "273757",
+      "segment_index": 709,
+      "segment_index_end": 711,
+      "start_seconds": 1635.039205712652,
+      "end_seconds": 1641.0168444376454,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297756:20-20:60.233-64.016",
+      "recording_id": "297756",
+      "segment_index": 20,
+      "segment_index_end": null,
+      "start_seconds": 60.23331228016559,
+      "end_seconds": 64.01567127889815,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "271120:187-188:545.550-548.830",
+      "recording_id": "271120",
+      "segment_index": 187,
+      "segment_index_end": 188,
+      "start_seconds": 545.55,
+      "end_seconds": 548.83,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "273757:743-743:1713.772-1719.800",
+      "recording_id": "273757",
+      "segment_index": 743,
+      "segment_index_end": null,
+      "start_seconds": 1713.7720721041865,
+      "end_seconds": 1719.7996451983538,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "297756:563-564:1683.533-1687.212",
+      "recording_id": "297756",
+      "segment_index": 563,
+      "segment_index_end": 564,
+      "start_seconds": 1683.533,
+      "end_seconds": 1687.2122074001963,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "291623:105-105:428.015-431.887",
+      "recording_id": "291623",
+      "segment_index": 105,
+      "segment_index_end": null,
+      "start_seconds": 428.015,
+      "end_seconds": 431.887,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "276129:71-73:241.200-244.449",
+      "recording_id": "276129",
+      "segment_index": 71,
+      "segment_index_end": 73,
+      "start_seconds": 241.2002025555681,
+      "end_seconds": 244.44864193855676,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "273757:672-672:1535.765-1545.120",
+      "recording_id": "273757",
+      "segment_index": 672,
+      "segment_index_end": null,
+      "start_seconds": 1535.7649999999999,
+      "end_seconds": 1545.12,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "267128:144-144:569.725-580.180",
+      "recording_id": "267128",
+      "segment_index": 144,
+      "segment_index_end": null,
+      "start_seconds": 569.725,
+      "end_seconds": 580.18,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "267105:310-311:832.835-847.926",
+      "recording_id": "267105",
+      "segment_index": 310,
+      "segment_index_end": 311,
+      "start_seconds": 832.835,
+      "end_seconds": 847.926,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "267105:149-150:452.916-469.320",
+      "recording_id": "267105",
+      "segment_index": 149,
+      "segment_index_end": 150,
+      "start_seconds": 452.9161797143731,
+      "end_seconds": 469.31979051577616,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "271120:122-125:358.255-366.755",
+      "recording_id": "271120",
+      "segment_index": 122,
+      "segment_index_end": 125,
+      "start_seconds": 358.255,
+      "end_seconds": 366.755,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "276129:71-73:241.200-244.449",
+      "recording_id": "276129",
+      "segment_index": 71,
+      "segment_index_end": 73,
+      "start_seconds": 241.2002025555681,
+      "end_seconds": 244.44864193855676,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297756:439-441:1348.459-1352.910",
+      "recording_id": "297756",
+      "segment_index": 439,
+      "segment_index_end": 441,
+      "start_seconds": 1348.459,
+      "end_seconds": 1352.9099026442464,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "265208:339-341:1004.957-1009.510",
+      "recording_id": "265208",
+      "segment_index": 339,
+      "segment_index_end": 341,
+      "start_seconds": 1004.9571446788664,
+      "end_seconds": 1009.5102616736781,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282884:310-311:1087.564-1110.028",
+      "recording_id": "282884",
+      "segment_index": 310,
+      "segment_index_end": 311,
+      "start_seconds": 1087.5639999999999,
+      "end_seconds": 1110.0279899775558,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "291623:336-337:1646.793-1651.939",
+      "recording_id": "291623",
+      "segment_index": 336,
+      "segment_index_end": 337,
+      "start_seconds": 1646.793336097473,
+      "end_seconds": 1651.939,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "271120:291-292:861.205-864.516",
+      "recording_id": "271120",
+      "segment_index": 291,
+      "segment_index_end": 292,
+      "start_seconds": 861.205,
+      "end_seconds": 864.5158280755119,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "276129:367-367:801.725-806.117",
+      "recording_id": "276129",
+      "segment_index": 367,
+      "segment_index_end": null,
+      "start_seconds": 801.7251563871863,
+      "end_seconds": 806.1167346938776,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "263334:3-4:23.450-28.305",
+      "recording_id": "263334",
+      "segment_index": 3,
+      "segment_index_end": 4,
+      "start_seconds": 23.45,
+      "end_seconds": 28.305,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282884:532-532:1869.706-1874.512",
+      "recording_id": "282884",
+      "segment_index": 532,
+      "segment_index_end": null,
+      "start_seconds": 1869.705886416256,
+      "end_seconds": 1874.5119591370767,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "297756:126-126:404.405-409.604",
+      "recording_id": "297756",
+      "segment_index": 126,
+      "segment_index_end": null,
+      "start_seconds": 404.40545124909994,
+      "end_seconds": 409.6044533704967,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "276129:371-373:808.700-817.063",
+      "recording_id": "276129",
+      "segment_index": 371,
+      "segment_index_end": 373,
+      "start_seconds": 808.7004875328363,
+      "end_seconds": 817.0631719225463,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "267109:324-325:1490.060-1496.116",
+      "recording_id": "267109",
+      "segment_index": 324,
+      "segment_index_end": 325,
+      "start_seconds": 1490.06,
+      "end_seconds": 1496.116,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "275140:18-19:33.201-37.089",
+      "recording_id": "275140",
+      "segment_index": 18,
+      "segment_index_end": 19,
+      "start_seconds": 33.20066417286324,
+      "end_seconds": 37.08897067925952,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "297756:3-3:9.717-14.164",
+      "recording_id": "297756",
+      "segment_index": 3,
+      "segment_index_end": null,
+      "start_seconds": 9.71728582461977,
+      "end_seconds": 14.16411329610266,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "279654:315-315:440.573-446.128",
+      "recording_id": "279654",
+      "segment_index": 315,
+      "segment_index_end": null,
+      "start_seconds": 440.5730463295097,
+      "end_seconds": 446.12843537414966,
+      "provider_a": "deepgram_nova3",
+      "provider_b": "azure_fast"
+    },
+    {
+      "span_key": "271120:165-165:473.580-478.240",
+      "recording_id": "271120",
+      "segment_index": 165,
+      "segment_index_end": null,
+      "start_seconds": 473.58,
+      "end_seconds": 478.24,
+      "provider_a": "azure_fast",
+      "provider_b": "deepgram_nova3"
+    },
+    {
+      "span_key": "263682:154-157:332.292-338.072",
+      "recording_id": "263682",
+      "segment_index": 154,
+      "segment_index_end": 157,
+      "start_seconds": 332.2922503990894,
+      "end_seconds": 338.0716831388426,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297756:428-430:1323.871-1327.774",
+      "recording_id": "297756",
+      "segment_index": 428,
+      "segment_index_end": 430,
+      "start_seconds": 1323.871,
+      "end_seconds": 1327.7743197278912,
+      "provider_a": "azure_fast",
+      "provider_b": "aai_up3_v2"
+    }
+  ],
+  "source_manifest_filter": {
+    "exclude_scrub": true,
+    "dropped_span_keys": [
+      "282884:291-292:992.984-997.906",
+      "267109:81-83:276.300-280.486",
+      "306159:77-81:101.422-110.418",
+      "278341:295-299:623.984-636.188",
+      "279654:676-678:1161.564-1166.833",
+      "267105:136-139:430.957-437.696",
+      "271120:129-132:371.360-376.972",
+      "282884:523-526:1841.954-1850.954",
+      "267105:70-72:205.280-209.121",
+      "297756:262-264:849.859-855.217",
+      "275140:20-22:35.075-38.107",
+      "279654:311-312:429.249-436.627",
+      "275140:78-80:149.412-159.801",
+      "282884:77-78:271.724-277.940",
+      "271120:13-15:46.465-52.267",
+      "278341:286-289:599.480-611.760",
+      "279654:668-671:1144.054-1147.293",
+      "265326:397-399:1247.864-1258.713",
+      "282884:440-443:1554.338-1565.330",
+      "279654:54-57:136.188-139.739",
+      "273757:466-468:1089.196-1092.656",
+      "263334:157-158:766.985-772.490",
+      "265326:94-97:216.375-224.337",
+      "306159:7-11:9.984-14.136",
+      "267109:25-26:102.325-107.845"
+    ]
+  }
+}

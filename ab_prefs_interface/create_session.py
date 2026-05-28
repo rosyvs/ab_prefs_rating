@@ -10,12 +10,35 @@ from ab_prefs_interface.matching import build_comparison_units
 from ab_prefs_interface.run_rating import load_provider_dirs
 from ab_prefs_interface.sampling import build_session_queue, pair_combinations
 from ab_prefs_interface.scoring import score_units
-from ab_prefs_interface.session_manifest import build_manifest_payload, save_session_manifest
+from ab_prefs_interface.session_manifest import build_manifest_payload, copy_manifest_from_source, save_session_manifest
 
 
-def create_session_manifest(session_config_path: Path, manifest_path: Path | None = None, *, rebuild_cache: bool = False) -> Path:
+def create_session_manifest(
+    session_config_path: Path,
+    manifest_path: Path | None = None,
+    *,
+    rebuild_cache: bool = False,
+    from_manifest: Path | None = None,
+    exclude_scrub: bool = False,
+) -> Path:
     session = load_session_config(session_config_path)
     setup_repo_path(Path(session["notebook_root"]))
+    out = manifest_path or Path(session["session_manifest"])
+    if from_manifest is not None:
+        payload = copy_manifest_from_source(
+            from_manifest,
+            gt_dir=Path(session["gt_dir"]),
+            exclude_scrub=exclude_scrub,
+        )
+        save_session_manifest(out, payload)
+        n_unique = len({item["recording_id"] for item in payload["items"]})
+        dropped = len(payload.get("source_manifest_filter", {}).get("dropped_span_keys", []))
+        print(
+            f"Wrote {len(payload['items'])} items ({n_unique} unique recordings)"
+            + (f", dropped {dropped} scrub spans" if dropped else "")
+            + f" → {out.resolve()}"
+        )
+        return out.resolve()
     args = namespace_for_rater(session, rater_id="_lead_export_")
     if rebuild_cache:
         args.rebuild_cache = True
@@ -103,8 +126,25 @@ def main() -> None:
         help="Override manifest output path (default: session_manifest field in session config)",
     )
     parser.add_argument("--rebuild-cache", action="store_true", help="Ignore cached unit pickles and rebuild")
+    parser.add_argument(
+        "--from-manifest",
+        type=Path,
+        default=None,
+        help="Copy items from an existing manifest (same utterances/pairs) instead of resampling",
+    )
+    parser.add_argument(
+        "--exclude-scrub",
+        action="store_true",
+        help="With --from-manifest: drop items whose GT span is SCRUB or should_scrub",
+    )
     args = parser.parse_args()
-    create_session_manifest(args.session_config, args.manifest_path, rebuild_cache=args.rebuild_cache)
+    create_session_manifest(
+        args.session_config,
+        args.manifest_path,
+        rebuild_cache=args.rebuild_cache,
+        from_manifest=args.from_manifest,
+        exclude_scrub=args.exclude_scrub,
+    )
 
 
 if __name__ == "__main__":

@@ -126,6 +126,12 @@ def build_argument_parser() -> argparse.ArgumentParser:
         help="Show provider names and recording/segment ids in the UI (blind A/B by default)",
     )
     parser.add_argument(
+        "--rating-mode",
+        choices=["overall", "multi_dimension"],
+        default="overall",
+        help="overall: single A/B/tie/skip; multi_dimension: rate text/timing/diarization separately",
+    )
+    parser.add_argument(
         "--min-audio-seconds",
         type=float,
         default=3.0,
@@ -310,6 +316,7 @@ def run_notebook_rating(args: argparse.Namespace):
         session_id=session_id,
         show_note=bool(getattr(args, "show_note", True)),
         show_providers=bool(getattr(args, "show_providers", False)),
+        rating_mode=str(getattr(args, "rating_mode", "overall")),
         clip_dir=clip_dir,
         notebook_root=notebook_root,
         verbose=verbose,

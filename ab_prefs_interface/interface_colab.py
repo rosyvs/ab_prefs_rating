@@ -10,6 +10,12 @@ from IPython.display import HTML, Javascript, clear_output, display
 
 from ab_prefs_interface.audio_clips import ensure_queue_clips
 from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord
+from ab_prefs_interface.dimension_ui import (
+    all_dimensions_selected,
+    dimension_rows_html,
+    empty_dimension_picks,
+    parse_dimension_choice,
+)
 from ab_prefs_interface.interface_notebook import comparison_block, rating_style
 from ab_prefs_interface.storage_json import append_record
 
@@ -29,6 +35,7 @@ class ColabHtmlPreferenceInterface:
         notebook_root: Path | None = None,
         verbose: bool = False,
         ground_truth_name: str = "ground_truth",
+        rating_mode: str = "overall",
         **kwargs,
     ) -> None:
         if not queue:
@@ -40,6 +47,8 @@ class ColabHtmlPreferenceInterface:
         self.show_note = show_note
         self.show_providers = show_providers
         self.ground_truth_name = ground_truth_name
+        self.rating_mode = rating_mode
+        self.dimension_picks = empty_dimension_picks()
         self.current_index = 0
         self.clip_dir = clip_dir or Path("results/ab_prefs/audio_clips")
         self.notebook_root = notebook_root or Path.cwd()
@@ -73,10 +82,11 @@ class ColabHtmlPreferenceInterface:
             self.notebook_root,
             verbose=self.verbose,
         )
+        if self.rating_mode == "multi_dimension":
+            self.dimension_picks = empty_dimension_picks()
         self.render()
 
     def choice_button(self, label: str, choice: str) -> str:
-        # no onclick — Colab sanitizes it from display(HTML); wired in wire_choice_buttons()
         return (
             f'<button type="button" data-ab-choice="{html.escape(choice)}" '
             f'style="margin:4px 8px 4px 0;padding:6px 14px;">{html.escape(label)}</button>'
@@ -106,21 +116,34 @@ class ColabHtmlPreferenceInterface:
       await invoke("{CALLBACK_NAME}", [btn.getAttribute("data-ab-choice"), note], {{}});
     }};
   }});
+  var nextBtn = document.querySelector("[data-ab-action='next']");
+  if (nextBtn && !nextBtn.disabled) {{
+    nextBtn.onclick = async function() {{
+      var note = field ? field.value.trim() : "";
+      await invoke("{CALLBACK_NAME}", ["next", note], {{}});
+    }};
+  }}
 }})();
 """))
 
+    def overall_buttons_html(self) -> str:
+        return (
+            self.choice_button("Choose A", "A")
+            + self.choice_button("Choose B", "B")
+            + self.choice_button("Tie", "tie")
+            + self.choice_button("Skip", "skip")
+        )
+
+    def show_complete(self) -> str:
+        from ab_prefs_interface.summarize_preferences import summarize_completion_html
+
+        return rating_style + summarize_completion_html(
+            self.output_json_path, self.ground_truth_name, self.rating_mode
+        )
+
     def page_html(self) -> str:
         if self.current_index >= len(self.queue):
-            from ab_prefs_interface.summarize_preferences import summarize_cli_command
-
-            summarize_cmd = summarize_cli_command(self.output_json_path, self.ground_truth_name)
-            print(f"\nSummarize after rating (separate, optional):\n{summarize_cmd}")
-            return (
-                f"{rating_style}<h3>Review complete</h3>"
-                f"<p>Saved responses to <code>{html.escape(str(self.output_json_path))}</code></p>"
-                f"<p><strong>Summarize after rating (separate, optional):</strong></p>"
-                f"<pre>{html.escape(summarize_cmd)}</pre>"
-            )
+            return self.show_complete()
         unit, provider_a, provider_b = self.current_item()
         audio_url = self.audio_urls[unit.span_key]
         clip_duration = unit.end_seconds - unit.start_seconds
@@ -134,12 +157,10 @@ class ColabHtmlPreferenceInterface:
             show_providers=self.show_providers,
             item_label=f"Preference item {self.current_index + 1}/{len(self.queue)}",
         )
-        buttons = (
-            self.choice_button("Choose A", "A")
-            + self.choice_button("Choose B", "B")
-            + self.choice_button("Tie", "tie")
-            + self.choice_button("Skip", "skip")
-        )
+        if self.rating_mode == "multi_dimension":
+            buttons = dimension_rows_html(self.dimension_picks)
+        else:
+            buttons = self.overall_buttons_html()
         if self.show_note:
             buttons += (
                 '<label style="margin-left:12px;"><input type="checkbox" id="ab-note-toggle"> Add note</label>'
@@ -152,7 +173,7 @@ class ColabHtmlPreferenceInterface:
         note_field = ""
         if self.show_note:
             note_field = (
-                '<textarea id="ab-note-field" placeholder="Optional note about why A/B/tie/skip" '
+                '<textarea id="ab-note-field" placeholder="Optional note" '
                 'style="display:none;width:100%;max-width:900px;height:70px;margin-top:6px;"></textarea>'
             )
         return f'{rating_style}{body}{status}<div style="margin-top:10px;">{buttons}</div>{note_field}'
@@ -169,8 +190,53 @@ class ColabHtmlPreferenceInterface:
         if self.current_index < len(self.queue):
             self.wire_page_js()
 
+    def submit_dimension_record(self, note: str) -> None:
+        if not all_dimensions_selected(self.dimension_picks):
+            return
+        unit, provider_a, provider_b = self.current_item()
+        record = PreferenceRecord(
+            session_id=self.session_id,
+            timestamp_utc=datetime.now(timezone.utc).isoformat(),
+            strategy=self.strategy,
+            recording_id=unit.recording_id,
+            segment_index=unit.segment_index,
+            start_seconds=unit.start_seconds,
+            end_seconds=unit.end_seconds,
+            provider_a=provider_a,
+            provider_b=provider_b,
+            choice="",
+            note=note,
+            ground_truth_text=unit.ground_truth_text,
+            transcript_a=unit.provider_candidates[provider_a].text,
+            transcript_b=unit.provider_candidates[provider_b].text,
+            rating_mode="multi_dimension",
+            choice_text=str(self.dimension_picks["text"]),
+            choice_timing=str(self.dimension_picks["timing"]),
+            choice_diarization=str(self.dimension_picks["diarization"]),
+        )
+        append_record(self.output_json_path, record)
+        self.current_index += 1
+        self.status_message = (
+            f"Saved: text={self.dimension_picks['text']}, timing={self.dimension_picks['timing']}, "
+            f"diarization={self.dimension_picks['diarization']}"
+        )
+        self.dimension_picks = empty_dimension_picks()
+        self.render()
+
     def on_choice(self, choice: str, note: str = "") -> None:
         if self.current_index >= len(self.queue):
+            return
+        note = (note or "").strip()
+        if self.rating_mode == "multi_dimension":
+            if choice == "next":
+                self.submit_dimension_record(note)
+                return
+            parsed = parse_dimension_choice(choice)
+            if parsed is None:
+                return
+            dimension, dim_choice = parsed
+            self.dimension_picks[dimension] = dim_choice
+            self.render()
             return
         unit, provider_a, provider_b = self.current_item()
         record = PreferenceRecord(
@@ -184,7 +250,7 @@ class ColabHtmlPreferenceInterface:
             provider_a=provider_a,
             provider_b=provider_b,
             choice=choice,
-            note=(note or "").strip(),
+            note=note,
             ground_truth_text=unit.ground_truth_text,
             transcript_a=unit.provider_candidates[provider_a].text,
             transcript_b=unit.provider_candidates[provider_b].text,

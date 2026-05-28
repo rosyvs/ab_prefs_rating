@@ -17,6 +17,11 @@ CHOICES_WEIGHTED = (
     ("tie", 0.18),
     ("skip", 0.10),
 )
+DIMENSION_CHOICES_WEIGHTED = (
+    ("A", 0.42),
+    ("B", 0.40),
+    ("tie", 0.18),
+)
 SAMPLE_GT = [
     "You guys have some awesome ideas.",
     "Open your books to page twelve.",
@@ -67,6 +72,7 @@ def simulate_session(
     session_items: int = 30,
     seed: int = 42,
     strategy: str = "random",
+    rating_mode: str = "overall",
 ) -> list[dict]:
     rng = random.Random(seed)
     session_id = uuid4().hex[:12]
@@ -88,25 +94,32 @@ def simulate_session(
             hyp_b = gt if provider_b == GROUND_TRUTH else rng.choice(SAMPLE_HYP[provider_b])
             start = float(rng.randint(100, 2000))
             end = start + rng.uniform(3.0, 12.0)
-            choice = weighted_choice(rng, CHOICES_WEIGHTED)
-            records.append(
-                {
-                    "session_id": session_id,
-                    "timestamp_utc": (t0 + timedelta(seconds=seg_counter * 8)).isoformat(),
-                    "strategy": strategy,
-                    "recording_id": rec,
-                    "segment_index": seg_counter * 3,
-                    "start_seconds": start,
-                    "end_seconds": end,
-                    "provider_a": provider_a,
-                    "provider_b": provider_b,
-                    "choice": choice,
-                    "note": "",
-                    "ground_truth_text": gt,
-                    "transcript_a": hyp_a,
-                    "transcript_b": hyp_b,
-                }
-            )
+            base = {
+                "session_id": session_id,
+                "timestamp_utc": (t0 + timedelta(seconds=seg_counter * 8)).isoformat(),
+                "strategy": strategy,
+                "recording_id": rec,
+                "segment_index": seg_counter * 3,
+                "start_seconds": start,
+                "end_seconds": end,
+                "provider_a": provider_a,
+                "provider_b": provider_b,
+                "note": "",
+                "ground_truth_text": gt,
+                "transcript_a": hyp_a,
+                "transcript_b": hyp_b,
+            }
+            if rating_mode == "multi_dimension":
+                records.append({
+                    **base,
+                    "rating_mode": "multi_dimension",
+                    "choice": "",
+                    "choice_text": weighted_choice(rng, DIMENSION_CHOICES_WEIGHTED),
+                    "choice_timing": weighted_choice(rng, DIMENSION_CHOICES_WEIGHTED),
+                    "choice_diarization": weighted_choice(rng, DIMENSION_CHOICES_WEIGHTED),
+                })
+            else:
+                records.append({**base, "rating_mode": "overall", "choice": weighted_choice(rng, CHOICES_WEIGHTED)})
     rng.shuffle(records)
     return records[:session_items]
 
@@ -117,6 +130,11 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--strategy", type=str, default="random")
     parser.add_argument(
+        "--rating-mode",
+        choices=["overall", "multi_dimension"],
+        default="overall",
+    )
+    parser.add_argument(
         "--output-json",
         type=Path,
         default=Path("results/ab_prefs/preferences_simulated.json"),
@@ -124,7 +142,9 @@ def main() -> None:
     args = parser.parse_args()
     out = args.output_json.expanduser().resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"responses": simulate_session(args.session_items, args.seed, args.strategy)}
+    payload = {"responses": simulate_session(
+        args.session_items, args.seed, args.strategy, args.rating_mode
+    )}
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(payload['responses'])} records to {out}")
 

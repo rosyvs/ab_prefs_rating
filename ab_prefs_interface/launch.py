@@ -78,6 +78,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         asr_eval_root=Path(session["asr_eval_root"]) if session.get("asr_eval_root") else None,
         show_note=bool(session.get("show_note", True)),
         show_providers=bool(session.get("show_providers", False)),
+        rating_mode=str(session.get("rating_mode", "overall")),
         clip_dir=Path(session["clip_dir"]),
         notebook_root=notebook_root,
         session_manifest=Path(session_manifest) if session_manifest else None,
