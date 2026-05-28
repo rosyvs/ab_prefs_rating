@@ -39,18 +39,35 @@ def dimension_button_label(choice: str) -> str:
     return "Tie" if choice == "tie" else choice
 
 
+def parse_dimension_submit(value: str) -> dict[str, str] | None:
+    """Parse submit:text:A,timing:B,diarization:tie from Colab Next callback."""
+    if not value.startswith("submit:"):
+        return None
+    picks: dict[str, str] = {}
+    for part in value[len("submit:"):].split(","):
+        if ":" not in part:
+            return None
+        dimension, choice = part.split(":", 1)
+        if dimension not in DIMENSIONS or choice not in DIMENSION_CHOICES:
+            return None
+        picks[dimension] = choice
+    if set(picks.keys()) != set(DIMENSIONS):
+        return None
+    return picks
+
+
 def dimension_rows_html(picks: dict[str, str | None]) -> str:
-    """HTML for 3 dimension rows with A/B/Tie buttons (Colab)."""
+    """HTML for 3 dimension rows with A/B/Tie buttons (Colab). Selection updated client-side."""
     rows: list[str] = []
     for dim in DIMENSIONS:
         label = DIMENSION_LABELS[dim]
         buttons = ""
         for choice in DIMENSION_CHOICES:
-            encoded = encode_dimension_choice(dim, choice)
             selected = picks.get(dim) == choice
             style = "font-weight:600;background:#dcfce7;" if selected else ""
             buttons += (
-                f'<button type="button" data-ab-choice="{html.escape(encoded)}" '
+                f'<button type="button" data-ab-dim="{html.escape(dim)}" '
+                f'data-ab-choice-val="{html.escape(choice)}" '
                 f'style="margin:2px 6px 2px 0;padding:4px 12px;{style}">'
                 f"{html.escape(dimension_button_label(choice))}</button>"
             )
@@ -59,7 +76,7 @@ def dimension_rows_html(picks: dict[str, str | None]) -> str:
         )
     next_disabled = "" if all_dimensions_selected(picks) else " disabled"
     rows.append(
-        f'<button type="button" data-ab-action="next"{next_disabled} '
+        f'<button type="button" id="ab-next-btn" data-ab-action="next"{next_disabled} '
         f'style="margin-top:10px;padding:6px 16px;">Next item</button>'
     )
     return "\n".join(rows)

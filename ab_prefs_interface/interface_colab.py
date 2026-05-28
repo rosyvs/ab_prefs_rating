@@ -15,6 +15,7 @@ from ab_prefs_interface.dimension_ui import (
     dimension_rows_html,
     empty_dimension_picks,
     parse_dimension_choice,
+    parse_dimension_submit,
 )
 from ab_prefs_interface.interface_notebook import comparison_block, rating_style
 from ab_prefs_interface.storage_json import append_record
@@ -93,6 +94,9 @@ class ColabHtmlPreferenceInterface:
         )
 
     def wire_page_js(self) -> None:
+        if self.rating_mode == "multi_dimension":
+            self.wire_multi_dimension_js()
+            return
         display(Javascript(f"""
 (function() {{
   if (!google.colab || !google.colab.kernel) {{
@@ -116,13 +120,60 @@ class ColabHtmlPreferenceInterface:
       await invoke("{CALLBACK_NAME}", [btn.getAttribute("data-ab-choice"), note], {{}});
     }};
   }});
-  var nextBtn = document.querySelector("[data-ab-action='next']");
-  if (nextBtn && !nextBtn.disabled) {{
-    nextBtn.onclick = async function() {{
-      var note = field ? field.value.trim() : "";
-      await invoke("{CALLBACK_NAME}", ["next", note], {{}});
+}})();
+"""))
+
+    def wire_multi_dimension_js(self) -> None:
+        # dimension A/B/Tie clicks stay client-side; only Next hits the kernel (avoids full-page flash)
+        display(Javascript(f"""
+(function() {{
+  if (!google.colab || !google.colab.kernel) {{
+    console.error("google.colab.kernel not available");
+    return;
+  }}
+  var invoke = google.colab.kernel.invokeFunction;
+  var toggle = document.getElementById("ab-note-toggle");
+  var field = document.getElementById("ab-note-field");
+  if (toggle && field) {{
+    toggle.onchange = function() {{
+      field.style.display = toggle.checked ? "block" : "none";
+      if (!toggle.checked) field.value = "";
     }};
   }}
+  window.abDimPicks = {{text: null, timing: null, diarization: null}};
+  function abUpdateDimUI() {{
+    var dims = ["text", "timing", "diarization"];
+    var allSet = true;
+    dims.forEach(function(dim) {{
+      document.querySelectorAll('[data-ab-dim="' + dim + '"]').forEach(function(btn) {{
+        var choice = btn.getAttribute("data-ab-choice-val");
+        var sel = window.abDimPicks[dim] === choice;
+        btn.style.fontWeight = sel ? "600" : "";
+        btn.style.background = sel ? "#dcfce7" : "";
+      }});
+      if (!window.abDimPicks[dim]) allSet = false;
+    }});
+    var nextBtn = document.getElementById("ab-next-btn");
+    if (nextBtn) nextBtn.disabled = !allSet;
+  }}
+  document.querySelectorAll("[data-ab-dim]").forEach(function(btn) {{
+    btn.onclick = function() {{
+      window.abDimPicks[btn.getAttribute("data-ab-dim")] = btn.getAttribute("data-ab-choice-val");
+      abUpdateDimUI();
+    }};
+  }});
+  var nextBtn = document.getElementById("ab-next-btn");
+  if (nextBtn) {{
+    nextBtn.onclick = async function() {{
+      if (nextBtn.disabled) return;
+      var note = field ? field.value.trim() : "";
+      var payload = "submit:" + ["text","timing","diarization"].map(function(d) {{
+        return d + ":" + window.abDimPicks[d];
+      }}).join(",");
+      await invoke("{CALLBACK_NAME}", [payload, note], {{}});
+    }};
+  }}
+  abUpdateDimUI();
 }})();
 """))
 
@@ -228,6 +279,11 @@ class ColabHtmlPreferenceInterface:
             return
         note = (note or "").strip()
         if self.rating_mode == "multi_dimension":
+            picks = parse_dimension_submit(choice)
+            if picks is not None:
+                self.dimension_picks = picks
+                self.submit_dimension_record(note)
+                return
             if choice == "next":
                 self.submit_dimension_record(note)
                 return
@@ -236,7 +292,6 @@ class ColabHtmlPreferenceInterface:
                 return
             dimension, dim_choice = parsed
             self.dimension_picks[dimension] = dim_choice
-            self.render()
             return
         unit, provider_a, provider_b = self.current_item()
         record = PreferenceRecord(
