@@ -130,7 +130,7 @@ def main() -> None:
         "--from-manifest",
         type=Path,
         default=None,
-        help="Copy items from an existing manifest (same utterances/pairs) instead of resampling",
+        help="Copy items from an existing manifest (e.g. configs/ab_prefs.manifest.json) instead of resampling",
     )
     parser.add_argument(
         "--exclude-scrub",

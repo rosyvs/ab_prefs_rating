@@ -143,7 +143,12 @@ def manifest_item_is_scrub(
     return False
 
 
-def filter_manifest_exclude_scrub(manifest: dict, gt_dir: Path) -> dict:
+def filter_manifest_exclude_scrub(
+    manifest: dict,
+    gt_dir: Path,
+    *,
+    source_manifest: str | None = None,
+) -> dict:
     """Copy manifest, keeping items whose GT span is not SCRUB/should_scrub."""
     gt_dir = gt_dir.expanduser().resolve()
     transcripts = load_ground_truth_transcripts(gt_dir)
@@ -162,7 +167,13 @@ def filter_manifest_exclude_scrub(manifest: dict, gt_dir: Path) -> dict:
     out = dict(manifest)
     out["items"] = kept
     out["session_items"] = len(kept)
-    out["source_manifest_filter"] = {"exclude_scrub": True, "dropped_span_keys": dropped}
+    if source_manifest:
+        out["source_manifest"] = source_manifest
+    out["source_manifest_filter"] = {
+        "exclude_scrub": True,
+        "source_item_count": len(manifest["items"]),
+        "dropped_span_keys": dropped,
+    }
     return out
 
 
@@ -172,7 +183,13 @@ def copy_manifest_from_source(
     gt_dir: Path,
     exclude_scrub: bool = False,
 ) -> dict:
+    source_manifest_path = source_manifest_path.expanduser().resolve()
     manifest = load_session_manifest(source_manifest_path)
+    source_label = str(source_manifest_path)
     if not exclude_scrub:
-        return manifest
-    return filter_manifest_exclude_scrub(manifest, gt_dir)
+        out = dict(manifest)
+        out["source_manifest"] = source_label
+        return out
+    return filter_manifest_exclude_scrub(
+        manifest, gt_dir, source_manifest=source_label
+    )

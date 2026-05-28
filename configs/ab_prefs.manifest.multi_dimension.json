@@ -766,8 +766,10 @@
       "provider_b": "aai_up3_v2"
     }
   ],
+  "source_manifest": "/home/rosy_teachfx_com/asr_eval/ab_prefs_rating/configs/ab_prefs.manifest.json",
   "source_manifest_filter": {
     "exclude_scrub": true,
+    "source_item_count": 100,
     "dropped_span_keys": [
       "282884:291-292:992.984-997.906",
       "267109:81-83:276.300-280.486",
