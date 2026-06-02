@@ -135,6 +135,7 @@ class ColabHtmlPreferenceInterface:
 
     def wire_multi_dimension_js(self) -> None:
         # dimension A/B/Tie clicks stay client-side; only Next hits the kernel (avoids full-page flash)
+        key_map_js = _dim_key_map_js()
         display(Javascript(f"""
 (function() {{
   if (!google.colab || !google.colab.kernel) {{
@@ -186,7 +187,7 @@ class ColabHtmlPreferenceInterface:
   abUpdateDimUI();
 
   // keyboard shortcuts
-  var abKeyMap = {{{key_map}}};
+  var abKeyMap = {key_map_js};
   if (window._abKeyHandler) document.removeEventListener('keydown', window._abKeyHandler);
   window._abKeyHandler = function(e) {{
     if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
@@ -198,7 +199,7 @@ class ColabHtmlPreferenceInterface:
   }};
   document.addEventListener('keydown', window._abKeyHandler);
 }})();
-""".replace("{key_map}", _dim_key_map_js())))
+"""))
 
     def overall_buttons_html(self) -> str:
         return (
