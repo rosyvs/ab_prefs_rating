@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import html
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
@@ -47,6 +48,7 @@ class ColabHtmlPreferenceInterface:
         verbose: bool = False,
         ground_truth_name: str = "ground_truth",
         rating_mode: str = "overall",
+        gcs_bucket: str | None = None,
         **kwargs,
     ) -> None:
         if not queue:
@@ -64,6 +66,7 @@ class ColabHtmlPreferenceInterface:
         self.clip_dir = clip_dir or Path("results/ab_prefs/audio_clips")
         self.notebook_root = notebook_root or Path.cwd()
         self.verbose = verbose
+        self.gcs_bucket = gcs_bucket or ""
         self.audio_urls: dict[str, str] = {}
         self.status_message = ""
         self.callback_registered = False
@@ -264,6 +267,24 @@ class ColabHtmlPreferenceInterface:
         if self.current_index < len(self.queue):
             self.wire_page_js()
 
+    def _sync_to_gcs(self) -> None:
+        """Push the output JSON to GCS in the background after every save (best-effort)."""
+        if not self.gcs_bucket:
+            return
+        gcs_path = (
+            f"gs://{self.gcs_bucket}/"
+            f"{self.output_json_path.parent.name}/"
+            f"{self.output_json_path.name}"
+        )
+        try:
+            subprocess.Popen(
+                ["gsutil", "cp", str(self.output_json_path), gcs_path],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            pass  # gsutil unavailable — silent, never interrupt a rating
+
     def submit_dimension_record(self, note: str) -> None:
         if not all_dimensions_selected(self.dimension_picks):
             return
@@ -289,6 +310,7 @@ class ColabHtmlPreferenceInterface:
             choice_diarization=str(self.dimension_picks["diarization"]),
         )
         append_record(self.output_json_path, record)
+        self._sync_to_gcs()
         self.current_index += 1
         self.status_message = (
             f"Saved: text={self.dimension_picks['text']}, timing={self.dimension_picks['timing']}, "
@@ -334,6 +356,7 @@ class ColabHtmlPreferenceInterface:
             transcript_b=unit.provider_candidates[provider_b].text,
         )
         append_record(self.output_json_path, record)
+        self._sync_to_gcs()
         self.current_index += 1
         if self.show_providers:
             self.status_message = f"Saved: {choice} for {unit.span_key} ({provider_a} vs {provider_b})"

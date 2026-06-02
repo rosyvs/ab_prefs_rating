@@ -85,6 +85,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         export_session_manifest=Path(export_session_manifest) if export_session_manifest else None,
         rater_id=rater_id.strip(),
         redo=bool(session.get("redo", False)),
+        gcs_bucket=str(session.get("gcs_bucket", "") or ""),
     )
 
 
@@ -92,6 +93,7 @@ def launch_rating(
     rater_id: str | None = None,
     session_config_path: Path | str | None = None,
     redo: bool | None = None,
+    gcs_bucket: str | None = None,
 ) -> "NotebookPreferenceInterface":
     """Load shared session config, open rating widget. Colleagues only set rater_id.
 
@@ -107,9 +109,11 @@ def launch_rating(
     session = load_session_config(config_path)
     setup_repo_path(Path(session["notebook_root"]))
     args = namespace_for_rater(session, rater)
-    # Notebook-level flag overrides session config when explicitly passed.
+    # Notebook-level flags override session config when explicitly passed.
     if redo is not None:
         args.redo = redo
+    if gcs_bucket is not None:
+        args.gcs_bucket = gcs_bucket
     print(f"Rater: {rater} → {args.output_json}")
     print(f"Session config: {config_path.resolve()}")
     if args.session_manifest:

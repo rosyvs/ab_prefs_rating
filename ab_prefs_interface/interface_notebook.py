@@ -5,6 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
+import subprocess
+
 import ipywidgets as widgets
 from IPython.display import Javascript, display
 
@@ -193,6 +195,7 @@ class NotebookPreferenceInterface:
         verbose: bool = False,
         ground_truth_name: str = "ground_truth",
         rating_mode: str = "overall",
+        gcs_bucket: str | None = None,
     ) -> None:
         if not queue:
             raise ValueError("Queue is empty; nothing to review.")
@@ -210,6 +213,7 @@ class NotebookPreferenceInterface:
         self.clip_dir = clip_root
         self.notebook_root = nb_root
         self.verbose = verbose
+        self.gcs_bucket = gcs_bucket or ""
         self.audio_urls: dict[str, str] = {}
         self.show_note = show_note
         self.note_widget = widgets.Textarea(
@@ -266,6 +270,24 @@ class NotebookPreferenceInterface:
         self.shown = False
         self.set_placeholder(f"Preparing audio clips ({len(queue)} items)…")
         self.button_row.layout.display = "none"
+
+    def _sync_to_gcs(self) -> None:
+        """Push the output JSON to GCS in the background after every save (best-effort)."""
+        if not self.gcs_bucket:
+            return
+        gcs_path = (
+            f"gs://{self.gcs_bucket}/"
+            f"{self.output_json_path.parent.name}/"
+            f"{self.output_json_path.name}"
+        )
+        try:
+            subprocess.Popen(
+                ["gsutil", "cp", str(self.output_json_path), gcs_path],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            pass  # gsutil unavailable — silent, never interrupt a rating
 
     def set_placeholder(self, message: str) -> None:
         self.item_html.value = f'<p style="margin:8px 0;color:#4b5563;">{html.escape(message)}</p>'
@@ -400,6 +422,7 @@ document.addEventListener('keydown', window._abNbKeyHandler);
             choice_diarization=str(self.dimension_picks["diarization"]),
         )
         append_record(self.output_json_path, record)
+        self._sync_to_gcs()
         self.note_widget.value = ""
         self.current_index += 1
         saved = (
@@ -433,6 +456,7 @@ document.addEventListener('keydown', window._abNbKeyHandler);
             transcript_b=unit.provider_candidates[provider_b].text,
         )
         append_record(self.output_json_path, record)
+        self._sync_to_gcs()
         self.note_widget.value = ""
         self.current_index += 1
         if self.show_providers:

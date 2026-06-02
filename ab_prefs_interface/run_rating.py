@@ -368,6 +368,7 @@ def run_notebook_rating(args: argparse.Namespace):
         notebook_root=notebook_root,
         verbose=verbose,
         ground_truth_name=args.ground_truth_name,
+        gcs_bucket=str(getattr(args, "gcs_bucket", "") or ""),
     )
     interface.show()  # placeholder widget before clip ffmpeg work
     interface.load_clips()
