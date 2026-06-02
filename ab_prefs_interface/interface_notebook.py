@@ -304,16 +304,21 @@ class NotebookPreferenceInterface:
                 lines.append(f'  "{key}": ".{cls}",')
         lines.append("};")
         js = "\n".join(lines) + """
-if (window._abNbKeyHandler) document.removeEventListener('keydown', window._abNbKeyHandler);
+if (window._abNbKeyHandler) document.removeEventListener('keydown', window._abNbKeyHandler, true);
 window._abNbKeyHandler = function(e) {
   if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if (e.key === 'Enter') {
+    var nb = document.querySelector('.widget-button[disabled!="disabled"].mod-primary');
+    if (nb) { nb.click(); e.preventDefault(); }
+    return;
+  }
   var sel = abNbKeyMap[e.key];
   if (!sel) return;
   e.preventDefault();
   var btn = document.querySelector(sel + ' button');
   if (btn) btn.click();
 };
-document.addEventListener('keydown', window._abNbKeyHandler);
+document.addEventListener('keydown', window._abNbKeyHandler, true);
 """
         display(Javascript(js))
 

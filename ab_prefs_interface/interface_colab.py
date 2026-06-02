@@ -133,6 +133,13 @@ class ColabHtmlPreferenceInterface:
       await invoke("{CALLBACK_NAME}", [btn.getAttribute("data-ab-choice"), note], {{}});
     }};
   }});
+  // Keep iframe focused so keyboard events land here after clicking audio play.
+  document.body.tabIndex = -1;
+  document.body.focus();
+  var audio = document.querySelector("audio");
+  if (audio) {{
+    audio.addEventListener("play", function() {{ document.body.focus(); }});
+  }}
 }})();
 """))
 
@@ -189,18 +196,35 @@ class ColabHtmlPreferenceInterface:
   }}
   abUpdateDimUI();
 
-  // keyboard shortcuts
+  // Focus: make document.body focusable so keyboard events land here even after
+  // clicking the audio play button (which would otherwise leave the iframe without focus).
+  document.body.tabIndex = -1;
+  document.body.focus();
+  var audio = document.querySelector("audio");
+  if (audio) {{
+    audio.addEventListener("play", function() {{
+      document.body.focus();
+    }});
+  }}
+
+  // Keyboard shortcuts (capture phase so they fire even when audio element has focus).
   var abKeyMap = {key_map_js};
-  if (window._abKeyHandler) document.removeEventListener('keydown', window._abKeyHandler);
+  if (window._abKeyHandler) document.removeEventListener('keydown', window._abKeyHandler, true);
   window._abKeyHandler = function(e) {{
     if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    // Enter submits if all dimensions are selected
+    if (e.key === 'Enter') {{
+      var nb = document.getElementById("ab-next-btn");
+      if (nb && !nb.disabled) {{ nb.click(); e.preventDefault(); }}
+      return;
+    }}
     var mapping = abKeyMap[e.key];
     if (!mapping) return;
     e.preventDefault();
     var btn = document.querySelector('[data-ab-dim="' + mapping[0] + '"][data-ab-choice-val="' + mapping[1] + '"]');
     if (btn) btn.click();
   }};
-  document.addEventListener('keydown', window._abKeyHandler);
+  document.addEventListener('keydown', window._abKeyHandler, true);
 }})();
 """))
 
