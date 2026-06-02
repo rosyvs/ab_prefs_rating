@@ -11,6 +11,7 @@ from IPython.display import HTML, Javascript, clear_output, display
 from ab_prefs_interface.audio_clips import ensure_queue_clips
 from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord
 from ab_prefs_interface.dimension_ui import (
+    DIMENSION_KEYS,
     all_dimensions_selected,
     dimension_rows_html,
     empty_dimension_picks,
@@ -21,6 +22,15 @@ from ab_prefs_interface.interface_notebook import comparison_block, rating_style
 from ab_prefs_interface.storage_json import append_record
 
 CALLBACK_NAME = "ab_prefs_choice"
+
+
+def _dim_key_map_js() -> str:
+    """Build a JS object literal mapping key → [dim, choice] from DIMENSION_KEYS."""
+    pairs = []
+    for dim, choices in DIMENSION_KEYS.items():
+        for choice, key in choices.items():
+            pairs.append(f'"{key}": ["{dim}", "{choice}"]')
+    return "{" + ", ".join(pairs) + "}"
 
 
 class ColabHtmlPreferenceInterface:
@@ -174,8 +184,21 @@ class ColabHtmlPreferenceInterface:
     }};
   }}
   abUpdateDimUI();
+
+  // keyboard shortcuts
+  var abKeyMap = {{{key_map}}};
+  if (window._abKeyHandler) document.removeEventListener('keydown', window._abKeyHandler);
+  window._abKeyHandler = function(e) {{
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    var mapping = abKeyMap[e.key];
+    if (!mapping) return;
+    e.preventDefault();
+    var btn = document.querySelector('[data-ab-dim="' + mapping[0] + '"][data-ab-choice-val="' + mapping[1] + '"]');
+    if (btn) btn.click();
+  }};
+  document.addEventListener('keydown', window._abKeyHandler);
 }})();
-"""))
+""".replace("{key_map}", _dim_key_map_js())))
 
     def overall_buttons_html(self) -> str:
         return (

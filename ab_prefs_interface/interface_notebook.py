@@ -6,12 +6,13 @@ from pathlib import Path
 from uuid import uuid4
 
 import ipywidgets as widgets
-from IPython.display import display
+from IPython.display import Javascript, display
 
 from ab_prefs_interface.audio_clips import ensure_queue_clips
 from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord, ProviderCandidate
 from ab_prefs_interface.dimension_ui import (
     DIMENSION_CHOICES,
+    DIMENSION_KEYS,
     DIMENSION_LABELS,
     DIMENSIONS,
     all_dimensions_selected,
@@ -226,10 +227,19 @@ class NotebookPreferenceInterface:
             self.dimension_buttons: dict[str, dict[str, widgets.Button]] = {}
             dimension_rows: list[widgets.Widget] = []
             for dim in DIMENSIONS:
-                row_buttons: list[widgets.Widget] = [widgets.HTML(value=f"<strong>{DIMENSION_LABELS[dim]}</strong>")]
+                label_html = widgets.HTML(
+                    value=f'<span style="display:inline-block;width:100px;font-weight:600;">'
+                          f'{DIMENSION_LABELS[dim]}</span>'
+                )
+                row_buttons: list[widgets.Widget] = [label_html]
                 self.dimension_buttons[dim] = {}
                 for choice in DIMENSION_CHOICES:
-                    btn = widgets.Button(description=dimension_button_label(choice))
+                    key = DIMENSION_KEYS[dim][choice]
+                    btn = widgets.Button(
+                        description=f"{dimension_button_label(choice)} {key}",
+                        layout=widgets.Layout(width="72px"),
+                    )
+                    btn.add_class(f"ab-dim-{dim}-{choice}")
                     btn.on_click(lambda _, d=dim, c=choice: self.set_dimension_pick(d, c))
                     row_buttons.append(btn)
                     self.dimension_buttons[dim][choice] = btn
@@ -260,6 +270,31 @@ class NotebookPreferenceInterface:
     def set_placeholder(self, message: str) -> None:
         self.item_html.value = f'<p style="margin:8px 0;color:#4b5563;">{html.escape(message)}</p>'
 
+    def _inject_keyboard_js(self) -> None:
+        """Inject a document keydown listener that clicks dimension buttons by CSS class."""
+        if self.rating_mode != "multi_dimension":
+            return
+        # Build key→CSS-class mapping from DIMENSION_KEYS
+        lines = ["var abNbKeyMap = {"]
+        for dim, choices in DIMENSION_KEYS.items():
+            for choice, key in choices.items():
+                cls = f"ab-dim-{dim}-{choice}"
+                lines.append(f'  "{key}": ".{cls}",')
+        lines.append("};")
+        js = "\n".join(lines) + """
+if (window._abNbKeyHandler) document.removeEventListener('keydown', window._abNbKeyHandler);
+window._abNbKeyHandler = function(e) {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  var sel = abNbKeyMap[e.key];
+  if (!sel) return;
+  e.preventDefault();
+  var btn = document.querySelector(sel + ' button');
+  if (btn) btn.click();
+};
+document.addEventListener('keydown', window._abNbKeyHandler);
+"""
+        display(Javascript(js))
+
     def load_clips(self) -> None:
         if self.audio_urls:
             return
@@ -275,6 +310,7 @@ class NotebookPreferenceInterface:
             self.reset_dimension_picks()
         self.render_current()
         self.show(force=True)
+        self._inject_keyboard_js()
 
     def current_item(self) -> tuple[ComparisonUnit, str, str]:
         return self.queue[self.current_index]

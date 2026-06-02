@@ -5,6 +5,12 @@ import html
 
 DIMENSIONS = ("text", "timing", "diarization")
 DIMENSION_LABELS = {"text": "Text", "timing": "Timing", "diarization": "Diarization"}
+# Keyboard shortcuts: row → choice → key
+DIMENSION_KEYS: dict[str, dict[str, str]] = {
+    "text":         {"A": "1", "B": "2", "tie": "3"},
+    "timing":       {"A": "q", "B": "w", "tie": "e"},
+    "diarization":  {"A": "a", "B": "s", "tie": "d"},
+}
 DIMENSION_CHOICE_COLS = {
     "text": "choice_text",
     "timing": "choice_timing",
@@ -58,22 +64,30 @@ def parse_dimension_submit(value: str) -> dict[str, str] | None:
 
 def dimension_rows_html(picks: dict[str, str | None]) -> str:
     """HTML for 3 dimension rows with A/B/Tie buttons (Colab). Selection updated client-side."""
-    rows: list[str] = []
+    kbd_style = (
+        "font-size:10px;border:1px solid #9ca3af;border-radius:3px;"
+        "padding:0 3px;margin-left:4px;background:#f3f4f6;color:#4b5563;"
+    )
+    btn_base = "min-width:72px;margin:2px 4px 2px 0;padding:4px 10px;"
+    rows: list[str] = ['<table style="border-collapse:collapse;margin:4px 0;">']
     for dim in DIMENSIONS:
         label = DIMENSION_LABELS[dim]
-        buttons = ""
+        cells = f'<td style="padding:3px 14px 3px 0;font-weight:600;white-space:nowrap;">{html.escape(label)}</td>'
         for choice in DIMENSION_CHOICES:
             selected = picks.get(dim) == choice
-            style = "font-weight:600;background:#dcfce7;" if selected else ""
-            buttons += (
+            sel_style = "font-weight:600;background:#dcfce7;" if selected else ""
+            key = DIMENSION_KEYS[dim][choice]
+            cells += (
+                f'<td style="padding:2px 2px;">'
                 f'<button type="button" data-ab-dim="{html.escape(dim)}" '
                 f'data-ab-choice-val="{html.escape(choice)}" '
-                f'style="margin:2px 6px 2px 0;padding:4px 12px;{style}">'
-                f"{html.escape(dimension_button_label(choice))}</button>"
+                f'style="{btn_base}{sel_style}">'
+                f'{html.escape(dimension_button_label(choice))}'
+                f'<kbd style="{kbd_style}">{html.escape(key)}</kbd>'
+                f'</button></td>'
             )
-        rows.append(
-            f'<div style="margin:6px 0;"><strong>{html.escape(label)}</strong> {buttons}</div>'
-        )
+        rows.append(f"<tr>{cells}</tr>")
+    rows.append("</table>")
     next_disabled = "" if all_dimensions_selected(picks) else " disabled"
     rows.append(
         f'<button type="button" id="ab-next-btn" data-ab-action="next"{next_disabled} '
