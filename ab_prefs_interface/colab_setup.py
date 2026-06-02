@@ -267,6 +267,37 @@ def patch_providers_colab(
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
+def fetch_rater_preferences(
+    rater_id: str,
+    output_dir: Path,
+    bucket: str,
+) -> None:
+    """Download rater's existing preferences file from GCS if it isn't already local."""
+    rater_id = rater_id.strip()
+    filename = f"preferences_{rater_id}.json"
+    local_path = output_dir / filename
+    if local_path.exists():
+        print(f"Existing ratings found locally: {local_path}")
+        return
+    gcs_subdir = output_dir.name          # e.g. "ab_prefs"
+    gcs_path = f"gs://{bucket}/{gcs_subdir}/{filename}"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run(
+        ["gsutil", "cp", gcs_path, str(local_path)],
+        capture_output=True, text=True,
+    )
+    if result.returncode == 0:
+        import json
+        try:
+            n = len(json.loads(local_path.read_text())["responses"])
+        except Exception:
+            n = "?"
+        print(f"Downloaded {n} existing rating(s) for {rater_id} from {gcs_path}")
+    else:
+        # File not on GCS yet — that's fine, first-time rater
+        print(f"No existing ratings on GCS for {rater_id} ({gcs_path}) — starting fresh.")
+
+
 def bootstrap(
     rater_id: str,
     *,
@@ -291,6 +322,7 @@ def bootstrap(
     compare = compare_provider_list(base_session)
     patch_providers_colab(paths["asr_root"], paths["config_json"], compare)
     session_path = write_colab_session_config(paths, session_config, dest=runtime_session_config)
+    fetch_rater_preferences(rater_id, paths["output_dir"], bucket)
     print(f"GT: {paths['gt_dir']}")
     print(f"Audio: {paths['audio_dir']}")
     print(f"ASR: {paths['asr_root']}")
