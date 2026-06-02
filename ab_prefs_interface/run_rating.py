@@ -15,7 +15,22 @@ from ab_prefs_interface.session_manifest import (
     queue_from_manifest,
     save_session_manifest,
 )
-from ab_prefs_interface.storage_json import initialize_store
+from ab_prefs_interface.storage_json import initialize_store, read_records
+
+
+def _already_rated_keys(output_path: Path) -> set[tuple[str, int, str, str]]:
+    """Return a set of (recording_id, segment_index, provider_a, provider_b) already saved."""
+    if not output_path.exists():
+        return set()
+    try:
+        records = read_records(output_path)
+    except Exception:
+        return set()
+    return {
+        (str(r["recording_id"]), int(r["segment_index"]), str(r["provider_a"]), str(r["provider_b"]))
+        for r in records
+        if r.get("choice") is not None
+    }
 
 
 def parse_provider_arg(value: str) -> tuple[str, Path]:
@@ -277,6 +292,38 @@ def run_notebook_rating(args: argparse.Namespace):
         )
     if not queue:
         raise ValueError("Sampling queue is empty; check provider files and compare provider list.")
+
+    # --- REDO: wipe existing ratings and start fresh ---
+    output_path_for_filter = args.output_json.expanduser().resolve()
+    redo = bool(getattr(args, "redo", False))
+    if redo and output_path_for_filter.exists():
+        existing = read_records(output_path_for_filter)
+        if existing:
+            print(
+                f"⚠️  REDO=True — erasing {len(existing)} existing rating(s) for "
+                f"{getattr(args, 'rater_id', '') or 'this rater'} and starting over."
+            )
+            output_path_for_filter.write_text(
+                '{"responses": []}\n', encoding="utf-8"
+            )
+        else:
+            print("REDO=True — no existing ratings found, starting fresh.")
+
+    # --- skip already-rated items (always, unless REDO wiped the file above) ---
+    rated_keys = _already_rated_keys(output_path_for_filter)
+    if rated_keys:
+        before_skip = len(queue)
+        queue = [
+            (unit, pa, pb)
+            for unit, pa, pb in queue
+            if (str(unit.recording_id), int(unit.segment_index), pa, pb) not in rated_keys
+        ]
+        skipped = before_skip - len(queue)
+        print(f"Skipping {skipped} already-rated item(s); {len(queue)} remaining.")
+        if not queue:
+            print("All items already rated. Set REDO = True to start over.")
+            return None
+
     export_manifest = getattr(args, "export_session_manifest", None)
     if export_manifest and not manifest_path:
         save_session_manifest(

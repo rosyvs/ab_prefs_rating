@@ -213,7 +213,7 @@ class NotebookPreferenceInterface:
         self.show_note = show_note
         self.note_widget = widgets.Textarea(
             value="",
-            placeholder="Optional note about why A/B/tie/skip",
+            placeholder="Optional note about why A/B/tie",
             description="Note:",
             layout=widgets.Layout(width="900px", height="70px", display="none"),
         )
@@ -241,12 +241,10 @@ class NotebookPreferenceInterface:
             self.button_a = widgets.Button(description="Choose A", button_style="success")
             self.button_b = widgets.Button(description="Choose B", button_style="success")
             self.button_tie = widgets.Button(description="Tie")
-            self.button_skip = widgets.Button(description="Skip")
             self.button_a.on_click(lambda _: self.submit_choice("A"))
             self.button_b.on_click(lambda _: self.submit_choice("B"))
             self.button_tie.on_click(lambda _: self.submit_choice("tie"))
-            self.button_skip.on_click(lambda _: self.submit_choice("skip"))
-            choice_buttons = [self.button_a, self.button_b, self.button_tie, self.button_skip]
+            choice_buttons = [self.button_a, self.button_b, self.button_tie]
         if show_note:
             choice_buttons.append(self.note_toggle)
         self.button_row = widgets.VBox(choice_buttons) if rating_mode == "multi_dimension" else widgets.HBox(choice_buttons)

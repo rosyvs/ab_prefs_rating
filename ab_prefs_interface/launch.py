@@ -84,14 +84,22 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         session_manifest=Path(session_manifest) if session_manifest else None,
         export_session_manifest=Path(export_session_manifest) if export_session_manifest else None,
         rater_id=rater_id.strip(),
+        redo=bool(session.get("redo", False)),
     )
 
 
 def launch_rating(
     rater_id: str | None = None,
     session_config_path: Path | str | None = None,
+    redo: bool | None = None,
 ) -> "NotebookPreferenceInterface":
-    """Load shared session config, open rating widget. Colleagues only set rater_id."""
+    """Load shared session config, open rating widget. Colleagues only set rater_id.
+
+    Args:
+        redo: If True, wipe this rater's existing output file and start from scratch.
+              If False (default), already-rated items are silently skipped.
+              The notebook-level flag takes priority over session config.
+    """
     from ab_prefs_interface.run_rating import run_notebook_rating
 
     rater = (rater_id or os.environ.get("AB_PREFS_RATER_ID", "")).strip()
@@ -99,6 +107,9 @@ def launch_rating(
     session = load_session_config(config_path)
     setup_repo_path(Path(session["notebook_root"]))
     args = namespace_for_rater(session, rater)
+    # Notebook-level flag overrides session config when explicitly passed.
+    if redo is not None:
+        args.redo = redo
     print(f"Rater: {rater} → {args.output_json}")
     print(f"Session config: {config_path.resolve()}")
     if args.session_manifest:

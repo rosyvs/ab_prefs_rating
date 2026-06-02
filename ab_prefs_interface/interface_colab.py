@@ -182,7 +182,6 @@ class ColabHtmlPreferenceInterface:
             self.choice_button("Choose A", "A")
             + self.choice_button("Choose B", "B")
             + self.choice_button("Tie", "tie")
-            + self.choice_button("Skip", "skip")
         )
 
     def show_complete(self) -> str:
