@@ -140,6 +140,20 @@ class ColabHtmlPreferenceInterface:
   if (audio) {{
     audio.addEventListener("play", function() {{ document.body.focus(); }});
   }}
+  if (window._abKeyHandler) document.removeEventListener('keydown', window._abKeyHandler, true);
+  window._abKeyHandler = function(e) {{
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    if (e.key === ' ') {{
+      var aud = document.querySelector('audio');
+      if (aud) {{ aud.paused ? aud.play() : aud.pause(); }}
+      e.preventDefault();
+    }} else if (e.key === 'n') {{
+      var tog = document.getElementById("ab-note-toggle");
+      if (tog) {{ tog.checked = !tog.checked; tog.dispatchEvent(new Event('change')); }}
+      e.preventDefault();
+    }}
+  }};
+  document.addEventListener('keydown', window._abKeyHandler, true);
 }})();
 """))
 
@@ -212,10 +226,24 @@ class ColabHtmlPreferenceInterface:
   if (window._abKeyHandler) document.removeEventListener('keydown', window._abKeyHandler, true);
   window._abKeyHandler = function(e) {{
     if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
-    // Enter submits if all dimensions are selected
+    // Space — toggle audio play/pause
+    if (e.key === ' ') {{
+      var aud = document.querySelector('audio');
+      if (aud) {{ aud.paused ? aud.play() : aud.pause(); }}
+      e.preventDefault();
+      return;
+    }}
+    // Enter — submit when all dimensions selected
     if (e.key === 'Enter') {{
       var nb = document.getElementById("ab-next-btn");
       if (nb && !nb.disabled) {{ nb.click(); e.preventDefault(); }}
+      return;
+    }}
+    // n — toggle Add note
+    if (e.key === 'n') {{
+      var tog = document.getElementById("ab-note-toggle");
+      if (tog) {{ tog.checked = !tog.checked; tog.dispatchEvent(new Event('change')); }}
+      e.preventDefault();
       return;
     }}
     var mapping = abKeyMap[e.key];

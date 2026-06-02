@@ -307,9 +307,21 @@ class NotebookPreferenceInterface:
 if (window._abNbKeyHandler) document.removeEventListener('keydown', window._abNbKeyHandler, true);
 window._abNbKeyHandler = function(e) {
   if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if (e.key === ' ') {
+    var aud = document.querySelector('audio');
+    if (aud) { aud.paused ? aud.play() : aud.pause(); }
+    e.preventDefault();
+    return;
+  }
   if (e.key === 'Enter') {
     var nb = document.querySelector('.widget-button[disabled!="disabled"].mod-primary');
     if (nb) { nb.click(); e.preventDefault(); }
+    return;
+  }
+  if (e.key === 'n') {
+    var tog = document.querySelector('.widget-checkbox input[type="checkbox"]');
+    if (tog) { tog.checked = !tog.checked; tog.dispatchEvent(new Event('change')); }
+    e.preventDefault();
     return;
   }
   var sel = abNbKeyMap[e.key];
