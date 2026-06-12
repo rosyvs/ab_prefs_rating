@@ -8,6 +8,7 @@
     "azure_llm_extraprompted": "/home/rosy_teachfx_com/asr_eval/results/dd210/azure/llm-transcribe_extraprompted",
     "azure_mai": "/home/rosy_teachfx_com/asr_eval/results/dd210/azure/mai-transcribe-1",
     "deepgram_nova3": "/home/rosy_teachfx_com/asr_eval/results/dd210/deepgram/nova-3",
-    "gemini_31_pro_extraprompted": "/home/rosy_teachfx_com/asr_eval/results/dd210/gemini/gemini-3.1-pro-preview_extraprompted"
+    "gemini_31_pro_extraprompted": "/home/rosy_teachfx_com/asr_eval/results/dd210/gemini/gemini-3.1-pro-preview_extraprompted",
+    "qwen_3_1_7B": "/home/rosy_teachfx_com/asr_eval/results/dd210/qwen/qwen3-1-7B"
   }
 }

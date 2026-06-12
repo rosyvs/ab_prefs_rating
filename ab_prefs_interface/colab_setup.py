@@ -25,6 +25,7 @@ ASR_PROVIDER_SUBDIRS = {
     "azure_mai": "azure/mai-transcribe-1",
     "deepgram_nova3": "deepgram/nova-3",
     "gemini_31_pro_extraprompted": "gemini/gemini-3.1-pro-preview_extraprompted",
+    "qwen_3_1_7B": "qwen/qwen3-1-7B",
 }
 
 

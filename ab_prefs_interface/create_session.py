@@ -6,7 +6,7 @@ from pathlib import Path
 
 from ab_prefs_interface.launch import DEFAULT_SESSION_CONFIG, load_session_config, namespace_for_rater, setup_repo_path
 from ab_prefs_interface.session_config import compare_provider_names, session_recording_pool_size, session_unique_recordings_target
-from ab_prefs_interface.matching import build_comparison_units
+from ab_prefs_interface.matching import build_comparison_units, sample_recording_ids
 from ab_prefs_interface.run_rating import load_provider_dirs
 from ab_prefs_interface.sampling import build_session_queue, pair_combinations
 from ab_prefs_interface.scoring import score_units
@@ -45,6 +45,24 @@ def create_session_manifest(
     provider_dirs = load_provider_dirs(args)
     pool_n = session_recording_pool_size(session)
     unique_n = session_unique_recordings_target(session)
+    exclude_ids = set(session.get("exclude_recording_ids", []))
+    # If exclude_recording_ids is set, pre-compute the pool from GT dir minus excluded IDs
+    # so sampling (recording_seed) operates on the eligible set rather than all recordings.
+    explicit_recording_ids: list[str] | None = None
+    if exclude_ids and pool_n is not None:
+        from ab_prefs_interface.matching import load_ground_truth_transcripts
+        gt_dir_resolved = args.gt_dir.expanduser().resolve()
+        all_transcripts = load_ground_truth_transcripts(gt_dir_resolved)
+        available = sorted(set(all_transcripts.keys()) - exclude_ids)
+        n_sample = min(pool_n, len(available))
+        explicit_recording_ids = sorted(
+            __import__("random").Random(int(args.recording_seed)).sample(available, n_sample)
+        )
+        print(
+            f"Excluded {len(exclude_ids)} recording IDs before sampling; "
+            f"sampled {len(explicit_recording_ids)} from {len(available)} available "
+            f"(seed={args.recording_seed}): {explicit_recording_ids}"
+        )
     units = build_comparison_units(
         gt_dir=args.gt_dir.expanduser().resolve(),
         provider_dirs=provider_dirs,
@@ -53,8 +71,9 @@ def create_session_manifest(
         verbose=args.verbose,
         cache_dir=args.cache_dir.expanduser().resolve(),
         rebuild_cache=bool(args.rebuild_cache),
-        recording_pool_size=pool_n,
+        recording_pool_size=pool_n if explicit_recording_ids is None else None,
         recording_seed=int(args.recording_seed),
+        recording_ids=explicit_recording_ids,
         min_gt_words=int(args.min_gt_words or 0),
         min_audio_seconds=float(args.min_audio_seconds or 0.0),
         exclude_gt_markers=bool(getattr(args, "exclude_gt_markers", True)),
