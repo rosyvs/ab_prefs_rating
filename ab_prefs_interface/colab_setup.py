@@ -26,6 +26,7 @@ ASR_PROVIDER_SUBDIRS = {
     "deepgram_nova3": "deepgram/nova-3",
     "gemini_31_pro_extraprompted": "gemini/gemini-3.1-pro-preview_extraprompted",
     "qwen_3_1_7B": "qwen/qwen3-1-7B",
+    "qwen_3_0_6B": "qwen/qwen3-0-6B",
 }
 
 

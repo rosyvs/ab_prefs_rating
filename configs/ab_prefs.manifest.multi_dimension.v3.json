@@ -1,0 +1,1040 @@
+{
+  "version": 1,
+  "strategy": "random",
+  "seed": 43,
+  "session_items": 30,
+  "ground_truth_name": "ground_truth",
+  "include_ground_truth": true,
+  "compare_providers": [
+    "aai_up3_v2",
+    "qwen_3_1_7B",
+    "qwen_3_0_6B"
+  ],
+  "min_gt_words": 5,
+  "min_audio_seconds": 3.0,
+  "exclude_gt_markers": true,
+  "unique_recordings": 20,
+  "recording_seed": 43,
+  "items": [
+    {
+      "span_key": "306468:73-74:320.815-341.674",
+      "recording_id": "306468",
+      "segment_index": 73,
+      "segment_index_end": 74,
+      "start_seconds": 320.81501823664036,
+      "end_seconds": 341.674,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "276814:53-53:362.321-368.100",
+      "recording_id": "276814",
+      "segment_index": 53,
+      "segment_index_end": null,
+      "start_seconds": 362.321,
+      "end_seconds": 368.1,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "263334:147-148:831.824-835.904",
+      "recording_id": "263334",
+      "segment_index": 147,
+      "segment_index_end": 148,
+      "start_seconds": 831.8242211811522,
+      "end_seconds": 835.9042130698389,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "298209:227-228:675.465-679.261",
+      "recording_id": "298209",
+      "segment_index": 227,
+      "segment_index_end": 228,
+      "start_seconds": 675.465,
+      "end_seconds": 679.2614571750454,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "298988:67-68:138.905-150.441",
+      "recording_id": "298988",
+      "segment_index": 67,
+      "segment_index_end": 68,
+      "start_seconds": 138.905,
+      "end_seconds": 150.441,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "308906:162-163:455.170-458.746",
+      "recording_id": "308906",
+      "segment_index": 162,
+      "segment_index_end": 163,
+      "start_seconds": 455.17,
+      "end_seconds": 458.746,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "282714:280-283:832.798-836.420",
+      "recording_id": "282714",
+      "segment_index": 280,
+      "segment_index_end": 283,
+      "start_seconds": 832.798373914356,
+      "end_seconds": 836.4200000000001,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "279455:476-479:1093.269-1096.803",
+      "recording_id": "279455",
+      "segment_index": 476,
+      "segment_index_end": 479,
+      "start_seconds": 1093.2687579266847,
+      "end_seconds": 1096.8034013605443,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "299957:75-75:434.425-448.768",
+      "recording_id": "299957",
+      "segment_index": 75,
+      "segment_index_end": null,
+      "start_seconds": 434.42455566057396,
+      "end_seconds": 448.76769441384846,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297502:236-237:747.535-755.239",
+      "recording_id": "297502",
+      "segment_index": 236,
+      "segment_index_end": 237,
+      "start_seconds": 747.5347816872112,
+      "end_seconds": 755.2389442195802,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "269698:528-529:2257.738-2262.620",
+      "recording_id": "269698",
+      "segment_index": 528,
+      "segment_index_end": 529,
+      "start_seconds": 2257.737665625973,
+      "end_seconds": 2262.62,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280375:358-359:1209.601-1218.010",
+      "recording_id": "280375",
+      "segment_index": 358,
+      "segment_index_end": 359,
+      "start_seconds": 1209.6013294659897,
+      "end_seconds": 1218.01,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280407:253-253:1416.076-1426.074",
+      "recording_id": "280407",
+      "segment_index": 253,
+      "segment_index_end": null,
+      "start_seconds": 1416.0755352676704,
+      "end_seconds": 1426.0742845530804,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "253835:125-125:416.202-422.099",
+      "recording_id": "253835",
+      "segment_index": 125,
+      "segment_index_end": null,
+      "start_seconds": 416.2018877210627,
+      "end_seconds": 422.09856760336174,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "309306:149-150:355.500-365.916",
+      "recording_id": "309306",
+      "segment_index": 149,
+      "segment_index_end": 150,
+      "start_seconds": 355.5,
+      "end_seconds": 365.916,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "267128:154-155:668.150-693.065",
+      "recording_id": "267128",
+      "segment_index": 154,
+      "segment_index_end": 155,
+      "start_seconds": 668.15,
+      "end_seconds": 693.065,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "277578:430-432:1043.230-1047.014",
+      "recording_id": "277578",
+      "segment_index": 430,
+      "segment_index_end": 432,
+      "start_seconds": 1043.23,
+      "end_seconds": 1047.0136897196053,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "274852:142-143:459.472-469.135",
+      "recording_id": "274852",
+      "segment_index": 142,
+      "segment_index_end": 143,
+      "start_seconds": 459.47158101324,
+      "end_seconds": 469.135,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "282996:151-152:526.610-533.026",
+      "recording_id": "282996",
+      "segment_index": 151,
+      "segment_index_end": 152,
+      "start_seconds": 526.61,
+      "end_seconds": 533.026,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "306805:608-610:2495.550-2499.970",
+      "recording_id": "306805",
+      "segment_index": 608,
+      "segment_index_end": 610,
+      "start_seconds": 2495.55,
+      "end_seconds": 2499.9700000000003,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "308906:770-770:2060.072-2064.192",
+      "recording_id": "308906",
+      "segment_index": 770,
+      "segment_index_end": null,
+      "start_seconds": 2060.072,
+      "end_seconds": 2064.192,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "282714:877-877:2583.894-2585.193",
+      "recording_id": "282714",
+      "segment_index": 877,
+      "segment_index_end": null,
+      "start_seconds": 2583.8940000000002,
+      "end_seconds": 2585.192816995996,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280407:389-390:1889.124-1896.413",
+      "recording_id": "280407",
+      "segment_index": 389,
+      "segment_index_end": 390,
+      "start_seconds": 1889.124,
+      "end_seconds": 1896.4125941043085,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "306805:611-612:2501.150-2507.488",
+      "recording_id": "306805",
+      "segment_index": 611,
+      "segment_index_end": 612,
+      "start_seconds": 2501.15,
+      "end_seconds": 2507.4880000000003,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280375:375-376:1291.970-1298.546",
+      "recording_id": "280375",
+      "segment_index": 375,
+      "segment_index_end": 376,
+      "start_seconds": 1291.97,
+      "end_seconds": 1298.5459999999998,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "306468:279-281:1232.154-1237.142",
+      "recording_id": "306468",
+      "segment_index": 279,
+      "segment_index_end": 281,
+      "start_seconds": 1232.154,
+      "end_seconds": 1237.1419302875738,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "279455:323-326:793.041-798.167",
+      "recording_id": "279455",
+      "segment_index": 323,
+      "segment_index_end": 326,
+      "start_seconds": 793.0407006816359,
+      "end_seconds": 798.166502606255,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "279455:671-672:1568.594-1573.345",
+      "recording_id": "279455",
+      "segment_index": 671,
+      "segment_index_end": 672,
+      "start_seconds": 1568.594,
+      "end_seconds": 1573.3446471255343,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "308906:322-323:919.486-922.870",
+      "recording_id": "308906",
+      "segment_index": 322,
+      "segment_index_end": 323,
+      "start_seconds": 919.486,
+      "end_seconds": 922.87,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "280407:288-289:1513.602-1520.436",
+      "recording_id": "280407",
+      "segment_index": 288,
+      "segment_index_end": 289,
+      "start_seconds": 1513.6015574967535,
+      "end_seconds": 1520.4359600629123,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "282714:389-392:1135.854-1143.134",
+      "recording_id": "282714",
+      "segment_index": 389,
+      "segment_index_end": 392,
+      "start_seconds": 1135.854,
+      "end_seconds": 1143.134,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "309306:249-251:675.135-679.436",
+      "recording_id": "309306",
+      "segment_index": 249,
+      "segment_index_end": 251,
+      "start_seconds": 675.1353470146225,
+      "end_seconds": 679.436,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "299957:160-161:1063.680-1068.420",
+      "recording_id": "299957",
+      "segment_index": 160,
+      "segment_index_end": 161,
+      "start_seconds": 1063.68,
+      "end_seconds": 1068.42,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "269698:367-369:1006.407-1012.347",
+      "recording_id": "269698",
+      "segment_index": 367,
+      "segment_index_end": 369,
+      "start_seconds": 1006.4069741923629,
+      "end_seconds": 1012.3473171311578,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280375:403-404:1405.358-1409.650",
+      "recording_id": "280375",
+      "segment_index": 403,
+      "segment_index_end": 404,
+      "start_seconds": 1405.358,
+      "end_seconds": 1409.65,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "269698:396-396:1342.149-1346.980",
+      "recording_id": "269698",
+      "segment_index": 396,
+      "segment_index_end": null,
+      "start_seconds": 1342.1494383903305,
+      "end_seconds": 1346.98,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282714:500-501:1396.285-1406.068",
+      "recording_id": "282714",
+      "segment_index": 500,
+      "segment_index_end": 501,
+      "start_seconds": 1396.2847915732098,
+      "end_seconds": 1406.0680000000002,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "309306:267-270:707.120-710.616",
+      "recording_id": "309306",
+      "segment_index": 267,
+      "segment_index_end": 270,
+      "start_seconds": 707.12,
+      "end_seconds": 710.616,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "279455:533-535:1216.728-1221.658",
+      "recording_id": "279455",
+      "segment_index": 533,
+      "segment_index_end": 535,
+      "start_seconds": 1216.7276702531492,
+      "end_seconds": 1221.6582035330207,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "308906:374-377:1063.765-1067.509",
+      "recording_id": "308906",
+      "segment_index": 374,
+      "segment_index_end": 377,
+      "start_seconds": 1063.7653799589798,
+      "end_seconds": 1067.509,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "299957:237-238:1566.260-1570.184",
+      "recording_id": "299957",
+      "segment_index": 237,
+      "segment_index_end": 238,
+      "start_seconds": 1566.26,
+      "end_seconds": 1570.184,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "298209:57-57:200.393-203.449",
+      "recording_id": "298209",
+      "segment_index": 57,
+      "segment_index_end": null,
+      "start_seconds": 200.393,
+      "end_seconds": 203.449,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "298988:160-160:406.171-412.187",
+      "recording_id": "298988",
+      "segment_index": 160,
+      "segment_index_end": null,
+      "start_seconds": 406.171,
+      "end_seconds": 412.187,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "280407:236-238:1371.408-1374.638",
+      "recording_id": "280407",
+      "segment_index": 236,
+      "segment_index_end": 238,
+      "start_seconds": 1371.4075838959197,
+      "end_seconds": 1374.6376825396826,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "253835:23-24:83.865-101.412",
+      "recording_id": "253835",
+      "segment_index": 23,
+      "segment_index_end": 24,
+      "start_seconds": 83.865,
+      "end_seconds": 101.41208468145089,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "308906:245-246:701.180-711.588",
+      "recording_id": "308906",
+      "segment_index": 245,
+      "segment_index_end": 246,
+      "start_seconds": 701.18,
+      "end_seconds": 711.588,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "297502:282-283:915.845-919.631",
+      "recording_id": "297502",
+      "segment_index": 282,
+      "segment_index_end": 283,
+      "start_seconds": 915.8450993552592,
+      "end_seconds": 919.6307156033475,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "308906:69-70:209.528-215.128",
+      "recording_id": "308906",
+      "segment_index": 69,
+      "segment_index_end": 70,
+      "start_seconds": 209.528,
+      "end_seconds": 215.128,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "253835:239-240:833.822-847.778",
+      "recording_id": "253835",
+      "segment_index": 239,
+      "segment_index_end": 240,
+      "start_seconds": 833.8217240885626,
+      "end_seconds": 847.777502287762,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "308906:312-314:898.410-903.366",
+      "recording_id": "308906",
+      "segment_index": 312,
+      "segment_index_end": 314,
+      "start_seconds": 898.41,
+      "end_seconds": 903.366,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282996:174-175:560.074-565.534",
+      "recording_id": "282996",
+      "segment_index": 174,
+      "segment_index_end": 175,
+      "start_seconds": 560.074,
+      "end_seconds": 565.534,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "269698:366-366:1001.773-1006.259",
+      "recording_id": "269698",
+      "segment_index": 366,
+      "segment_index_end": null,
+      "start_seconds": 1001.7730137255851,
+      "end_seconds": 1006.2590818370402,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "269698:160-161:417.710-421.305",
+      "recording_id": "269698",
+      "segment_index": 160,
+      "segment_index_end": 161,
+      "start_seconds": 417.71,
+      "end_seconds": 421.30462912278693,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280407:419-419:2037.244-2041.415",
+      "recording_id": "280407",
+      "segment_index": 419,
+      "segment_index_end": null,
+      "start_seconds": 2037.2440000000001,
+      "end_seconds": 2041.4148390022679,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "306468:269-269:1188.414-1192.787",
+      "recording_id": "306468",
+      "segment_index": 269,
+      "segment_index_end": null,
+      "start_seconds": 1188.4143950912558,
+      "end_seconds": 1192.7865060385743,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "299957:81-82:461.856-475.640",
+      "recording_id": "299957",
+      "segment_index": 81,
+      "segment_index_end": 82,
+      "start_seconds": 461.856,
+      "end_seconds": 475.64,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "279455:540-540:1236.891-1240.936",
+      "recording_id": "279455",
+      "segment_index": 540,
+      "segment_index_end": null,
+      "start_seconds": 1236.890760254068,
+      "end_seconds": 1240.9356136111464,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "306468:326-327:1419.334-1430.531",
+      "recording_id": "306468",
+      "segment_index": 326,
+      "segment_index_end": 327,
+      "start_seconds": 1419.3340764300613,
+      "end_seconds": 1430.531418654421,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "279455:9-11:42.478-48.921",
+      "recording_id": "279455",
+      "segment_index": 9,
+      "segment_index_end": 11,
+      "start_seconds": 42.47821209335225,
+      "end_seconds": 48.9214783836185,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "306468:368-369:1562.896-1566.640",
+      "recording_id": "306468",
+      "segment_index": 368,
+      "segment_index_end": 369,
+      "start_seconds": 1562.8957078835601,
+      "end_seconds": 1566.6399999999999,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306805:238-239:865.110-881.912",
+      "recording_id": "306805",
+      "segment_index": 238,
+      "segment_index_end": 239,
+      "start_seconds": 865.11,
+      "end_seconds": 881.912,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "309306:443-445:1268.724-1274.532",
+      "recording_id": "309306",
+      "segment_index": 443,
+      "segment_index_end": 445,
+      "start_seconds": 1268.7240000000002,
+      "end_seconds": 1274.5320000000002,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "269698:457-458:1784.790-1794.009",
+      "recording_id": "269698",
+      "segment_index": 457,
+      "segment_index_end": 458,
+      "start_seconds": 1784.7900369786294,
+      "end_seconds": 1794.0094204740471,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "298988:49-51:104.119-110.795",
+      "recording_id": "298988",
+      "segment_index": 49,
+      "segment_index_end": 51,
+      "start_seconds": 104.119,
+      "end_seconds": 110.795,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280407:400-400:1955.334-1960.874",
+      "recording_id": "280407",
+      "segment_index": 400,
+      "segment_index_end": null,
+      "start_seconds": 1955.334,
+      "end_seconds": 1960.8740000000003,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "309306:409-410:1170.478-1181.968",
+      "recording_id": "309306",
+      "segment_index": 409,
+      "segment_index_end": 410,
+      "start_seconds": 1170.4776472567532,
+      "end_seconds": 1181.968,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "309306:184-186:456.366-467.821",
+      "recording_id": "309306",
+      "segment_index": 184,
+      "segment_index_end": 186,
+      "start_seconds": 456.366,
+      "end_seconds": 467.8214627250531,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "306805:214-215:775.696-779.412",
+      "recording_id": "306805",
+      "segment_index": 214,
+      "segment_index_end": 215,
+      "start_seconds": 775.696,
+      "end_seconds": 779.4122088592522,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "263334:206-207:1124.494-1128.438",
+      "recording_id": "263334",
+      "segment_index": 206,
+      "segment_index_end": 207,
+      "start_seconds": 1124.4941464932674,
+      "end_seconds": 1128.4378264176814,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280407:299-299:1554.454-1559.234",
+      "recording_id": "280407",
+      "segment_index": 299,
+      "segment_index_end": null,
+      "start_seconds": 1554.4540000000002,
+      "end_seconds": 1559.2340000000002,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "267128:190-190:929.265-933.205",
+      "recording_id": "267128",
+      "segment_index": 190,
+      "segment_index_end": null,
+      "start_seconds": 929.265,
+      "end_seconds": 933.2049999999999,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297502:138-140:457.465-462.977",
+      "recording_id": "297502",
+      "segment_index": 138,
+      "segment_index_end": 140,
+      "start_seconds": 457.465,
+      "end_seconds": 462.977,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297502:305-307:1007.195-1011.588",
+      "recording_id": "297502",
+      "segment_index": 305,
+      "segment_index_end": 307,
+      "start_seconds": 1007.195031236099,
+      "end_seconds": 1011.5875019972397,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306805:178-179:632.170-637.656",
+      "recording_id": "306805",
+      "segment_index": 178,
+      "segment_index_end": 179,
+      "start_seconds": 632.17,
+      "end_seconds": 637.656,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "297502:79-80:207.356-220.695",
+      "recording_id": "297502",
+      "segment_index": 79,
+      "segment_index_end": 80,
+      "start_seconds": 207.3558816310724,
+      "end_seconds": 220.695,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282714:475-477:1338.584-1350.183",
+      "recording_id": "282714",
+      "segment_index": 475,
+      "segment_index_end": 477,
+      "start_seconds": 1338.584,
+      "end_seconds": 1350.1827789385557,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282714:29-30:125.574-130.534",
+      "recording_id": "282714",
+      "segment_index": 29,
+      "segment_index_end": 30,
+      "start_seconds": 125.574,
+      "end_seconds": 130.534,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "274852:189-190:592.930-598.858",
+      "recording_id": "274852",
+      "segment_index": 189,
+      "segment_index_end": 190,
+      "start_seconds": 592.9300000000001,
+      "end_seconds": 598.8575170068027,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "269698:362-363:991.672-997.467",
+      "recording_id": "269698",
+      "segment_index": 362,
+      "segment_index_end": 363,
+      "start_seconds": 991.6718741907702,
+      "end_seconds": 997.4669865579318,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "276814:129-129:714.980-721.525",
+      "recording_id": "276814",
+      "segment_index": 129,
+      "segment_index_end": null,
+      "start_seconds": 714.9798137574435,
+      "end_seconds": 721.525,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "277578:104-105:227.623-231.223",
+      "recording_id": "277578",
+      "segment_index": 104,
+      "segment_index_end": 105,
+      "start_seconds": 227.62305090806223,
+      "end_seconds": 231.22335980139806,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "267128:182-183:907.080-911.195",
+      "recording_id": "267128",
+      "segment_index": 182,
+      "segment_index_end": 183,
+      "start_seconds": 907.0799999999999,
+      "end_seconds": 911.1949999999999,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "298988:308-310:818.282-844.775",
+      "recording_id": "298988",
+      "segment_index": 308,
+      "segment_index_end": 310,
+      "start_seconds": 818.2820349846645,
+      "end_seconds": 844.7750000000001,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "280375:328-330:954.058-964.794",
+      "recording_id": "280375",
+      "segment_index": 328,
+      "segment_index_end": 330,
+      "start_seconds": 954.058,
+      "end_seconds": 964.7936099773242,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "279455:679-680:1596.904-1601.151",
+      "recording_id": "279455",
+      "segment_index": 679,
+      "segment_index_end": 680,
+      "start_seconds": 1596.904306221711,
+      "end_seconds": 1601.1513992319742,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "253835:163-164:557.092-570.478",
+      "recording_id": "253835",
+      "segment_index": 163,
+      "segment_index_end": 164,
+      "start_seconds": 557.0917510244788,
+      "end_seconds": 570.4778709210689,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "277578:184-186:366.604-372.502",
+      "recording_id": "277578",
+      "segment_index": 184,
+      "segment_index_end": 186,
+      "start_seconds": 366.6038742828831,
+      "end_seconds": 372.5024935703924,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "308906:768-769:2051.066-2059.984",
+      "recording_id": "308906",
+      "segment_index": 768,
+      "segment_index_end": 769,
+      "start_seconds": 2051.0655414291723,
+      "end_seconds": 2059.984,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "306805:367-369:1440.580-1449.610",
+      "recording_id": "306805",
+      "segment_index": 367,
+      "segment_index_end": 369,
+      "start_seconds": 1440.58,
+      "end_seconds": 1449.6100000000001,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "279455:235-236:640.642-643.769",
+      "recording_id": "279455",
+      "segment_index": 235,
+      "segment_index_end": 236,
+      "start_seconds": 640.6423834724283,
+      "end_seconds": 643.7690565891729,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "308906:729-729:1971.632-1975.496",
+      "recording_id": "308906",
+      "segment_index": 729,
+      "segment_index_end": null,
+      "start_seconds": 1971.632,
+      "end_seconds": 1975.496,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "306805:137-137:508.810-512.890",
+      "recording_id": "306805",
+      "segment_index": 137,
+      "segment_index_end": null,
+      "start_seconds": 508.80955584663013,
+      "end_seconds": 512.89,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "299957:245-245:1593.330-1602.308",
+      "recording_id": "299957",
+      "segment_index": 245,
+      "segment_index_end": null,
+      "start_seconds": 1593.33,
+      "end_seconds": 1602.3078580983058,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "298209:493-494:1158.308-1163.110",
+      "recording_id": "298209",
+      "segment_index": 493,
+      "segment_index_end": 494,
+      "start_seconds": 1158.3082417012727,
+      "end_seconds": 1163.1099030675068,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "308906:615-616:1731.720-1735.664",
+      "recording_id": "308906",
+      "segment_index": 615,
+      "segment_index_end": 616,
+      "start_seconds": 1731.72,
+      "end_seconds": 1735.6640192261427,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "282996:168-170:552.034-555.103",
+      "recording_id": "282996",
+      "segment_index": 168,
+      "segment_index_end": 170,
+      "start_seconds": 552.034,
+      "end_seconds": 555.102872318601,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "277578:287-287:612.130-615.694",
+      "recording_id": "277578",
+      "segment_index": 287,
+      "segment_index_end": null,
+      "start_seconds": 612.13,
+      "end_seconds": 615.694,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "282996:224-225:714.529-721.582",
+      "recording_id": "282996",
+      "segment_index": 224,
+      "segment_index_end": 225,
+      "start_seconds": 714.5288734737405,
+      "end_seconds": 721.582,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "298209:92-92:348.925-353.505",
+      "recording_id": "298209",
+      "segment_index": 92,
+      "segment_index_end": null,
+      "start_seconds": 348.925,
+      "end_seconds": 353.505,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "274852:183-183:573.760-578.075",
+      "recording_id": "274852",
+      "segment_index": 183,
+      "segment_index_end": null,
+      "start_seconds": 573.76,
+      "end_seconds": 578.075,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "qwen_3_0_6B"
+    },
+    {
+      "span_key": "253835:187-189:631.857-637.077",
+      "recording_id": "253835",
+      "segment_index": 187,
+      "segment_index_end": 189,
+      "start_seconds": 631.8569165730884,
+      "end_seconds": 637.0771995464853,
+      "provider_a": "qwen_3_0_6B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "276814:53-53:362.321-368.100",
+      "recording_id": "276814",
+      "segment_index": 53,
+      "segment_index_end": null,
+      "start_seconds": 362.321,
+      "end_seconds": 368.1,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_0_6B"
+    }
+  ]
+}
