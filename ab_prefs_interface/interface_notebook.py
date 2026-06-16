@@ -102,7 +102,56 @@ def segment_rows_html(
     return "\n".join(parts)
 
 
+import re as _re
+
 _SENTENCE_TERMINAL = frozenset(".?!")
+_WORD_NORM_RE = _re.compile(r"[^\w']")
+
+
+def _normalize_word(s: str) -> str:
+    return _WORD_NORM_RE.sub("", s).lower()
+
+
+def _words_html_with_punct(
+    words: "list[WordToken]",
+    segment_rows: list[dict],
+    time_offset: float,
+) -> str:
+    """Render word-level spans using timestamps from words but punctuated text from segments.
+
+    Qwen word tokens carry no punctuation; segment text has proper punctuation.
+    We match each clip-window word token to its counterpart in the segment text
+    so every word keeps its clickable timing span but displays with punctuation attached.
+    """
+    sorted_segs = sorted(segment_rows, key=lambda r: r["start_seconds"])
+    seg_tokens: list[str] = []
+    for row in sorted_segs:
+        seg_text = (row.get("text") or "").strip()
+        if seg_text:
+            seg_tokens.extend(seg_text.split())
+
+    seg_idx = 0
+    parts: list[str] = []
+    for word in words:
+        word_norm = _normalize_word(word.text)
+        display_text = word.text  # fallback: raw word token
+        if word_norm:
+            for si in range(seg_idx, min(seg_idx + 10, len(seg_tokens))):
+                if _normalize_word(seg_tokens[si]) == word_norm:
+                    display_text = seg_tokens[si]
+                    seg_idx = si + 1
+                    break
+        start = word.start_seconds - time_offset
+        end = word.end_seconds - time_offset
+        parts.append(
+            f'<span class="ab-seg excl-end" data-start="{start}" data-end="{end}">'
+            f"{html.escape(display_text)}</span>"
+        )
+        if display_text and display_text[-1] in _SENTENCE_TERMINAL:
+            parts.append("<br>")
+        else:
+            parts.append(" ")
+    return "".join(parts).strip()
 
 
 def words_html(
@@ -117,10 +166,10 @@ def words_html(
         has_terminal_punct = any(
             w.text and w.text[-1] in _SENTENCE_TERMINAL for w in candidate.words
         )
-        # For no-speaker, no-punct providers (e.g. Qwen): word tokens carry no punctuation.
-        # Fall back to segment_rows_html which shows punctuated segment text.
+        # For no-speaker, no-punct providers (e.g. Qwen): map word timestamps onto the
+        # punctuated segment text so raters see clickable words with sentence breaks.
         if not has_any_speaker and not has_terminal_punct and candidate.segment_rows:
-            return segment_rows_html(candidate.segment_rows, time_offset=time_offset, clip_duration=clip_duration)
+            return _words_html_with_punct(candidate.words, candidate.segment_rows, time_offset)
         parts: list[str] = []
         current_speaker: str | None = None
         for word in candidate.words:
