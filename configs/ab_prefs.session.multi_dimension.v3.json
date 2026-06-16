@@ -10,7 +10,7 @@
   "ground_truth_name": "ground_truth",
   "include_ground_truth": true,
   "strategy": "random",
-  "per_pair_sample_size": 34,
+  "per_pair_sample_size": 100,
   "unique_recordings": 20,
   "seed": 43,
   "recording_seed": 43,

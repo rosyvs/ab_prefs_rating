@@ -354,6 +354,666 @@
       "end_seconds": 526.4659954605361,
       "provider_a": "qwen_3_1_7B",
       "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306468:46-47:194.473-199.034",
+      "recording_id": "306468",
+      "segment_index": 46,
+      "segment_index_end": 47,
+      "start_seconds": 194.47258953658633,
+      "end_seconds": 199.03356009070293,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "298209:522-523:1208.303-1211.519",
+      "recording_id": "298209",
+      "segment_index": 522,
+      "segment_index_end": 523,
+      "start_seconds": 1208.3029999999999,
+      "end_seconds": 1211.5192061075516,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "308906:737-739:1999.543-2002.946",
+      "recording_id": "308906",
+      "segment_index": 737,
+      "segment_index_end": 739,
+      "start_seconds": 1999.5432160410558,
+      "end_seconds": 2002.9459726997109,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306805:106-106:425.890-431.070",
+      "recording_id": "306805",
+      "segment_index": 106,
+      "segment_index_end": null,
+      "start_seconds": 425.89,
+      "end_seconds": 431.07,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "308906:115-116:350.580-354.288",
+      "recording_id": "308906",
+      "segment_index": 115,
+      "segment_index_end": 116,
+      "start_seconds": 350.58,
+      "end_seconds": 354.288,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "269698:470-471:1892.315-1900.980",
+      "recording_id": "269698",
+      "segment_index": 470,
+      "segment_index_end": 471,
+      "start_seconds": 1892.315,
+      "end_seconds": 1900.98,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "309306:236-238:645.262-649.460",
+      "recording_id": "309306",
+      "segment_index": 236,
+      "segment_index_end": 238,
+      "start_seconds": 645.2622543353577,
+      "end_seconds": 649.46,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "306468:385-385:1674.180-1679.090",
+      "recording_id": "306468",
+      "segment_index": 385,
+      "segment_index_end": null,
+      "start_seconds": 1674.18,
+      "end_seconds": 1679.09,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "277578:100-101:219.455-222.773",
+      "recording_id": "277578",
+      "segment_index": 100,
+      "segment_index_end": 101,
+      "start_seconds": 219.45524610897178,
+      "end_seconds": 222.7725118503158,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "298209:64-65:236.935-242.494",
+      "recording_id": "298209",
+      "segment_index": 64,
+      "segment_index_end": 65,
+      "start_seconds": 236.935,
+      "end_seconds": 242.49430876095687,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "269698:57-57:183.630-187.275",
+      "recording_id": "269698",
+      "segment_index": 57,
+      "segment_index_end": null,
+      "start_seconds": 183.63,
+      "end_seconds": 187.27466672042615,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "279455:146-146:417.434-427.238",
+      "recording_id": "279455",
+      "segment_index": 146,
+      "segment_index_end": null,
+      "start_seconds": 417.434,
+      "end_seconds": 427.23789115646264,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "276814:81-81:434.735-438.021",
+      "recording_id": "276814",
+      "segment_index": 81,
+      "segment_index_end": null,
+      "start_seconds": 434.73476535833464,
+      "end_seconds": 438.02086596968127,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280375:78-82:123.751-128.850",
+      "recording_id": "280375",
+      "segment_index": 78,
+      "segment_index_end": 82,
+      "start_seconds": 123.75062345904796,
+      "end_seconds": 128.85,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "299957:96-97:575.120-589.858",
+      "recording_id": "299957",
+      "segment_index": 96,
+      "segment_index_end": 97,
+      "start_seconds": 575.12,
+      "end_seconds": 589.858,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "279455:728-729:1683.344-1686.908",
+      "recording_id": "279455",
+      "segment_index": 728,
+      "segment_index_end": 729,
+      "start_seconds": 1683.3439649387376,
+      "end_seconds": 1686.9076176944754,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "298209:582-582:1318.575-1322.275",
+      "recording_id": "298209",
+      "segment_index": 582,
+      "segment_index_end": null,
+      "start_seconds": 1318.5749999999998,
+      "end_seconds": 1322.275,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "279455:296-299:747.260-753.663",
+      "recording_id": "279455",
+      "segment_index": 296,
+      "segment_index_end": 299,
+      "start_seconds": 747.260272042693,
+      "end_seconds": 753.6634020643933,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282714:455-457:1299.294-1302.566",
+      "recording_id": "282714",
+      "segment_index": 455,
+      "segment_index_end": 457,
+      "start_seconds": 1299.294,
+      "end_seconds": 1302.566,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "309306:307-308:815.070-834.998",
+      "recording_id": "309306",
+      "segment_index": 307,
+      "segment_index_end": 308,
+      "start_seconds": 815.07,
+      "end_seconds": 834.9977795172459,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "282714:19-21:100.590-103.874",
+      "recording_id": "282714",
+      "segment_index": 19,
+      "segment_index_end": 21,
+      "start_seconds": 100.59,
+      "end_seconds": 103.874,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306468:513-514:2295.744-2300.722",
+      "recording_id": "306468",
+      "segment_index": 513,
+      "segment_index_end": 514,
+      "start_seconds": 2295.744,
+      "end_seconds": 2300.7219999999998,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306468:363-365:1542.290-1549.124",
+      "recording_id": "306468",
+      "segment_index": 363,
+      "segment_index_end": 365,
+      "start_seconds": 1542.29,
+      "end_seconds": 1549.124,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "298209:490-492:1157.377-1161.830",
+      "recording_id": "298209",
+      "segment_index": 490,
+      "segment_index_end": 492,
+      "start_seconds": 1157.377,
+      "end_seconds": 1161.8298917301872,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "282996:200-201:631.585-635.104",
+      "recording_id": "282996",
+      "segment_index": 200,
+      "segment_index_end": 201,
+      "start_seconds": 631.5853114224712,
+      "end_seconds": 635.1036734693878,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "297502:284-284:919.625-924.837",
+      "recording_id": "297502",
+      "segment_index": 284,
+      "segment_index_end": null,
+      "start_seconds": 919.6249360365566,
+      "end_seconds": 924.8366161749509,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "309306:264-266:701.504-705.020",
+      "recording_id": "309306",
+      "segment_index": 264,
+      "segment_index_end": 266,
+      "start_seconds": 701.504,
+      "end_seconds": 705.02,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "274852:126-126:408.330-412.990",
+      "recording_id": "274852",
+      "segment_index": 126,
+      "segment_index_end": null,
+      "start_seconds": 408.33,
+      "end_seconds": 412.99,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "263334:211-212:1147.993-1158.359",
+      "recording_id": "263334",
+      "segment_index": 211,
+      "segment_index_end": 212,
+      "start_seconds": 1147.9934414229333,
+      "end_seconds": 1158.3592649015748,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "306468:144-144:728.190-731.831",
+      "recording_id": "306468",
+      "segment_index": 144,
+      "segment_index_end": null,
+      "start_seconds": 728.19,
+      "end_seconds": 731.8314438569391,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "276814:287-287:1252.840-1258.101",
+      "recording_id": "276814",
+      "segment_index": 287,
+      "segment_index_end": null,
+      "start_seconds": 1252.839575350372,
+      "end_seconds": 1258.1007482993198,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "274852:169-170:534.044-543.190",
+      "recording_id": "274852",
+      "segment_index": 169,
+      "segment_index_end": 170,
+      "start_seconds": 534.0438957857075,
+      "end_seconds": 543.19,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "308906:781-783:2086.318-2094.779",
+      "recording_id": "308906",
+      "segment_index": 781,
+      "segment_index_end": 783,
+      "start_seconds": 2086.31776562463,
+      "end_seconds": 2094.779,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "308906:299-300:845.496-849.460",
+      "recording_id": "308906",
+      "segment_index": 299,
+      "segment_index_end": 300,
+      "start_seconds": 845.496,
+      "end_seconds": 849.46,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "279455:757-757:1737.904-1741.449",
+      "recording_id": "279455",
+      "segment_index": 757,
+      "segment_index_end": null,
+      "start_seconds": 1737.9044145260905,
+      "end_seconds": 1741.4492290249432,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "308906:252-254:725.300-731.400",
+      "recording_id": "308906",
+      "segment_index": 252,
+      "segment_index_end": 254,
+      "start_seconds": 725.3,
+      "end_seconds": 731.4,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "279455:533-535:1216.728-1221.658",
+      "recording_id": "279455",
+      "segment_index": 533,
+      "segment_index_end": 535,
+      "start_seconds": 1216.7276702531492,
+      "end_seconds": 1221.6582035330207,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "299957:226-227:1499.516-1507.000",
+      "recording_id": "299957",
+      "segment_index": 226,
+      "segment_index_end": 227,
+      "start_seconds": 1499.5156088912931,
+      "end_seconds": 1507.0,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "280375:152-154:260.175-264.513",
+      "recording_id": "280375",
+      "segment_index": 152,
+      "segment_index_end": 154,
+      "start_seconds": 260.17541950113383,
+      "end_seconds": 264.51294364467384,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "309306:636-637:1746.177-1752.470",
+      "recording_id": "309306",
+      "segment_index": 636,
+      "segment_index_end": 637,
+      "start_seconds": 1746.1771316805766,
+      "end_seconds": 1752.47,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282714:749-751:2030.084-2034.152",
+      "recording_id": "282714",
+      "segment_index": 749,
+      "segment_index_end": 751,
+      "start_seconds": 2030.084,
+      "end_seconds": 2034.1522494331066,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306468:497-499:2238.460-2243.046",
+      "recording_id": "306468",
+      "segment_index": 497,
+      "segment_index_end": 499,
+      "start_seconds": 2238.46,
+      "end_seconds": 2243.0459353362317,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "309306:624-626:1722.382-1727.462",
+      "recording_id": "309306",
+      "segment_index": 624,
+      "segment_index_end": 626,
+      "start_seconds": 1722.382,
+      "end_seconds": 1727.462,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306805:139-139:522.814-528.890",
+      "recording_id": "306805",
+      "segment_index": 139,
+      "segment_index_end": null,
+      "start_seconds": 522.814,
+      "end_seconds": 528.89,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "298988:137-137:326.585-330.865",
+      "recording_id": "298988",
+      "segment_index": 137,
+      "segment_index_end": null,
+      "start_seconds": 326.585,
+      "end_seconds": 330.865,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "298988:97-100:262.252-265.543",
+      "recording_id": "298988",
+      "segment_index": 97,
+      "segment_index_end": 100,
+      "start_seconds": 262.2523442043458,
+      "end_seconds": 265.543,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "282714:529-529:1472.245-1477.390",
+      "recording_id": "282714",
+      "segment_index": 529,
+      "segment_index_end": null,
+      "start_seconds": 1472.2447433183968,
+      "end_seconds": 1477.3900725623585,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306468:139-140:665.986-678.852",
+      "recording_id": "306468",
+      "segment_index": 139,
+      "segment_index_end": 140,
+      "start_seconds": 665.9856880202724,
+      "end_seconds": 678.8521768707483,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "253835:298-300:1083.125-1088.553",
+      "recording_id": "253835",
+      "segment_index": 298,
+      "segment_index_end": 300,
+      "start_seconds": 1083.124818087838,
+      "end_seconds": 1088.5526180142372,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280375:259-260:631.585-641.416",
+      "recording_id": "280375",
+      "segment_index": 259,
+      "segment_index_end": 260,
+      "start_seconds": 631.5849684234637,
+      "end_seconds": 641.416,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282714:241-241:734.578-740.164",
+      "recording_id": "282714",
+      "segment_index": 241,
+      "segment_index_end": null,
+      "start_seconds": 734.5781537499493,
+      "end_seconds": 740.1635691609977,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "306468:117-117:555.154-558.420",
+      "recording_id": "306468",
+      "segment_index": 117,
+      "segment_index_end": null,
+      "start_seconds": 555.1535414120747,
+      "end_seconds": 558.42,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306805:495-495:1934.010-1939.026",
+      "recording_id": "306805",
+      "segment_index": 495,
+      "segment_index_end": null,
+      "start_seconds": 1934.01,
+      "end_seconds": 1939.026,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "282714:345-346:987.161-993.445",
+      "recording_id": "282714",
+      "segment_index": 345,
+      "segment_index_end": 346,
+      "start_seconds": 987.1608523520318,
+      "end_seconds": 993.4447896509827,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "306468:87-89:438.050-441.639",
+      "recording_id": "306468",
+      "segment_index": 87,
+      "segment_index_end": 89,
+      "start_seconds": 438.0497889588671,
+      "end_seconds": 441.63929462495895,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "308906:706-707:1909.171-1913.500",
+      "recording_id": "308906",
+      "segment_index": 706,
+      "segment_index_end": 707,
+      "start_seconds": 1909.1707318654967,
+      "end_seconds": 1913.5,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "280407:207-207:1217.240-1221.707",
+      "recording_id": "280407",
+      "segment_index": 207,
+      "segment_index_end": null,
+      "start_seconds": 1217.2399128668444,
+      "end_seconds": 1221.7066831154411,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "263334:199-200:1083.731-1100.849",
+      "recording_id": "263334",
+      "segment_index": 199,
+      "segment_index_end": 200,
+      "start_seconds": 1083.7313393191832,
+      "end_seconds": 1100.8486262103922,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "263334:10-11:57.789-64.935",
+      "recording_id": "263334",
+      "segment_index": 10,
+      "segment_index_end": 11,
+      "start_seconds": 57.78943247590909,
+      "end_seconds": 64.935,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "309306:300-301:785.260-796.772",
+      "recording_id": "309306",
+      "segment_index": 300,
+      "segment_index_end": 301,
+      "start_seconds": 785.26,
+      "end_seconds": 796.772,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "306805:442-442:1743.517-1749.450",
+      "recording_id": "306805",
+      "segment_index": 442,
+      "segment_index_end": null,
+      "start_seconds": 1743.5170159100428,
+      "end_seconds": 1749.45,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "276814:16-16:252.275-259.146",
+      "recording_id": "276814",
+      "segment_index": 16,
+      "segment_index_end": null,
+      "start_seconds": 252.27531268862393,
+      "end_seconds": 259.1462503305305,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "274852:318-321:955.604-959.980",
+      "recording_id": "274852",
+      "segment_index": 318,
+      "segment_index_end": 321,
+      "start_seconds": 955.6041174367958,
+      "end_seconds": 959.98,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
+    },
+    {
+      "span_key": "279455:115-116:306.504-310.884",
+      "recording_id": "279455",
+      "segment_index": 115,
+      "segment_index_end": 116,
+      "start_seconds": 306.504,
+      "end_seconds": 310.884,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "298988:270-271:688.005-694.105",
+      "recording_id": "298988",
+      "segment_index": 270,
+      "segment_index_end": 271,
+      "start_seconds": 688.005,
+      "end_seconds": 694.105,
+      "provider_a": "qwen_3_1_7B",
+      "provider_b": "aai_up3_v2"
+    },
+    {
+      "span_key": "279455:356-356:866.692-869.934",
+      "recording_id": "279455",
+      "segment_index": 356,
+      "segment_index_end": null,
+      "start_seconds": 866.692,
+      "end_seconds": 869.934,
+      "provider_a": "aai_up3_v2",
+      "provider_b": "qwen_3_1_7B"
     }
   ]
 }
