@@ -18,7 +18,7 @@
   "min_audio_seconds": 3.0,
   "exclude_gt_markers": true,
   "asr_eval_root": "/home/rosy_teachfx_com/asr_eval",
-  "compare_providers": "aai_up3_v2,qwen_3_1_7B,qwen_3_0_6B",
+  "compare_providers": "aai_up3_v2,qwen_3_1_7B",
   "show_note": true,
   "show_providers": false,
   "rating_mode": "multi_dimension",
