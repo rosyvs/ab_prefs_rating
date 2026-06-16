@@ -211,6 +211,7 @@ class NotebookPreferenceInterface:
         ground_truth_name: str = "ground_truth",
         rating_mode: str = "overall",
         gcs_bucket: str | None = None,
+        rating_dimensions: list[str] | None = None,
     ) -> None:
         if not queue:
             raise ValueError("Queue is empty; nothing to review.")
@@ -221,7 +222,8 @@ class NotebookPreferenceInterface:
         self.show_providers = show_providers
         self.ground_truth_name = ground_truth_name
         self.rating_mode = rating_mode
-        self.dimension_picks = empty_dimension_picks()
+        self.active_dimensions: tuple[str, ...] = tuple(rating_dimensions) if rating_dimensions else DIMENSIONS
+        self.dimension_picks = empty_dimension_picks(self.active_dimensions)
         self.current_index = 0
         clip_root = clip_dir or Path("results/ab_prefs/audio_clips")
         nb_root = notebook_root or Path.cwd()
@@ -245,7 +247,7 @@ class NotebookPreferenceInterface:
         if rating_mode == "multi_dimension":
             self.dimension_buttons: dict[str, dict[str, widgets.Button]] = {}
             dimension_rows: list[widgets.Widget] = []
-            for dim in DIMENSIONS:
+            for dim in self.active_dimensions:
                 label_html = widgets.HTML(
                     value=f'<span style="display:inline-block;width:100px;font-weight:600;">'
                           f'{DIMENSION_LABELS[dim]}</span>'
@@ -311,9 +313,11 @@ class NotebookPreferenceInterface:
         """Inject a document keydown listener that clicks dimension buttons by CSS class."""
         if self.rating_mode != "multi_dimension":
             return
-        # Build key→CSS-class mapping from DIMENSION_KEYS
+        # Build key→CSS-class mapping from DIMENSION_KEYS (active dimensions only)
         lines = ["var abNbKeyMap = {"]
         for dim, choices in DIMENSION_KEYS.items():
+            if dim not in self.active_dimensions:
+                continue
             for choice, key in choices.items():
                 cls = f"ab-dim-{dim}-{choice}"
                 lines.append(f'  "{key}": ".{cls}",')
@@ -406,10 +410,10 @@ document.addEventListener('keydown', window._abNbKeyHandler, true);
         self.item_html.value = self.item_html_value()
 
     def reset_dimension_picks(self) -> None:
-        self.dimension_picks = empty_dimension_picks()
+        self.dimension_picks = empty_dimension_picks(self.active_dimensions)
         if self.rating_mode != "multi_dimension":
             return
-        for dim in DIMENSIONS:
+        for dim in self.active_dimensions:
             for btn in self.dimension_buttons[dim].values():
                 btn.button_style = ""
         self.button_next.disabled = True
@@ -418,7 +422,7 @@ document.addEventListener('keydown', window._abNbKeyHandler, true);
         self.dimension_picks[dimension] = choice
         for c, btn in self.dimension_buttons[dimension].items():
             btn.button_style = "success" if c == choice else ""
-        self.button_next.disabled = not all_dimensions_selected(self.dimension_picks)
+        self.button_next.disabled = not all_dimensions_selected(self.dimension_picks, self.active_dimensions)
 
     def show_complete(self) -> None:
         from ab_prefs_interface.summarize_preferences import summarize_completion_html
@@ -429,7 +433,7 @@ document.addEventListener('keydown', window._abNbKeyHandler, true);
         self.button_row.layout.display = "none"
 
     def submit_dimension_record(self) -> None:
-        if not all_dimensions_selected(self.dimension_picks):
+        if not all_dimensions_selected(self.dimension_picks, self.active_dimensions):
             return
         unit, provider_a, provider_b = self.current_item()
         note = self.note_widget.value.strip() if self.show_note else ""
@@ -449,18 +453,16 @@ document.addEventListener('keydown', window._abNbKeyHandler, true);
             transcript_a=unit.provider_candidates[provider_a].text,
             transcript_b=unit.provider_candidates[provider_b].text,
             rating_mode="multi_dimension",
-            choice_text=str(self.dimension_picks["text"]),
-            choice_timing=str(self.dimension_picks["timing"]),
-            choice_diarization=str(self.dimension_picks["diarization"]),
+            choice_text=str(self.dimension_picks.get("text", "")),
+            choice_timing=str(self.dimension_picks.get("timing", "")),
+            choice_diarization=str(self.dimension_picks.get("diarization", "")),
         )
         append_record(self.output_json_path, record)
         self._sync_to_gcs()
         self.note_widget.value = ""
         self.current_index += 1
-        saved = (
-            f"Saved: text={self.dimension_picks['text']}, timing={self.dimension_picks['timing']}, "
-            f"diarization={self.dimension_picks['diarization']}"
-        )
+        saved_parts = [f"{dim}={self.dimension_picks[dim]}" for dim in self.active_dimensions]
+        saved = "Saved: " + ", ".join(saved_parts)
         self.status_html.value = f'<p style="margin:8px 0;color:#4b5563;">{html.escape(saved)}</p>'
         if self.current_index >= len(self.queue):
             self.show_complete()

@@ -20,12 +20,15 @@ DIMENSION_CHOICES = ("A", "B", "tie")
 RATING_MODES = ("overall", "multi_dimension")
 
 
-def empty_dimension_picks() -> dict[str, str | None]:
-    return {dim: None for dim in DIMENSIONS}
+def empty_dimension_picks(dimensions: tuple[str, ...] | list[str] = DIMENSIONS) -> dict[str, str | None]:
+    return {dim: None for dim in dimensions}
 
 
-def all_dimensions_selected(picks: dict[str, str | None]) -> bool:
-    return all(picks[dim] in DIMENSION_CHOICES for dim in DIMENSIONS)
+def all_dimensions_selected(
+    picks: dict[str, str | None],
+    dimensions: tuple[str, ...] | list[str] = DIMENSIONS,
+) -> bool:
+    return all(picks.get(dim) in DIMENSION_CHOICES for dim in dimensions)
 
 
 def encode_dimension_choice(dimension: str, choice: str) -> str:
@@ -45,7 +48,10 @@ def dimension_button_label(choice: str) -> str:
     return "Tie" if choice == "tie" else choice
 
 
-def parse_dimension_submit(value: str) -> dict[str, str] | None:
+def parse_dimension_submit(
+    value: str,
+    dimensions: tuple[str, ...] | list[str] = DIMENSIONS,
+) -> dict[str, str] | None:
     """Parse submit:text:A,timing:B,diarization:tie from Colab Next callback."""
     if not value.startswith("submit:"):
         return None
@@ -57,20 +63,23 @@ def parse_dimension_submit(value: str) -> dict[str, str] | None:
         if dimension not in DIMENSIONS or choice not in DIMENSION_CHOICES:
             return None
         picks[dimension] = choice
-    if set(picks.keys()) != set(DIMENSIONS):
+    if set(picks.keys()) != set(dimensions):
         return None
     return picks
 
 
-def dimension_rows_html(picks: dict[str, str | None]) -> str:
-    """HTML for 3 dimension rows with A/B/Tie buttons (Colab). Selection updated client-side."""
+def dimension_rows_html(
+    picks: dict[str, str | None],
+    dimensions: tuple[str, ...] | list[str] = DIMENSIONS,
+) -> str:
+    """HTML for dimension rows with A/B/Tie buttons (Colab). Selection updated client-side."""
     kbd_style = (
         "font-size:10px;border:1px solid #9ca3af;border-radius:3px;"
         "padding:0 3px;margin-left:4px;background:#f3f4f6;color:#4b5563;"
     )
     btn_base = "min-width:72px;margin:2px 4px 2px 0;padding:4px 10px;"
     rows: list[str] = ['<table style="border-collapse:collapse;margin:4px 0;">']
-    for dim in DIMENSIONS:
+    for dim in dimensions:
         label = DIMENSION_LABELS[dim]
         cells = f'<td style="padding:3px 14px 3px 0;font-weight:600;white-space:nowrap;">{html.escape(label)}</td>'
         for choice in DIMENSION_CHOICES:
@@ -88,7 +97,7 @@ def dimension_rows_html(picks: dict[str, str | None]) -> str:
             )
         rows.append(f"<tr>{cells}</tr>")
     rows.append("</table>")
-    next_disabled = "" if all_dimensions_selected(picks) else " disabled"
+    next_disabled = "" if all_dimensions_selected(picks, dimensions) else " disabled"
     rows.append(
         f'<button type="button" id="ab-next-btn" data-ab-action="next"{next_disabled} '
         f'style="margin-top:10px;padding:6px 16px;">Next item</button>'

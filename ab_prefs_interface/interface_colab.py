@@ -13,6 +13,7 @@ from ab_prefs_interface.audio_clips import ensure_queue_clips
 from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord
 from ab_prefs_interface.dimension_ui import (
     DIMENSION_KEYS,
+    DIMENSIONS,
     all_dimensions_selected,
     dimension_rows_html,
     empty_dimension_picks,
@@ -25,10 +26,12 @@ from ab_prefs_interface.storage_json import append_record
 CALLBACK_NAME = "ab_prefs_choice"
 
 
-def _dim_key_map_js() -> str:
-    """Build a JS object literal mapping key → [dim, choice] from DIMENSION_KEYS."""
+def _dim_key_map_js(active_dimensions: tuple[str, ...]) -> str:
+    """Build a JS object literal mapping key → [dim, choice] for active dimensions only."""
     pairs = []
     for dim, choices in DIMENSION_KEYS.items():
+        if dim not in active_dimensions:
+            continue
         for choice, key in choices.items():
             pairs.append(f'"{key}": ["{dim}", "{choice}"]')
     return "{" + ", ".join(pairs) + "}"
@@ -49,6 +52,7 @@ class ColabHtmlPreferenceInterface:
         ground_truth_name: str = "ground_truth",
         rating_mode: str = "overall",
         gcs_bucket: str | None = None,
+        rating_dimensions: list[str] | None = None,
         **kwargs,
     ) -> None:
         if not queue:
@@ -61,7 +65,8 @@ class ColabHtmlPreferenceInterface:
         self.show_providers = show_providers
         self.ground_truth_name = ground_truth_name
         self.rating_mode = rating_mode
-        self.dimension_picks = empty_dimension_picks()
+        self.active_dimensions: tuple[str, ...] = tuple(rating_dimensions) if rating_dimensions else DIMENSIONS
+        self.dimension_picks = empty_dimension_picks(self.active_dimensions)
         self.current_index = 0
         self.clip_dir = clip_dir or Path("results/ab_prefs/audio_clips")
         self.notebook_root = notebook_root or Path.cwd()
@@ -97,7 +102,7 @@ class ColabHtmlPreferenceInterface:
             verbose=self.verbose,
         )
         if self.rating_mode == "multi_dimension":
-            self.dimension_picks = empty_dimension_picks()
+            self.dimension_picks = empty_dimension_picks(self.active_dimensions)
         self.render()
 
     def choice_button(self, label: str, choice: str) -> str:
@@ -159,7 +164,9 @@ class ColabHtmlPreferenceInterface:
 
     def wire_multi_dimension_js(self) -> None:
         # dimension A/B/Tie clicks stay client-side; only Next hits the kernel (avoids full-page flash)
-        key_map_js = _dim_key_map_js()
+        key_map_js = _dim_key_map_js(self.active_dimensions)
+        active_dims_js = "[" + ", ".join(f'"{d}"' for d in self.active_dimensions) + "]"
+        init_picks_js = "{" + ", ".join(f'"{d}": null' for d in self.active_dimensions) + "}"
         display(Javascript(f"""
 (function() {{
   if (!google.colab || !google.colab.kernel) {{
@@ -175,11 +182,11 @@ class ColabHtmlPreferenceInterface:
       if (!toggle.checked) field.value = "";
     }};
   }}
-  window.abDimPicks = {{text: null, timing: null, diarization: null}};
+  var activeDims = {active_dims_js};
+  window.abDimPicks = {init_picks_js};
   function abUpdateDimUI() {{
-    var dims = ["text", "timing", "diarization"];
     var allSet = true;
-    dims.forEach(function(dim) {{
+    activeDims.forEach(function(dim) {{
       document.querySelectorAll('[data-ab-dim="' + dim + '"]').forEach(function(btn) {{
         var choice = btn.getAttribute("data-ab-choice-val");
         var sel = window.abDimPicks[dim] === choice;
@@ -202,7 +209,7 @@ class ColabHtmlPreferenceInterface:
     nextBtn.onclick = async function() {{
       if (nextBtn.disabled) return;
       var note = field ? field.value.trim() : "";
-      var payload = "submit:" + ["text","timing","diarization"].map(function(d) {{
+      var payload = "submit:" + activeDims.map(function(d) {{
         return d + ":" + window.abDimPicks[d];
       }}).join(",");
       await invoke("{CALLBACK_NAME}", [payload, note], {{}});
@@ -287,7 +294,7 @@ class ColabHtmlPreferenceInterface:
             item_label=f"Preference item {self.current_index + 1}/{len(self.queue)}",
         )
         if self.rating_mode == "multi_dimension":
-            buttons = dimension_rows_html(self.dimension_picks)
+            buttons = dimension_rows_html(self.dimension_picks, self.active_dimensions)
         else:
             buttons = self.overall_buttons_html()
         if self.show_note:
@@ -338,7 +345,7 @@ class ColabHtmlPreferenceInterface:
             pass  # gsutil unavailable — silent, never interrupt a rating
 
     def submit_dimension_record(self, note: str) -> None:
-        if not all_dimensions_selected(self.dimension_picks):
+        if not all_dimensions_selected(self.dimension_picks, self.active_dimensions):
             return
         unit, provider_a, provider_b = self.current_item()
         record = PreferenceRecord(
@@ -357,18 +364,16 @@ class ColabHtmlPreferenceInterface:
             transcript_a=unit.provider_candidates[provider_a].text,
             transcript_b=unit.provider_candidates[provider_b].text,
             rating_mode="multi_dimension",
-            choice_text=str(self.dimension_picks["text"]),
-            choice_timing=str(self.dimension_picks["timing"]),
-            choice_diarization=str(self.dimension_picks["diarization"]),
+            choice_text=str(self.dimension_picks.get("text", "")),
+            choice_timing=str(self.dimension_picks.get("timing", "")),
+            choice_diarization=str(self.dimension_picks.get("diarization", "")),
         )
         append_record(self.output_json_path, record)
         self._sync_to_gcs()
         self.current_index += 1
-        self.status_message = (
-            f"Saved: text={self.dimension_picks['text']}, timing={self.dimension_picks['timing']}, "
-            f"diarization={self.dimension_picks['diarization']}"
-        )
-        self.dimension_picks = empty_dimension_picks()
+        saved_parts = [f"{dim}={self.dimension_picks[dim]}" for dim in self.active_dimensions]
+        self.status_message = "Saved: " + ", ".join(saved_parts)
+        self.dimension_picks = empty_dimension_picks(self.active_dimensions)
         self.render()
 
     def on_choice(self, choice: str, note: str = "") -> None:
@@ -376,7 +381,7 @@ class ColabHtmlPreferenceInterface:
             return
         note = (note or "").strip()
         if self.rating_mode == "multi_dimension":
-            picks = parse_dimension_submit(choice)
+            picks = parse_dimension_submit(choice, self.active_dimensions)
             if picks is not None:
                 self.dimension_picks = picks
                 self.submit_dimension_record(note)

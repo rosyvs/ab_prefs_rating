@@ -79,6 +79,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         show_note=bool(session.get("show_note", True)),
         show_providers=bool(session.get("show_providers", False)),
         rating_mode=str(session.get("rating_mode", "overall")),
+        rating_dimensions=session.get("rating_dimensions") or None,
         clip_dir=Path(session["clip_dir"]),
         notebook_root=notebook_root,
         session_manifest=Path(session_manifest) if session_manifest else None,
