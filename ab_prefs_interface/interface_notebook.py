@@ -113,9 +113,16 @@ def words_html(
     show_speaker_labels: bool = True,
 ) -> str:
     if candidate.words:
+        has_any_speaker = any(w.speaker for w in candidate.words)
+        has_terminal_punct = any(
+            w.text and w.text[-1] in _SENTENCE_TERMINAL for w in candidate.words
+        )
+        # For no-speaker, no-punct providers (e.g. Qwen): word tokens carry no punctuation.
+        # Fall back to segment_rows_html which shows punctuated segment text.
+        if not has_any_speaker and not has_terminal_punct and candidate.segment_rows:
+            return segment_rows_html(candidate.segment_rows, time_offset=time_offset, clip_duration=clip_duration)
         parts: list[str] = []
         current_speaker: str | None = None
-        has_any_speaker = any(w.speaker for w in candidate.words)
         for word in candidate.words:
             if word.speaker and word.speaker != current_speaker:
                 if current_speaker is not None:
