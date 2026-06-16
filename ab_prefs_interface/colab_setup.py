@@ -225,13 +225,22 @@ def write_colab_session_config(
     """Write runtime session JSON: settings from session_config, GCS paths from mount."""
     repo = Path(paths["notebook_root"])
     payload = dict(load_repo_session_config(repo, session_config))
+    # Resolve session_manifest from the session config (e.g. v3-specific manifest),
+    # falling back to the generic default only when the session config doesn't specify one.
+    sm = payload.get("session_manifest")
+    if sm:
+        sm_path = Path(sm)
+        if not sm_path.is_absolute():
+            sm_path = (repo / sm_path).resolve()
+    else:
+        sm_path = Path(paths["session_manifest"])
     payload.update(
         {
             "notebook_root": str(paths["notebook_root"]),
             "gt_dir": str(paths["gt_dir"]),
             "audio_dir": str(paths["audio_dir"]),
             "config_json": str(paths["config_json"]),
-            "session_manifest": str(paths["session_manifest"]),
+            "session_manifest": str(sm_path),
             "clip_dir": str(paths["clip_dir"]),
             "cache_dir": str(paths["cache_dir"]),
             "output_dir": str(paths["output_dir"]),
