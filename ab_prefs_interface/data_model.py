@@ -72,3 +72,4 @@ class PreferenceRecord:
     choice_text: str = ""
     choice_timing: str = ""
     choice_diarization: str = ""
+    choice_punctuation: str = ""

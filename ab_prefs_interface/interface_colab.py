@@ -53,6 +53,7 @@ class ColabHtmlPreferenceInterface:
         rating_mode: str = "overall",
         gcs_bucket: str | None = None,
         rating_dimensions: list[str] | None = None,
+        debug: bool = False,
         **kwargs,
     ) -> None:
         if not queue:
@@ -67,6 +68,7 @@ class ColabHtmlPreferenceInterface:
         self.rating_mode = rating_mode
         self.active_dimensions: tuple[str, ...] = tuple(rating_dimensions) if rating_dimensions else DIMENSIONS
         self.dimension_picks = empty_dimension_picks(self.active_dimensions)
+        self.debug = debug
         self.current_index = 0
         self.clip_dir = clip_dir or Path("results/ab_prefs/audio_clips")
         self.notebook_root = notebook_root or Path.cwd()
@@ -291,6 +293,7 @@ class ColabHtmlPreferenceInterface:
             clip_duration=clip_duration,
             time_offset=unit.start_seconds,
             show_providers=self.show_providers,
+            debug=self.debug,
             item_label=f"Preference item {self.current_index + 1}/{len(self.queue)}",
         )
         if self.rating_mode == "multi_dimension":
@@ -367,6 +370,7 @@ class ColabHtmlPreferenceInterface:
             choice_text=str(self.dimension_picks.get("text", "")),
             choice_timing=str(self.dimension_picks.get("timing", "")),
             choice_diarization=str(self.dimension_picks.get("diarization", "")),
+            choice_punctuation=str(self.dimension_picks.get("punctuation", "")),
         )
         append_record(self.output_json_path, record)
         self._sync_to_gcs()

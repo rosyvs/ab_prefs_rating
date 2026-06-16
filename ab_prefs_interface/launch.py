@@ -78,6 +78,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         asr_eval_root=Path(session["asr_eval_root"]) if session.get("asr_eval_root") else None,
         show_note=bool(session.get("show_note", True)),
         show_providers=bool(session.get("show_providers", False)),
+        debug=bool(session.get("debug", False)),
         rating_mode=str(session.get("rating_mode", "overall")),
         rating_dimensions=session.get("rating_dimensions") or None,
         clip_dir=Path(session["clip_dir"]),
@@ -95,6 +96,7 @@ def launch_rating(
     session_config_path: Path | str | None = None,
     redo: bool | None = None,
     gcs_bucket: str | None = None,
+    debug: bool | None = None,
 ) -> "NotebookPreferenceInterface":
     """Load shared session config, open rating widget. Colleagues only set rater_id.
 
@@ -102,6 +104,7 @@ def launch_rating(
         redo: If True, wipe this rater's existing output file and start from scratch.
               If False (default), already-rated items are silently skipped.
               The notebook-level flag takes priority over session config.
+        debug: If True, show utterance ID, provider names (A=X B=Y), and raw ASR text.
     """
     from ab_prefs_interface.run_rating import run_notebook_rating
 
@@ -115,6 +118,8 @@ def launch_rating(
         args.redo = redo
     if gcs_bucket is not None:
         args.gcs_bucket = gcs_bucket
+    if debug is not None:
+        args.debug = debug
     print(f"Rater: {rater} → {args.output_json}")
     print(f"Session config: {config_path.resolve()}")
     if args.session_manifest:

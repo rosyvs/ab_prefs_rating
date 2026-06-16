@@ -149,13 +149,14 @@ def comparison_block(
     clip_duration: float,
     time_offset: float,
     show_providers: bool = False,
+    debug: bool = False,
     item_label: str | None = None,
 ) -> str:
     html_a = words_html(unit.provider_candidates[provider_a], time_offset=time_offset, clip_duration=clip_duration, show_speaker_labels=False)
     html_b = words_html(unit.provider_candidates[provider_b], time_offset=time_offset, clip_duration=clip_duration, show_speaker_labels=False)
     start = unit.start_seconds
     end = unit.end_seconds
-    if show_providers:
+    if show_providers or debug:
         if unit.segment_index_end is not None:
             seg_label = f"GT segments {unit.segment_index}–{unit.segment_index_end} (merged)"
         else:
@@ -170,6 +171,12 @@ def comparison_block(
         meta = f"Span {start:.2f}s to {end:.2f}s"
         label_a = "A"
         label_b = "B"
+    if debug:
+        raw_style = "font-size:11px;font-family:monospace;background:#f8f8f8;border:1px solid #e5e7eb;border-radius:4px;padding:4px 6px;margin-top:4px;white-space:pre-wrap;word-break:break-word;"
+        raw_a = f'<div style="{raw_style}">{html.escape(unit.provider_candidates[provider_a].text)}</div>'
+        raw_b = f'<div style="{raw_style}">{html.escape(unit.provider_candidates[provider_b].text)}</div>'
+    else:
+        raw_a = raw_b = ""
     ontime = html.escape(ontimeupdate_dual, quote=True)
     audio_src = html.escape(audio_url, quote=True)
     title_html = f"<h3 style=\"margin:0 0 10px 0;\">{html.escape(item_label)}</h3>" if item_label else ""
@@ -186,10 +193,12 @@ def comparison_block(
     <div class="ab-col">
       <div><strong>{label_a}</strong></div>
       <div class="ab-panel">{html_a}</div>
+      {raw_a}
     </div>
     <div class="ab-col">
       <div><strong>{label_b}</strong></div>
       <div class="ab-panel">{html_b}</div>
+      {raw_b}
     </div>
   </div>
 </div>
@@ -212,6 +221,7 @@ class NotebookPreferenceInterface:
         rating_mode: str = "overall",
         gcs_bucket: str | None = None,
         rating_dimensions: list[str] | None = None,
+        debug: bool = False,
     ) -> None:
         if not queue:
             raise ValueError("Queue is empty; nothing to review.")
@@ -224,6 +234,7 @@ class NotebookPreferenceInterface:
         self.rating_mode = rating_mode
         self.active_dimensions: tuple[str, ...] = tuple(rating_dimensions) if rating_dimensions else DIMENSIONS
         self.dimension_picks = empty_dimension_picks(self.active_dimensions)
+        self.debug = debug
         self.current_index = 0
         clip_root = clip_dir or Path("results/ab_prefs/audio_clips")
         nb_root = notebook_root or Path.cwd()
@@ -401,6 +412,7 @@ document.addEventListener('keydown', window._abNbKeyHandler, true);
             clip_duration=clip_duration,
             time_offset=unit.start_seconds,
             show_providers=self.show_providers,
+            debug=self.debug,
             item_label=f"Preference item {self.current_index + 1}/{len(self.queue)}",
         )
 
@@ -456,6 +468,7 @@ document.addEventListener('keydown', window._abNbKeyHandler, true);
             choice_text=str(self.dimension_picks.get("text", "")),
             choice_timing=str(self.dimension_picks.get("timing", "")),
             choice_diarization=str(self.dimension_picks.get("diarization", "")),
+            choice_punctuation=str(self.dimension_picks.get("punctuation", "")),
         )
         append_record(self.output_json_path, record)
         self._sync_to_gcs()

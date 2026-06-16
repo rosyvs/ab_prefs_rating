@@ -22,7 +22,7 @@
   "show_note": true,
   "show_providers": false,
   "rating_mode": "multi_dimension",
-  "rating_dimensions": ["text", "timing"],
+  "rating_dimensions": ["text", "timing", "punctuation"],
   "verbose": true,
   "rebuild_cache": false
 }

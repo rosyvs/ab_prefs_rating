@@ -3,18 +3,20 @@ from __future__ import annotations
 
 import html
 
-DIMENSIONS = ("text", "timing", "diarization")
-DIMENSION_LABELS = {"text": "Text", "timing": "Timing", "diarization": "Diarization"}
+DIMENSIONS = ("text", "timing", "diarization", "punctuation")
+DIMENSION_LABELS = {"text": "Text", "timing": "Timing", "diarization": "Diarization", "punctuation": "Punctuation"}
 # Keyboard shortcuts: row → choice → key
 DIMENSION_KEYS: dict[str, dict[str, str]] = {
     "text":         {"A": "1", "B": "2", "tie": "3"},
     "timing":       {"A": "q", "B": "w", "tie": "e"},
     "diarization":  {"A": "a", "B": "s", "tie": "d"},
+    "punctuation":  {"A": "i", "B": "o", "tie": "p"},
 }
 DIMENSION_CHOICE_COLS = {
     "text": "choice_text",
     "timing": "choice_timing",
     "diarization": "choice_diarization",
+    "punctuation": "choice_punctuation",
 }
 DIMENSION_CHOICES = ("A", "B", "tie")
 RATING_MODES = ("overall", "multi_dimension")
