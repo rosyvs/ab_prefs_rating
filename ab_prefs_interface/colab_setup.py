@@ -151,8 +151,11 @@ def install_runtime_deps(repo_root: Path | str | None = None) -> None:
             [sys.executable, "-m", "pip", "install", "-q", "-e", str(Path(repo_root).resolve())],
             check=True,
         )
-    if in_colab():
-        subprocess.run(["apt-get", "install", "-qq", "-y", "ffmpeg"], check=True)
+    if in_colab() and not shutil.which("ffmpeg"):
+        result = subprocess.run(["apt-get", "install", "-qq", "-y", "ffmpeg"], check=False)
+        if result.returncode != 0:
+            subprocess.run(["apt-get", "update", "-qq"], check=False)
+            subprocess.run(["apt-get", "install", "-qq", "-y", "ffmpeg"], check=False)
 
 
 def clone_repo(
