@@ -393,14 +393,34 @@ def overlap_seconds(a_start: float, a_end: float, b_start: float, b_end: float) 
     return max(0.0, min(a_end, b_end) - max(a_start, b_start))
 
 
-def words_overlapping_span(words: list[WordToken], span_start: float, span_end: float) -> list[WordToken]:
-    """Words with time overlap vs [span_start, span_end]; words must be sorted by start_seconds."""
+def words_overlapping_span(
+    words: list[WordToken],
+    span_start: float,
+    span_end: float,
+    min_overlap_fraction: float = 0.5,
+) -> list[WordToken]:
+    """Words overlapping [span_start, span_end] by at least min_overlap_fraction of their duration.
+
+    Mirrors the min_overlap_seconds heuristic in spans_overlapping_gt but scaled to word
+    duration, since words (0.1–0.5s) are far shorter than segments. Zero-duration tokens
+    are included on any overlap.
+    """
     if not words:
         return []
     starts = [word.start_seconds for word in words]
-    # word.start < span_end  →  index of first word with start >= span_end
     end_index = bisect.bisect_left(starts, span_end)
-    return [word for word in words[:end_index] if word.end_seconds > span_start]
+    result = []
+    for word in words[:end_index]:
+        if word.end_seconds <= span_start:
+            continue
+        word_dur = word.end_seconds - word.start_seconds
+        if word_dur <= 0:
+            result.append(word)
+            continue
+        overlap = overlap_seconds(word.start_seconds, word.end_seconds, span_start, span_end)
+        if overlap / word_dur >= min_overlap_fraction:
+            result.append(word)
+    return result
 
 
 def timed_words_from_text(text: str, start_seconds: float, end_seconds: float, speaker: str | None = None) -> list[WordToken]:

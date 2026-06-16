@@ -31,7 +31,7 @@ def build_cache_key(
     exclude_gt_markers: bool = True,
 ) -> str:
     parts = [
-        "v3",  # bump when ProviderCandidate schema changes (forces cache rebuild)
+        "v4",  # bump when ProviderCandidate schema changes (forces cache rebuild)
         dir_fingerprint(gt_dir, "*.jsonl"),
         dir_fingerprint(audio_dir, "*.mp3"),
         ground_truth_name,
