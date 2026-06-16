@@ -217,8 +217,7 @@ def run_notebook_rating(args: argparse.Namespace):
     if verbose:
         print("Loading comparison units...")
     cache_dir = args.cache_dir.expanduser().resolve() if str(args.cache_dir).strip() else None
-    # Keep all GT lines when loading a fixed manifest (existing sessions may include annotation markers).
-    exclude_gt_markers = bool(getattr(args, "exclude_gt_markers", True)) and not recording_ids
+    exclude_gt_markers = bool(getattr(args, "exclude_gt_markers", True))
     units = build_comparison_units(
         gt_dir=args.gt_dir.expanduser().resolve(),
         provider_dirs=provider_dirs,
