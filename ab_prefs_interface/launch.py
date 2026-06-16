@@ -79,6 +79,7 @@ def namespace_for_rater(session: dict, rater_id: str) -> Namespace:
         show_note=bool(session.get("show_note", True)),
         show_providers=bool(session.get("show_providers", False)),
         debug=bool(session.get("debug", False)),
+        numpad=bool(session.get("numpad", True)),
         rating_mode=str(session.get("rating_mode", "overall")),
         rating_dimensions=session.get("rating_dimensions") or None,
         clip_dir=Path(session["clip_dir"]),
@@ -97,6 +98,7 @@ def launch_rating(
     redo: bool | None = None,
     gcs_bucket: str | None = None,
     debug: bool | None = None,
+    numpad: bool | None = None,
 ) -> "NotebookPreferenceInterface":
     """Load shared session config, open rating widget. Colleagues only set rater_id.
 
@@ -120,6 +122,8 @@ def launch_rating(
         args.gcs_bucket = gcs_bucket
     if debug is not None:
         args.debug = debug
+    if numpad is not None:
+        args.numpad = numpad
     print(f"Rater: {rater} → {args.output_json}")
     print(f"Session config: {config_path.resolve()}")
     if args.session_manifest:

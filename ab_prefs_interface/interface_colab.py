@@ -28,11 +28,11 @@ from ab_prefs_interface.storage_json import append_record
 CALLBACK_NAME = "ab_prefs_choice"
 
 
-def _dim_key_map_js(active_dimensions: tuple[str, ...]) -> tuple[str, str]:
+def _dim_key_map_js(active_dimensions: tuple[str, ...], numpad: bool = True) -> tuple[str, str]:
     """Return (key_map_js, code_map_js) for active dimensions.
 
     key_map_js  — e.key  → [dim, choice]  (letter shortcuts)
-    code_map_js — e.code → [dim, choice]  (numpad shortcuts, always additive)
+    code_map_js — e.code → [dim, choice]  (numpad shortcuts, empty when numpad=False)
     """
     eff = get_effective_keys(active_dimensions)
     key_pairs: list[str] = []
@@ -40,7 +40,7 @@ def _dim_key_map_js(active_dimensions: tuple[str, ...]) -> tuple[str, str]:
     for dim in active_dimensions:
         for choice, key in eff[dim].items():
             key_pairs.append(f'"{key}": ["{dim}", "{choice}"]')
-        if dim in NUMPAD_KEYS:
+        if numpad and dim in NUMPAD_KEYS:
             for choice, code in NUMPAD_KEYS[dim].items():
                 code_pairs.append(f'"{code}": ["{dim}", "{choice}"]')
     return (
@@ -66,6 +66,7 @@ class ColabHtmlPreferenceInterface:
         gcs_bucket: str | None = None,
         rating_dimensions: list[str] | None = None,
         debug: bool = False,
+        numpad: bool = True,
         **kwargs,
     ) -> None:
         if not queue:
@@ -81,6 +82,7 @@ class ColabHtmlPreferenceInterface:
         self.active_dimensions: tuple[str, ...] = tuple(rating_dimensions) if rating_dimensions else DIMENSIONS
         self.dimension_picks = empty_dimension_picks(self.active_dimensions)
         self.debug = debug
+        self.numpad = numpad
         self.current_index = 0
         self.clip_dir = clip_dir or Path("results/ab_prefs/audio_clips")
         self.notebook_root = notebook_root or Path.cwd()
@@ -178,7 +180,7 @@ class ColabHtmlPreferenceInterface:
 
     def wire_multi_dimension_js(self) -> None:
         # dimension A/B/Tie clicks stay client-side; only Next hits the kernel (avoids full-page flash)
-        key_map_js, code_map_js = _dim_key_map_js(self.active_dimensions)
+        key_map_js, code_map_js = _dim_key_map_js(self.active_dimensions, numpad=self.numpad)
         active_dims_js = "[" + ", ".join(f'"{d}"' for d in self.active_dimensions) + "]"
         init_picks_js = "{" + ", ".join(f'"{d}": null' for d in self.active_dimensions) + "}"
         display(Javascript(f"""

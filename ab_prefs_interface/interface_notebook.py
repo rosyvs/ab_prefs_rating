@@ -280,6 +280,7 @@ class NotebookPreferenceInterface:
         gcs_bucket: str | None = None,
         rating_dimensions: list[str] | None = None,
         debug: bool = False,
+        numpad: bool = True,
     ) -> None:
         if not queue:
             raise ValueError("Queue is empty; nothing to review.")
@@ -293,6 +294,7 @@ class NotebookPreferenceInterface:
         self.active_dimensions: tuple[str, ...] = tuple(rating_dimensions) if rating_dimensions else DIMENSIONS
         self.dimension_picks = empty_dimension_picks(self.active_dimensions)
         self.debug = debug
+        self.numpad = numpad
         self.current_index = 0
         clip_root = clip_dir or Path("results/ab_prefs/audio_clips")
         nb_root = notebook_root or Path.cwd()
@@ -390,14 +392,15 @@ class NotebookPreferenceInterface:
                 cls = f"ab-dim-{dim}-{choice}"
                 key_lines.append(f'  "{key}": ".{cls}",')
         key_lines.append("};")
-        # code map: e.code → CSS selector (numpad)
+        # code map: e.code → CSS selector (numpad, optional)
         code_lines = ["var abNbCodeMap = {"]
-        for dim in self.active_dimensions:
-            if dim not in NUMPAD_KEYS:
-                continue
-            for choice, code in NUMPAD_KEYS[dim].items():
-                cls = f"ab-dim-{dim}-{choice}"
-                code_lines.append(f'  "{code}": ".{cls}",')
+        if self.numpad:
+            for dim in self.active_dimensions:
+                if dim not in NUMPAD_KEYS:
+                    continue
+                for choice, code in NUMPAD_KEYS[dim].items():
+                    cls = f"ab-dim-{dim}-{choice}"
+                    code_lines.append(f'  "{code}": ".{cls}",')
         code_lines.append("};")
         js = "\n".join(key_lines) + "\n" + "\n".join(code_lines) + """
 if (window._abNbKeyHandler) document.removeEventListener('keydown', window._abNbKeyHandler, true);

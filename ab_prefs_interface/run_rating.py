@@ -370,6 +370,7 @@ def run_notebook_rating(args: argparse.Namespace):
         gcs_bucket=str(getattr(args, "gcs_bucket", "") or ""),
         rating_dimensions=getattr(args, "rating_dimensions", None) or None,
         debug=bool(getattr(args, "debug", False)),
+        numpad=bool(getattr(args, "numpad", True)),
     )
     interface.show()  # placeholder widget before clip ffmpeg work
     interface.load_clips()
