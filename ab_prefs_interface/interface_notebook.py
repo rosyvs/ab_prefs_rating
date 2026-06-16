@@ -17,9 +17,11 @@ from ab_prefs_interface.dimension_ui import (
     DIMENSION_KEYS,
     DIMENSION_LABELS,
     DIMENSIONS,
+    NUMPAD_KEYS,
     all_dimensions_selected,
     dimension_button_label,
     empty_dimension_picks,
+    get_effective_keys,
 )
 from ab_prefs_interface.storage_json import append_record
 
@@ -380,16 +382,24 @@ class NotebookPreferenceInterface:
         """Inject a document keydown listener that clicks dimension buttons by CSS class."""
         if self.rating_mode != "multi_dimension":
             return
-        # Build key→CSS-class mapping from DIMENSION_KEYS (active dimensions only)
-        lines = ["var abNbKeyMap = {"]
-        for dim, choices in DIMENSION_KEYS.items():
-            if dim not in self.active_dimensions:
-                continue
-            for choice, key in choices.items():
+        eff_keys = get_effective_keys(self.active_dimensions)
+        # key map: e.key → CSS selector
+        key_lines = ["var abNbKeyMap = {"]
+        for dim in self.active_dimensions:
+            for choice, key in eff_keys[dim].items():
                 cls = f"ab-dim-{dim}-{choice}"
-                lines.append(f'  "{key}": ".{cls}",')
-        lines.append("};")
-        js = "\n".join(lines) + """
+                key_lines.append(f'  "{key}": ".{cls}",')
+        key_lines.append("};")
+        # code map: e.code → CSS selector (numpad)
+        code_lines = ["var abNbCodeMap = {"]
+        for dim in self.active_dimensions:
+            if dim not in NUMPAD_KEYS:
+                continue
+            for choice, code in NUMPAD_KEYS[dim].items():
+                cls = f"ab-dim-{dim}-{choice}"
+                code_lines.append(f'  "{code}": ".{cls}",')
+        code_lines.append("};")
+        js = "\n".join(key_lines) + "\n" + "\n".join(code_lines) + """
 if (window._abNbKeyHandler) document.removeEventListener('keydown', window._abNbKeyHandler, true);
 window._abNbKeyHandler = function(e) {
   if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
@@ -410,7 +420,7 @@ window._abNbKeyHandler = function(e) {
     e.preventDefault();
     return;
   }
-  var sel = abNbKeyMap[e.key];
+  var sel = abNbCodeMap[e.code] || abNbKeyMap[e.key];
   if (!sel) return;
   e.preventDefault();
   var btn = document.querySelector(sel + ' button');

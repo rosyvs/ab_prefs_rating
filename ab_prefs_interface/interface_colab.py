@@ -14,9 +14,11 @@ from ab_prefs_interface.data_model import ComparisonUnit, PreferenceRecord
 from ab_prefs_interface.dimension_ui import (
     DIMENSION_KEYS,
     DIMENSIONS,
+    NUMPAD_KEYS,
     all_dimensions_selected,
     dimension_rows_html,
     empty_dimension_picks,
+    get_effective_keys,
     parse_dimension_choice,
     parse_dimension_submit,
 )
@@ -26,15 +28,25 @@ from ab_prefs_interface.storage_json import append_record
 CALLBACK_NAME = "ab_prefs_choice"
 
 
-def _dim_key_map_js(active_dimensions: tuple[str, ...]) -> str:
-    """Build a JS object literal mapping key → [dim, choice] for active dimensions only."""
-    pairs = []
-    for dim, choices in DIMENSION_KEYS.items():
-        if dim not in active_dimensions:
-            continue
-        for choice, key in choices.items():
-            pairs.append(f'"{key}": ["{dim}", "{choice}"]')
-    return "{" + ", ".join(pairs) + "}"
+def _dim_key_map_js(active_dimensions: tuple[str, ...]) -> tuple[str, str]:
+    """Return (key_map_js, code_map_js) for active dimensions.
+
+    key_map_js  — e.key  → [dim, choice]  (letter shortcuts)
+    code_map_js — e.code → [dim, choice]  (numpad shortcuts, always additive)
+    """
+    eff = get_effective_keys(active_dimensions)
+    key_pairs: list[str] = []
+    code_pairs: list[str] = []
+    for dim in active_dimensions:
+        for choice, key in eff[dim].items():
+            key_pairs.append(f'"{key}": ["{dim}", "{choice}"]')
+        if dim in NUMPAD_KEYS:
+            for choice, code in NUMPAD_KEYS[dim].items():
+                code_pairs.append(f'"{code}": ["{dim}", "{choice}"]')
+    return (
+        "{" + ", ".join(key_pairs) + "}",
+        "{" + ", ".join(code_pairs) + "}",
+    )
 
 
 class ColabHtmlPreferenceInterface:
@@ -166,7 +178,7 @@ class ColabHtmlPreferenceInterface:
 
     def wire_multi_dimension_js(self) -> None:
         # dimension A/B/Tie clicks stay client-side; only Next hits the kernel (avoids full-page flash)
-        key_map_js = _dim_key_map_js(self.active_dimensions)
+        key_map_js, code_map_js = _dim_key_map_js(self.active_dimensions)
         active_dims_js = "[" + ", ".join(f'"{d}"' for d in self.active_dimensions) + "]"
         init_picks_js = "{" + ", ".join(f'"{d}": null' for d in self.active_dimensions) + "}"
         display(Javascript(f"""
@@ -231,7 +243,8 @@ class ColabHtmlPreferenceInterface:
   }}
 
   // Keyboard shortcuts (capture phase so they fire even when audio element has focus).
-  var abKeyMap = {key_map_js};
+  var abKeyMap = {key_map_js};    // e.key  → [dim, choice]
+  var abCodeMap = {code_map_js};  // e.code → [dim, choice]  (numpad)
   if (window._abKeyHandler) document.removeEventListener('keydown', window._abKeyHandler, true);
   window._abKeyHandler = function(e) {{
     if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
@@ -255,7 +268,7 @@ class ColabHtmlPreferenceInterface:
       e.preventDefault();
       return;
     }}
-    var mapping = abKeyMap[e.key];
+    var mapping = abCodeMap[e.code] || abKeyMap[e.key];
     if (!mapping) return;
     e.preventDefault();
     var btn = document.querySelector('[data-ab-dim="' + mapping[0] + '"][data-ab-choice-val="' + mapping[1] + '"]');

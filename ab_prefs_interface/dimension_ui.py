@@ -6,12 +6,39 @@ import html
 DIMENSIONS = ("text", "timing", "diarization", "punctuation")
 DIMENSION_LABELS = {"text": "Text", "timing": "Timing", "diarization": "Diarization", "punctuation": "Punctuation"}
 # Keyboard shortcuts: row → choice → key
+# punctuation shares a/s/d with diarization (never active at the same time);
+# if both are ever active simultaneously, punctuation falls back to z/x/c.
 DIMENSION_KEYS: dict[str, dict[str, str]] = {
     "text":         {"A": "1", "B": "2", "tie": "3"},
     "timing":       {"A": "q", "B": "w", "tie": "e"},
     "diarization":  {"A": "a", "B": "s", "tie": "d"},
-    "punctuation":  {"A": "i", "B": "o", "tie": "p"},
+    "punctuation":  {"A": "a", "B": "s", "tie": "d"},
 }
+# Numpad shortcuts (e.code): text=789, timing=456, diar/punc=123
+NUMPAD_KEYS: dict[str, dict[str, str]] = {
+    "text":         {"A": "Numpad7", "B": "Numpad8", "tie": "Numpad9"},
+    "timing":       {"A": "Numpad4", "B": "Numpad5", "tie": "Numpad6"},
+    "diarization":  {"A": "Numpad1", "B": "Numpad2", "tie": "Numpad3"},
+    "punctuation":  {"A": "Numpad1", "B": "Numpad2", "tie": "Numpad3"},
+}
+
+
+def get_effective_keys(
+    active_dimensions: "tuple[str, ...] | list[str]",
+) -> dict[str, dict[str, str]]:
+    """Return key mapping for active dimensions.
+
+    Punctuation shares a/s/d with diarization. If both are active at once,
+    diarization keeps a/s/d and punctuation falls back to z/x/c.
+    """
+    both = "diarization" in active_dimensions and "punctuation" in active_dimensions
+    result: dict[str, dict[str, str]] = {}
+    for dim in active_dimensions:
+        if dim == "punctuation" and both:
+            result[dim] = {"A": "z", "B": "x", "tie": "c"}
+        else:
+            result[dim] = DIMENSION_KEYS[dim]
+    return result
 DIMENSION_CHOICE_COLS = {
     "text": "choice_text",
     "timing": "choice_timing",
@@ -80,6 +107,7 @@ def dimension_rows_html(
         "padding:0 3px;margin-left:4px;background:#f3f4f6;color:#4b5563;"
     )
     btn_base = "min-width:72px;margin:2px 4px 2px 0;padding:4px 10px;"
+    eff_keys = get_effective_keys(dimensions)
     rows: list[str] = ['<table style="border-collapse:collapse;margin:4px 0;">']
     for dim in dimensions:
         label = DIMENSION_LABELS[dim]
@@ -87,7 +115,7 @@ def dimension_rows_html(
         for choice in DIMENSION_CHOICES:
             selected = picks.get(dim) == choice
             sel_style = "font-weight:600;background:#dcfce7;" if selected else ""
-            key = DIMENSION_KEYS[dim][choice]
+            key = eff_keys[dim][choice]
             cells += (
                 f'<td style="padding:2px 2px;">'
                 f'<button type="button" data-ab-dim="{html.escape(dim)}" '
