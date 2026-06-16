@@ -434,11 +434,15 @@ def provider_candidate_for_span(
         words = recording_words
     overlapped_words = words_overlapping_span(words, span_start, span_end)
     if overlapped_words:
-        text = " ".join(word.text for word in overlapped_words)
         # Also resolve segment rows so words_html can map word tokens onto punctuated segment text.
         if recording_segments is None and payload is not None:
             recording_segments = extract_timed_spans_seconds(payload)
         seg_rows = spans_overlapping_gt(recording_segments, span_start, span_end) if recording_segments else []
+        # Prefer segment text (has punctuation) over raw word-token join for display + saved transcript.
+        if seg_rows:
+            text = " ".join(r["text"] for r in seg_rows if r.get("text"))
+        else:
+            text = " ".join(word.text for word in overlapped_words)
         return ProviderCandidate(
             provider_name=provider_name,
             text=text,
