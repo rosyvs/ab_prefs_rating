@@ -128,18 +128,35 @@ def _words_html_with_punct(
     """
     sorted_segs = sorted(segment_rows, key=lambda r: r["start_seconds"])
     seg_tokens: list[str] = []
+    seg_token_times: list[float] = []  # estimated absolute time for each segment token
     for row in sorted_segs:
         seg_text = (row.get("text") or "").strip()
-        if seg_text:
-            seg_tokens.extend(seg_text.split())
+        if not seg_text:
+            continue
+        row_toks = seg_text.split()
+        seg_start = float(row["start_seconds"])
+        seg_dur = max(0.001, float(row["end_seconds"]) - seg_start)
+        for i, tok in enumerate(row_toks):
+            seg_tokens.append(tok)
+            seg_token_times.append(seg_start + (i / len(row_toks)) * seg_dur)
 
+    # Seed seg_idx to the estimated position of the first clip word inside the segment.
+    # Clips can start well into a long (~30s) segment so a scan from 0 risks matching
+    # common words ("like", "in") to earlier occurrences in the segment text.
     seg_idx = 0
+    if words and seg_token_times:
+        clip_start = words[0].start_seconds
+        for i, t in enumerate(seg_token_times):
+            if t >= clip_start - 2.0:
+                seg_idx = max(0, i - 2)
+                break
+
     parts: list[str] = []
     for word in words:
         word_norm = _normalize_word(word.text)
         display_text = word.text  # fallback: raw word token
         if word_norm:
-            for si in range(seg_idx, min(seg_idx + 10, len(seg_tokens))):
+            for si in range(seg_idx, min(seg_idx + 15, len(seg_tokens))):
                 if _normalize_word(seg_tokens[si]) == word_norm:
                     display_text = seg_tokens[si]
                     seg_idx = si + 1
