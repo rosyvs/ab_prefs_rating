@@ -312,7 +312,7 @@ class ColabHtmlPreferenceInterface:
             item_label=f"Preference item {self.current_index + 1}/{len(self.queue)}",
         )
         if self.rating_mode == "multi_dimension":
-            buttons = dimension_rows_html(self.dimension_picks, self.active_dimensions)
+            buttons = dimension_rows_html(self.dimension_picks, self.active_dimensions, numpad=self.numpad)
         else:
             buttons = self.overall_buttons_html()
         if self.show_note:

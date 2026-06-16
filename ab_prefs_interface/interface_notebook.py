@@ -17,6 +17,7 @@ from ab_prefs_interface.dimension_ui import (
     DIMENSION_KEYS,
     DIMENSION_LABELS,
     DIMENSIONS,
+    NUMPAD_DISPLAY_KEYS,
     NUMPAD_KEYS,
     all_dimensions_selected,
     dimension_button_label,
@@ -325,8 +326,13 @@ class NotebookPreferenceInterface:
                 )
                 row_buttons: list[widgets.Widget] = [label_html]
                 self.dimension_buttons[dim] = {}
+                eff_keys = get_effective_keys(self.active_dimensions)
                 for choice in DIMENSION_CHOICES:
-                    key = DIMENSION_KEYS[dim][choice]
+                    key = (
+                        NUMPAD_DISPLAY_KEYS[dim][choice]
+                        if self.numpad and dim in NUMPAD_DISPLAY_KEYS
+                        else eff_keys[dim][choice]
+                    )
                     btn = widgets.Button(
                         description=f"{dimension_button_label(choice)} {key}",
                         layout=widgets.Layout(width="72px"),

@@ -21,6 +21,11 @@ NUMPAD_KEYS: dict[str, dict[str, str]] = {
     "diarization":  {"A": "Numpad1", "B": "Numpad2", "tie": "Numpad3"},
     "punctuation":  {"A": "Numpad1", "B": "Numpad2", "tie": "Numpad3"},
 }
+# Display labels for numpad keys (strip "Numpad" prefix)
+NUMPAD_DISPLAY_KEYS: dict[str, dict[str, str]] = {
+    dim: {choice: code.replace("Numpad", "") for choice, code in choices.items()}
+    for dim, choices in NUMPAD_KEYS.items()
+}
 
 
 def get_effective_keys(
@@ -100,6 +105,7 @@ def parse_dimension_submit(
 def dimension_rows_html(
     picks: dict[str, str | None],
     dimensions: tuple[str, ...] | list[str] = DIMENSIONS,
+    numpad: bool = False,
 ) -> str:
     """HTML for dimension rows with A/B/Tie buttons (Colab). Selection updated client-side."""
     kbd_style = (
@@ -115,7 +121,7 @@ def dimension_rows_html(
         for choice in DIMENSION_CHOICES:
             selected = picks.get(dim) == choice
             sel_style = "font-weight:600;background:#dcfce7;" if selected else ""
-            key = eff_keys[dim][choice]
+            key = NUMPAD_DISPLAY_KEYS[dim][choice] if numpad and dim in NUMPAD_DISPLAY_KEYS else eff_keys[dim][choice]
             cells += (
                 f'<td style="padding:2px 2px;">'
                 f'<button type="button" data-ab-dim="{html.escape(dim)}" '
