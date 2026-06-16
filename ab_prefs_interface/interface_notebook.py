@@ -102,14 +102,26 @@ def segment_rows_html(
     return "\n".join(parts)
 
 
-def words_html(candidate: ProviderCandidate, *, time_offset: float = 0.0, clip_duration: float | None = None) -> str:
+_SENTENCE_TERMINAL = frozenset(".?!")
+
+
+def words_html(
+    candidate: ProviderCandidate,
+    *,
+    time_offset: float = 0.0,
+    clip_duration: float | None = None,
+    show_speaker_labels: bool = True,
+) -> str:
     if candidate.words:
         parts: list[str] = []
         current_speaker: str | None = None
+        has_any_speaker = any(w.speaker for w in candidate.words)
         for word in candidate.words:
             if word.speaker and word.speaker != current_speaker:
-                parts.append("<br>" if current_speaker is not None else "")
-                parts.append(f'<span class="ab-spk">{html.escape(word.speaker)}:</span> ')
+                if current_speaker is not None:
+                    parts.append("<br>")
+                if show_speaker_labels:
+                    parts.append(f'<span class="ab-spk">{html.escape(word.speaker)}:</span> ')
                 current_speaker = word.speaker
             start = word.start_seconds - time_offset
             end = word.end_seconds - time_offset
@@ -117,6 +129,9 @@ def words_html(candidate: ProviderCandidate, *, time_offset: float = 0.0, clip_d
                 f'<span class="ab-seg excl-end" data-start="{start}" data-end="{end}">'
                 f"{html.escape(word.text)}</span> "
             )
+            # For providers without speaker info, break on sentence-terminal punctuation
+            if not has_any_speaker and word.text and word.text[-1] in _SENTENCE_TERMINAL:
+                parts.append("<br>")
         return "".join(parts).strip()
     if candidate.segment_rows:
         return segment_rows_html(candidate.segment_rows, time_offset=time_offset, clip_duration=clip_duration)
@@ -136,8 +151,8 @@ def comparison_block(
     show_providers: bool = False,
     item_label: str | None = None,
 ) -> str:
-    html_a = words_html(unit.provider_candidates[provider_a], time_offset=time_offset, clip_duration=clip_duration)
-    html_b = words_html(unit.provider_candidates[provider_b], time_offset=time_offset, clip_duration=clip_duration)
+    html_a = words_html(unit.provider_candidates[provider_a], time_offset=time_offset, clip_duration=clip_duration, show_speaker_labels=False)
+    html_b = words_html(unit.provider_candidates[provider_b], time_offset=time_offset, clip_duration=clip_duration, show_speaker_labels=False)
     start = unit.start_seconds
     end = unit.end_seconds
     if show_providers:
