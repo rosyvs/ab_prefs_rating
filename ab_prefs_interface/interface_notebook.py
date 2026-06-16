@@ -123,44 +123,38 @@ def _words_html_with_punct(
     """Render word-level spans using timestamps from words but punctuated text from segments.
 
     Qwen word tokens carry no punctuation; segment text has proper punctuation.
-    We match each clip-window word token to its counterpart in the segment text
-    so every word keeps its clickable timing span but displays with punctuation attached.
+    Uses Levenshtein sequence alignment (jiwer) to map each clip word token to its
+    punctuated counterpart in the segment text, handling clips that start mid-segment.
     """
     sorted_segs = sorted(segment_rows, key=lambda r: r["start_seconds"])
     seg_tokens: list[str] = []
-    seg_token_times: list[float] = []  # estimated absolute time for each segment token
     for row in sorted_segs:
         seg_text = (row.get("text") or "").strip()
-        if not seg_text:
-            continue
-        row_toks = seg_text.split()
-        seg_start = float(row["start_seconds"])
-        seg_dur = max(0.001, float(row["end_seconds"]) - seg_start)
-        for i, tok in enumerate(row_toks):
-            seg_tokens.append(tok)
-            seg_token_times.append(seg_start + (i / len(row_toks)) * seg_dur)
+        if seg_text:
+            seg_tokens.extend(seg_text.split())
 
-    # Seed seg_idx to the estimated position of the first clip word inside the segment.
-    # Clips can start well into a long (~30s) segment so a scan from 0 risks matching
-    # common words ("like", "in") to earlier occurrences in the segment text.
-    seg_idx = 0
-    if words and seg_token_times:
-        clip_start = words[0].start_seconds
-        for i, t in enumerate(seg_token_times):
-            if t >= clip_start - 2.0:
-                seg_idx = max(0, i - 2)
-                break
+    # Build clip_word_index → seg_token_index mapping via edit-distance alignment.
+    # Reference = segment tokens (superset); hypothesis = clip word tokens (subsequence).
+    # 'equal' chunks give exact clip→segment index pairs; 'substitute' chunks give
+    # the closest match; anything else falls back to raw word token text.
+    word_to_seg: dict[int, int] = {}
+    if seg_tokens and words:
+        try:
+            from jiwer import process_words as _pw
+            seg_norm = " ".join(_normalize_word(t) for t in seg_tokens)
+            clip_norm = " ".join(_normalize_word(w.text) for w in words)
+            for chunk in _pw(seg_norm, clip_norm).alignments[0]:
+                if chunk.type in ("equal", "substitute"):
+                    n = chunk.hyp_end_idx - chunk.hyp_start_idx
+                    for i in range(n):
+                        word_to_seg[chunk.hyp_start_idx + i] = chunk.ref_start_idx + i
+        except Exception:
+            pass
 
     parts: list[str] = []
-    for word in words:
-        word_norm = _normalize_word(word.text)
-        display_text = word.text  # fallback: raw word token
-        if word_norm:
-            for si in range(seg_idx, min(seg_idx + 15, len(seg_tokens))):
-                if _normalize_word(seg_tokens[si]) == word_norm:
-                    display_text = seg_tokens[si]
-                    seg_idx = si + 1
-                    break
+    for wi, word in enumerate(words):
+        seg_i = word_to_seg.get(wi)
+        display_text = seg_tokens[seg_i] if seg_i is not None else word.text
         start = word.start_seconds - time_offset
         end = word.end_seconds - time_offset
         parts.append(
