@@ -13,6 +13,93 @@ import pandas as pd
 from ab_prefs_interface.dimension_ui import DIMENSION_CHOICE_COLS, DIMENSION_LABELS, DIMENSIONS, RATING_MODES
 from ab_prefs_interface.sampling import format_exposure_share
 
+_RATER_COL = "session_id"
+
+
+def _sig_narrative(winner: str, loser: str, n_winner: int, n_total: int, p: float) -> str:
+    if p <= 0.01:
+        strength = "strong"
+    elif p <= 0.15:
+        strength = "moderate"
+    elif p <= 0.30:
+        strength = "weak"
+    else:
+        strength = "little"
+    if p <= 0.05:
+        sig_clause = f"the result is significant (p≈{p:.3f})"
+    elif p <= 0.10:
+        sig_clause = f"the result is just short of significance (p≈{p:.3f})"
+    else:
+        sig_clause = f"the result does not reach significance (p≈{p:.3f})"
+    rate = n_winner / n_total
+    return (
+        f"There is {strength} evidence that {winner} is preferred over {loser} "
+        f"({n_winner}/{n_total} = {rate:.0%}). "
+        f"Under a strict two-sided 95% significance threshold, {sig_clause}."
+    )
+
+
+def _pairwise_sig_lines(
+    df: pd.DataFrame,
+    choice_col: str,
+    ground_truth_name: str,
+    binomtest_fn,
+) -> list[str]:
+    """Binomial sign-test narrative lines for each ASR-vs-ASR pair (ties excluded)."""
+    matrix: dict[tuple[str, str], dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for _, row in df[df[choice_col].isin(["A", "B"])].iterrows():
+        pa, pb = row["provider_a"], row["provider_b"]
+        if ground_truth_name in (pa, pb):
+            continue
+        pair = tuple(sorted([pa, pb]))
+        winner = pa if row[choice_col] == "A" else pb
+        matrix[pair][winner] += 1
+        matrix[pair]["total"] += 1
+    lines = []
+    for pair in sorted(matrix.keys()):
+        total = matrix[pair]["total"]
+        if total == 0:
+            continue
+        left, right = pair
+        lw = matrix[pair].get(left, 0)
+        rw = matrix[pair].get(right, 0)
+        winner, loser, n_winner = (left, right, lw) if lw >= rw else (right, left, rw)
+        result = binomtest_fn(n_winner, total, 0.5, alternative="two-sided")
+        lines.append(_sig_narrative(winner, loser, n_winner, total, result.pvalue))
+    return lines
+
+
+def significance_block(
+    df: pd.DataFrame,
+    *,
+    choice_col: str,
+    ground_truth_name: str = "ground_truth",
+) -> str:
+    """Binomial sign-test narrative (pooled + per rater) as a text block."""
+    try:
+        from scipy.stats import binomtest as _bt
+    except ImportError:
+        return "  (scipy not available — skipping significance testing)\n"
+    buf = StringIO()
+    buf.write("\nSignificance (binomial sign test, ties excluded):\n")
+    pooled = _pairwise_sig_lines(df, choice_col, ground_truth_name, _bt)
+    if pooled:
+        buf.write("  Pooled:\n")
+        for line in pooled:
+            buf.write(f"    {line}\n")
+    else:
+        buf.write("  Pooled: no pairwise ASR data\n")
+    if _RATER_COL in df.columns:
+        raters = sorted(df[_RATER_COL].dropna().unique())
+        if len(raters) > 1:
+            for rater in raters:
+                lines = _pairwise_sig_lines(df[df[_RATER_COL] == rater], choice_col, ground_truth_name, _bt)
+                if lines:
+                    buf.write(f"  {rater}:\n")
+                    for line in lines:
+                        buf.write(f"    {line}\n")
+    return buf.getvalue()
+
 
 def summarize_cli_command(output_json: Path | str, ground_truth_name: str = "ground_truth") -> str:
     path = Path(output_json).expanduser().resolve()
@@ -141,6 +228,7 @@ def summarize_to_text(
             f"  {left} vs {right}  n={total}  "
             f"{left}: {left_rate:.3f}  {right}: {right_rate:.3f}\n"
         )
+    buf.write(significance_block(df, choice_col=choice_col, ground_truth_name=ground_truth_name))
     return buf.getvalue()
 
 
